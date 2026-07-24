@@ -6,15 +6,15 @@ Updated: 2026-07-24
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `G3.5-ADVANCED-DISCLOSURE` |
-| `state` | `COMPLETED_LOCAL` |
-| `candidateFingerprint` | `G3-ADV-CORE-2` SHA-256 `6B14FE99E5C91914873564CB6EC039AD437743CD787B4EC08A2BA35A206C0FBB`, based on checkpoint `e29342674c28b80be9cbc894abd2e5df17a7a1b1`; process core remains `PC-CORE-2` SHA-256 `BAAB01174082D20C7D4357E06F3695265CAD08DD9954ED16CBA9DA0AA2515887` |
-| `closedAcceptanceIds` | `PC-01`–`PC-10` and `G3-ADV-01`–`G3-ADV-09` verified; `G3-ADV-CORE-2` independent review PASS with zero open P1/P2/P3 |
-| `nextKnownBlocker` | none within `G3.5`; Gate 3 Preview publication qualification is separately active by explicit user authorization |
-| `lastCompletedCheck` | renewed explicit authorization cleared the transport blocker; exact seven-path checkpoint staging is in progress with implementation core unchanged |
-| `retryCounters` | process package: command 2, review repair 2, receipt correction 1, formatting repair 1; `G3.5`: command 5, implementation repair 0, review repair 1 |
-| `frozenManifestHash` | not frozen; no release-candidate qualification has begun |
-| `exactNextAction` | finish the exact local checkpoint, then qualify and publish only `0.1.0-preview.3` under the user's explicit release authorization |
+| `activePackage` | `PREVIEW-3-SOURCE-CLAIMS` |
+| `state` | `QUIESCENT_AWAITING_REVIEW` |
+| `candidateFingerprint` | product base `e96f4b51a3bc49102acd66361b1a88d38f40e472`, tree `82d7c972a6272dd4ad66abdbf09b1e92196cf3ef`; Preview 3 source is not frozen yet |
+| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, and `G3-ADV-01`–`G3-ADV-09` verified; `P3-01`–`P3-12` active |
+| `nextKnownBlocker` | independent review and exact checkpoint of the source-claims subpackage |
+| `lastCompletedCheck` | source claims: focused Playwright/axe 2/2, 277/277 Vitest, dual typechecks, zero forbidden-domain matches, screenshot and diff inspection pass |
+| `retryCounters` | process package: command 2, review repair 2, receipt correction 1, formatting repair 1; `G3.5`: command 5, implementation repair 0, review repair 1; Preview 3: command 2, review repair 1, process split 1 |
+| `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
+| `exactNextAction` | review and checkpoint source claims, then review and checkpoint the separately bounded same-byte pipeline |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -25,9 +25,9 @@ to exact package commit `6e55e8d142c748de181cd5136076d576d0994e19`.
 It includes Written Translator and Live Voice Coach.
 
 The local `release/next` branch adds the independently reviewed Gate 3
-Interpreter slice at commit
-`c2e6104e3b47ef180d5e27da5147d31b59ee4ebf`. It is unpublished, unpackaged,
-undeployed, and not release-qualified.
+Interpreter at `c2e6104`, process controls at `e293426`, and progressive
+Advanced settings at `e96f4b5`. The proposed package identity is
+`0.1.0-preview.3`; it is not yet frozen, packaged, published, or deployed.
 
 Detailed proof is preserved outside this cursor:
 
@@ -74,7 +74,8 @@ Detailed proof is preserved outside this cursor:
 | Gate 3 Interpreter | completed locally | `c2e6104`; 277/277 Vitest, 10/10 Edge/axe, dual typechecks, build/audit, independent PASS |
 | Next-release process controls | completed | `PC-01`–`PC-10`, reviewed `PC-CORE-1`, normalized `PC-CORE-2`, and staged-byte transport PASS |
 | Gate 3 Advanced Controls | completed locally | `G3-ADV-CORE-2`; 277/277 Vitest, 11/11 Edge/axe, dual typechecks, build/audit, protected paths unchanged, desktop/320 px closed/open screenshots, independent PASS |
-| Gate 3 Preview publication qualification | active by authorization | bounded to `0.1.0-preview.3`; no Gate 4+ feature work |
+| Preview 3 source claims and accessibility | current candidate | bounded contract; focused checks green, independent review pending |
+| Preview 3 same-byte pipeline | next package | implementation remains unstaged until source-claims checkpoint |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -102,14 +103,14 @@ Detailed proof is preserved outside this cursor:
 
 ## Credit-expensive work deliberately avoided
 
-No new visual ideation, assistive-technology session, packaging, model
-evaluation, prospective-fixture use, remote CI, network write, release, or
-deployment was performed. Deterministic checks preceded the one warranted full
-browser run.
+No new visual ideation, manual assistive-technology session, model evaluation,
+prospective-fixture use, remote CI, network write, release, or deployment has
+been performed for Preview 3. Existing local automated evidence is reused only
+where its exact bytes remain bound.
 
 ## Exact next eligible action
 
-Complete the exact seven-path local checkpoint, then contract and execute only
-the minimum Preview 3 qualification, packaging, publication, and public-byte
-verification authorized by the user. Do not begin Gate 4 or claim stable
-release readiness.
+Pass independent review and checkpoint the source-claims package, then review
+and checkpoint the same-byte pipeline package. Only after both checkpoints
+combine cleanly may the source be frozen, built once, and packaged by exact
+bytes. Do not begin Gate 4 or claim stable release readiness.

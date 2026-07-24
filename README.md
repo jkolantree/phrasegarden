@@ -18,8 +18,10 @@ Open the public Prompt Studio at
 The versioned source and release evidence are available in the
 [`0.1.0-preview.2` release](https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2).
 That deployed release contains Written Translator and Live Voice Coach. The
-current workspace adds the next ordered Gate 3 Interpreter slice but has not
-been packaged, published, or deployed.
+current `0.1.0-preview.3` source candidate adds the reviewed one-way
+Interpreter and puts uncommon controls behind one Advanced settings
+disclosure; it is not published until its exact package and public bytes pass
+the release protocol.
 
 ## Run locally
 
@@ -48,6 +50,7 @@ there.
 - Conservative Generic generation for all other bundled directions
 - Written Translator, Live Voice Coach, and one-way Interpreter recipes
 - Direct creation with safe defaults and an optional settings path
+- One progressive Advanced settings disclosure for uncommon controls
 - Relationship, hierarchy, register, ambiguity, name, teaching, correction,
   pronunciation, pace, Interpreter turn, and clarification controls
 - Pure deterministic compiler, validation, provenance, warnings, and summaries
@@ -106,7 +109,7 @@ pnpm test
 pnpm typecheck
 pnpm build
 pnpm audit:release
-pnpm test:e2e
+pnpm test:e2e:dist
 ```
 
 Browser tests run sequentially and use axe. Local Windows verification uses
@@ -117,7 +120,7 @@ prompt surface `1.1.0`, and English summary catalog `1.2.0`. Exact current
 Interpreter prompt hashes are locked in compiler tests. Published
 byte-qualified sample prompts remain unchanged in
 [`samples/0.1.0-preview.1`](samples/0.1.0-preview.1).
-The published repository inventory is recorded in
+The public repository inventory is recorded in
 [`docs/PUBLICATION-MANIFEST.md`](docs/PUBLICATION-MANIFEST.md); exact local
 artifact and sample hashes are in [`SHA256SUMS`](SHA256SUMS).
 

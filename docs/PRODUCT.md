@@ -63,7 +63,9 @@ English↔Japanese guidance and conservative Generic fallback. It includes
 language swap, bounded settings, plain-language summaries, visible limitations
 and version provenance, prompt inspection, local editing, copy, and plain-text
 download. The published `0.1.0-preview.2` site still contains Written
-Translator and Live Voice Coach only.
+Translator and Live Voice Coach only. The proposed `0.1.0-preview.3`
+prerelease adds the reviewed one-way Interpreter and progressive disclosure
+without claiming Gate 3 exit or stable readiness.
 
 Home compiles the selected defaults directly. Optional settings are a
 secondary path, not a required intermediate screen. Compilation is local and

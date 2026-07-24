@@ -20,12 +20,13 @@ evidence for this Preview honestly.
 
 ## Checks run for this candidate
 
-- Ten sequential Playwright journeys in Microsoft Edge
+- Eleven sequential Playwright journeys in Microsoft Edge
 - axe scans on Written, Voice, and Interpreter home, builder, and
-  generated-prompt review states, including 320 px Interpreter states
+  generated-prompt review states, including Advanced-open Written and Voice
+  plus 320 px Interpreter states
 - Keyboard focus assertions
-- 320 px mobile screenshots and desktop screenshots for the default and
-  Interpreter paths
+- 320 px mobile screenshots and desktop screenshots for the default,
+  Advanced-open Voice, and Interpreter paths
 - 200% and 400%-equivalent reflow assertions
 - Bidirectional-label and reduced-motion assertions
 - Synthetic Japanese composition-event coverage

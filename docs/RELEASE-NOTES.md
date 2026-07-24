@@ -1,6 +1,8 @@
 # Release notes
 
-## Unreleased — Gate 3 Interpreter candidate
+## 0.1.0-preview.3 — Interpreter and simpler settings
+
+Status: proposed public prerelease
 
 ### Product behavior
 
@@ -13,6 +15,9 @@
   short-relay unit.
 - Keeps the modality channel-neutral and makes no audio, speaker, silence,
   interruption, or turn-boundary capability claim.
+- Reorganizes existing uncommon relationship, ambiguity, name/title, and
+  destination-capability controls behind one native **Advanced settings**
+  disclosure. Defaults and effective prompt behavior are unchanged.
 
 ### Deterministic compiler
 
@@ -27,8 +32,24 @@
 
 ### Publication state
 
-- Local candidate only. No commit, package, push, release, deployment, or
-  production claim has been made.
+- Interpreter and Advanced settings are committed and independently reviewed.
+  Exact package, remote, release, deployment, and production claims remain
+  pending until their named qualification stages pass.
+
+### Tests and QA
+
+- Adds axe checks for Advanced-open Written and Voice Builder states and Voice
+  Review, plus a 320 px Voice-open overflow regression.
+- Pages extracts, verifies, tests, and deploys the exact checked-in qualified
+  archive instead of rebuilding a second deployment artifact.
+
+### Known limitations
+
+External English↔Japanese linguistic review, Japanese interface localization,
+cold-offline refresh, persistence, sharing, and the manual screen-reader,
+real-device IME, forced-colors, actual-zoom, mobile, offline, and broad
+browser/OS matrices remain incomplete. This prerelease does not claim Gate 3
+exit, stable readiness, or WCAG conformance.
 
 ## 0.1.0-preview.2 — usability Preview update
 

@@ -179,3 +179,35 @@ Resolution: the user's later explicit release authorization permitted the
 same exact seven-path staging request. The containing local commit is the
 Gate 3.5 checkpoint; the rejected attempt remains recorded rather than being
 silently removed.
+
+## Preview 3 qualification and publication
+
+Source: ADR-028 and
+`docs/work-packages/PREVIEW-3-PUBLICATION.md`.
+
+The first source review withheld PASS for one P2: the archive verifier checked
+only checksum entries present and did not require the supplied Preview 3 ZIP
+and manifest to appear in `SHA256SUMS`. The exact failure is preserved.
+Repair 1 requires both exact repository-relative entries and adds permanent
+negative tests for missing archive, missing manifest, and mismatched digest.
+
+The repaired combined source review then withheld PASS for one P3 process
+failure: 761 net lines exceeded the accepted 700-line stop rule. The work is
+therefore split into separately reviewed and checkpointed source-claims and
+same-byte-pipeline packages. No acceptance criterion or negative test is
+removed.
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; compiler/artifact versions remain unchanged. | prerelease identity only | verified / source-claims review |
+| `P3-02` | `preview.spec.ts` adds Written/Voice Advanced-open axe, Voice Review axe, and 320 px Voice-open overflow coverage. | named automated accessibility evidence | verified / full source run |
+| `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | open / source freeze |
+| `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | open / source freeze |
+| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | open / package |
+| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | separate pipeline package / not staged here |
+| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum ledger | separate pipeline package / P2 preserved |
+| `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | open / review |
+| `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | open / exact confirmation |
+| `P3-10` | Unauthenticated asset and Pages downloads match every local length/hash. | captured public-byte identity | open / publication |
+| `P3-11` | Named production product, accessibility, privacy, CSP, and runtime-request smoke journeys pass. | production checks on named matrix | open / publication |
+| `P3-12` | Preview 2 remains immutable rollback; stronger completion/review claims remain absent. | bounded prerelease claim | implemented / final review |

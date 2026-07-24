@@ -476,3 +476,38 @@ Direct and Builder compilation remain byte-identical for identical settings.
 Prompt snapshots, compiler data, summary semantics, and artifact versions must
 not change. A field-map, keyboard, axe, reflow, and protected-path matrix binds
 the package.
+
+## ADR-028 — Preview 3 may publish verified Gate 3 increments
+
+Status: Accepted
+Date: 2026-07-24
+
+**Context:** Interpreter and the progressive Advanced-settings presentation
+are independently verified, while manual assistive-technology evidence and
+Gates 4–6 remain incomplete. The user explicitly requested an immediate public
+release. Treating that request as stable-release or Gate 3-exit evidence would
+overclaim; withholding all prerelease publication would conflate the Preview
+channel with later qualification.
+
+**Decision:** Publish these Gate 3 increments only as
+`0.1.0-preview.3`, marked as a GitHub prerelease. The release may claim the
+named deterministic, browser, axe, visual, package, and public-byte evidence.
+It must continue to disclose incomplete external linguistic review,
+English-only interface, memory-only state, no cold-offline cache, and the
+unfinished manual screen-reader, real-device IME, forced-colors, zoom, mobile,
+offline, and broad browser/OS matrices. It may not claim Gate 3 exit, stable
+readiness, WCAG conformance, Reviewed/Flagship status, or durable offline use.
+
+The source is frozen before the one release build. The packaging commit may add
+only release evidence and exact distributable bytes. Pages must deploy those
+checked-in qualified bytes rather than a CI rebuild. Preview 2 remains the
+immutable rollback target.
+
+**Rationale:** A narrowly labeled prerelease gives users the reviewed product
+improvements now while keeping later accessibility, ownership, localization,
+offline, governance, and stable-release evidence honest.
+
+**Consequences:** Preview 3 has its own bounded qualification and publication
+contract. Any source, tag, asset, target, rollback, permission, or public-byte
+change after exact authorization stops publication. Gates 4–6 remain
+unstarted.

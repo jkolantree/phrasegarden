@@ -141,6 +141,7 @@ test("one Advanced settings disclosure exposes the exact modality field map", as
     path: "artifacts/screenshots/builder-advanced-written-desktop.png",
     fullPage: true,
   });
+  await expectNoAxeViolations(page, "Written advanced settings");
   await advancedSummary.click();
 
   await page
@@ -174,6 +175,20 @@ test("one Advanced settings disclosure exposes the exact modality field map", as
   await expect(page.getByLabel("Can it change speaking speed?")).toHaveValue(
     "unknown",
   );
+  await expectNoAxeViolations(page, "Voice advanced settings");
+  await page.setViewportSize({ width: 320, height: 900 });
+  const voiceDimensions = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(voiceDimensions.scroll).toBeLessThanOrEqual(
+    voiceDimensions.client + 1,
+  );
+  await page.screenshot({
+    path: "artifacts/screenshots/builder-advanced-voice-mobile-320.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
   await advancedSummary.click();
 
   await page.getByRole("radio", { name: /^Interpreter/ }).check();
@@ -680,6 +695,7 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await expect(page.getByTestId("destination-privacy")).toContainText(
     "any audio, transcripts, or text it receives during practice",
   );
+  await expectNoAxeViolations(page, "Voice prompt review");
 
   await page
     .getByRole("button", { name: "Adjust optional settings" })

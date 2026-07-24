@@ -1,7 +1,8 @@
 # Product limitations
 
 The deployed public release is PhraseGarden `0.1.0-preview.2`. The current
-workspace also contains an unpublished Gate 3 Interpreter candidate.
+workspace contains the committed Interpreter and Advanced-settings source for
+the proposed `0.1.0-preview.3` prerelease; it is not yet packaged or published.
 
 ## Language and support
 
@@ -59,5 +60,6 @@ workspace also contains an unpublished Gate 3 Interpreter candidate.
 - The in-app manual localhost inspection was blocked by that browser surface's
   local-URL policy. Sequential Edge journeys, explicit focus assertions, and
   captured screenshots passed; no stronger manual-browser claim is made.
-- The Interpreter candidate has not been committed, packaged, published,
-  deployed, or independently linguistically reviewed.
+- Interpreter is committed and independently reviewed as product code. It has
+  not yet been packaged, published, deployed, or independently linguistically
+  reviewed.
