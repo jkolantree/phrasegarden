@@ -1108,11 +1108,11 @@ code {
   }
 
   .home-page {
-    padding-block-start: var(--space-6);
+    padding-block-start: var(--space-4);
   }
 
   .hero {
-    padding-block: var(--space-4) var(--space-5);
+    padding-block: var(--space-3) var(--space-4);
   }
 
   .proof-strip {
