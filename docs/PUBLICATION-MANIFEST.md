@@ -1,8 +1,9 @@
 # Publication manifest
 
 This manifest defines the authorized public repository contents for
-PhraseGarden `0.1.0-preview.1`. The repository, release, license split, and
-GitHub Pages deployment are public.
+PhraseGarden `0.1.0-preview.2`. The repository, release, license split, and
+GitHub Pages deployment are public. The immutable `0.1.0-preview.1` materials
+remain published as historical release evidence.
 
 ## Authorized repository
 
@@ -10,7 +11,8 @@ GitHub Pages deployment are public.
 - Visibility: public
 - Default branch: `main`
 - Repository: <https://github.com/jkolantree/phrasegarden>
-- Release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
+- Current release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
+- Previous release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place
 - Licenses: MIT for code; CC BY 4.0 for maintained prompts, recipes,
@@ -25,6 +27,8 @@ GitHub Pages deployment are public.
 - `docs/**`
 - `release/phrasegarden-0.1.0-preview.1-pages.zip`
 - `release/phrasegarden-0.1.0-preview.1-pages-manifest.json`
+- `release/phrasegarden-0.1.0-preview.2-pages.zip`
+- `release/phrasegarden-0.1.0-preview.2-pages-manifest.json`
 - `samples/0.1.0-preview.1/**`
 - `scripts/**`
 - `src/**`
@@ -50,11 +54,9 @@ GitHub Pages deployment are public.
 
 ## Local artifact boundary
 
-The Pages archive contains only the three files listed and byte-qualified in
-`release/phrasegarden-0.1.0-preview.1-pages-manifest.json`, rooted as
-`index.html` and `assets/**`. `SHA256SUMS` qualifies the archive, manifest, and
-published prompt samples. The archive is not evidence of a repository commit,
-hosted release-download identity, or UI-mediated download identity. Repository
-refs and release assets require separate remote verification. The three Pages
-files served from the production URL were downloaded and matched the manifest
-byte lengths and SHA-256 values exactly.
+Each Pages archive contains only the files listed and byte-qualified in its
+same-version manifest, rooted as `index.html` and `assets/**`. `SHA256SUMS`
+qualifies both release archives, both manifests, and the published prompt
+samples. An archive is not by itself evidence of hosted release-download
+identity or UI-mediated download identity. Repository refs, release assets,
+and production responses require separate remote verification.

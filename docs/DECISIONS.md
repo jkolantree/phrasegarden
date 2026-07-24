@@ -336,3 +336,33 @@ The existing review-evidence types and structural validator remain unchanged. A 
 **Rationale:** Preview makes useful versioned pair guidance available without conflating authored content with human review or weakening Generic isolation.
 
 **Consequences:** Public copy must not describe Preview as flagship, reviewed, community-reviewed, independently validated, production-proven, or qualified-speaker approved. Snapshot, provenance, and UI tests lock the distinction. No review date is invented.
+
+## ADR-024 — Direct local creation with an informed-use Review handoff
+
+Status: Accepted
+Date: 2026-07-24
+Supersedes: the mandatory Home-to-Builder step in the selected design contract
+
+**Context:** The compiler already has safe, explicit defaults, but the public
+flow required every visitor to open Builder before creating a prompt. That
+extra decision screen obscured the product's purpose and delayed the first
+useful result. Local compilation is deterministic, reversible, and sends
+nothing; using the output in another tool is the consequential handoff.
+
+**Decision:** Home exposes one primary `Create my prompt` action that compiles
+the selected languages, modality, and current defaults. `Adjust optional
+settings` remains a secondary path using the same configuration and compiler.
+Review is the informed-use handoff: support tier and limitations appear before
+Copy and Download, and the page states destination compatibility, paste order,
+and destination privacy. A current artifact survives internal navigation. A
+modified draft must be explicitly replaced, and the browser's native
+before-unload protection covers refresh or close.
+
+**Rationale:** The shortest path now produces value without hiding any
+consequential claim or action. The same pure compiler remains authoritative,
+so the shorter route introduces no alternate prompt semantics.
+
+**Consequences:** Direct and optional-settings paths must produce byte-identical
+canonical output for identical effective configurations. Session-only state is
+not described as saved. PhraseGarden never sends or runs the result, and no
+destination-tool compatibility or privacy guarantee is implied.

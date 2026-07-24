@@ -164,7 +164,7 @@ describe("deterministic compiler", () => {
     expect(summary.ok).toBe(true);
     if (summary.ok) {
       expect(summary.value.text).toContain(
-        "external linguistic review has not been completed",
+        "Independent language review is not complete",
       );
       expect(summary.value.items[0]?.id).toBe("preserves.core");
     }
@@ -199,7 +199,7 @@ describe("deterministic compiler", () => {
     expect(summary.ok).toBe(true);
     if (summary.ok) {
       expect(summary.value.text).toContain(
-        "Prioritizes grammar and form detail after preserving meaning and social force.",
+        "After protecting meaning and tone, focuses on grammar and wording details.",
       );
     }
   });

@@ -23,10 +23,10 @@ The product is usable without an account, API key, backend, analytics consent, o
 Within two minutes, a first-time visitor can:
 
 1. Choose a home language and a distinct target language. Interface language remains a separate setting.
-2. Choose Written Translator, Live Voice Coach, or—only after its ordered slice passes—Interpreter.
-3. Optionally adjust controls relevant to that modality: relationship, register, correction, pronunciation support, teaching depth, or pace.
-4. Read a plain-language summary of what those choices cause, including support tier and limitations.
-5. Generate a deterministic prompt, inspect and edit a local copy, copy it, or download UTF-8 plain text.
+2. Choose Written Translator or Live Voice Coach.
+3. Create the default prompt immediately, or first adjust optional controls relevant to that modality: relationship, register, correction, pronunciation support, teaching depth, or pace.
+4. On Review, see the exact support tier and limitations before the handoff actions, plus a plain-language summary of what the prompt asks the destination tool to do.
+5. Copy or download the deterministic prompt, inspect its visible text, and optionally edit a clearly labeled local copy.
 
 Autonyms and searchable localized names identify languages. Flags are not primary language identifiers.
 
@@ -58,6 +58,12 @@ Users cannot select or upgrade a tier. The public Preview derives `Preview` only
 ## MVP
 
 The public Preview contains Written Translator and Live Voice Coach for bundled language profiles, with Preview English↔Japanese guidance and conservative Generic fallback. It includes language swap, bounded settings, plain-language summaries, visible limitations and version provenance, prompt inspection, local editing, copy, and plain-text download.
+
+Home compiles the selected defaults directly. Optional settings are a
+secondary path, not a required intermediate screen. Compilation is local and
+reversible; Review is the informed-use handoff where support, limitations,
+destination compatibility, paste order, and destination privacy are visible
+before Copy and Download.
 
 The Preview is memory-only and intentionally excludes Interpreter, local recipe storage, import/export, sharing, a Japanese interface, service-worker caching, accounts, telemetry, runtime model calls, public submissions, and evidence-qualified tier promotion.
 

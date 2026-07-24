@@ -44,16 +44,29 @@ Controls and navigation for a later gate are absent, not disabled or advertised.
 
 - Wordmark links to Homepage.
 - Current-gate primary navigation follows the availability table.
-- The header ends with textual privacy status: `Local compiler · nothing sent`.
+- The header ends with precise, plain privacy status:
+  `Session only · not saved`. Recipe choices, generated prompts, and local
+  edits remain in memory only and disappear on refresh or close. This does not
+  describe the ordinary asset request needed to load the hosted page.
 - Interface-locale control appears only when the Japanese interface exists.
 - Header content remains usable at 400% zoom and wraps rather than truncates.
 
 ### Homepage
 
 - Hero interaction is the paired language rail: textual language name plus autonym, no flags.
+- The first paragraph explains that a prompt is a set of instructions to paste
+  into another AI or language tool; users never enter source text here.
 - Selecting the pair reveals its exact support tier and limitation statement.
 - Tool choice follows immediately.
-- One primary action enters Builder; privacy and portability are short proof statements, not feature cards.
+- One primary `Create my prompt` action compiles the selected safe defaults
+  directly. `Adjust optional settings` is a secondary action into Builder.
+  Returning from Builder or Review preserves any current prompt for the
+  session.
+- On narrow screens before any artifact exists, a compact Quick start repeats
+  the current direction and tool above the detailed selectors and offers
+  `Create with these choices`. It is an actual generation action, not another
+  gate; the complete selectors remain immediately below.
+- Privacy and portability are short proof statements, not feature cards.
 - No source text field appears.
 
 ### Builder
@@ -61,21 +74,35 @@ Controls and navigation for a later gate are absent, not disabled or advertised.
 - Pair header: Home rail, native Swap button, Target rail.
 - Tool choice precedes settings.
 - Desktop uses two meaningful columns:
-  - `WHAT YOU BRING · {home autonym}` owns relationship and source-side preferences.
-  - `HOW IT SHOULD LAND · {target autonym}` owns destination register and teaching preferences.
+  - `CONVERSATION CONTEXT (OPTIONAL) · {home autonym}` owns relationship and source-side preferences.
+  - `HOW THE RESULT SHOULD SOUND (OPTIONAL) · {target autonym}` owns destination register and teaching preferences.
 - Shared safeguards span both columns.
-- A full-width synthesis titled `Your prompt will` contains the plain-language behavior summary.
+- A full-width summary titled `Your prompt asks the tool to` contains the
+  plain-language behavior summary.
 - The primary action follows the summary.
 - Advanced settings use one native disclosure and appear only when their Gate 3 item is eligible.
 - The builder never accepts source prose, relationship prose, audio, or prompt text.
 
 ### Generated-prompt Review
 
-- Behavior summary appears first as two textual groups: `Preserves` and `Adapts only when asked`.
-- Warnings and known limitations follow and remain visible.
+- The exact support tier, warnings, and known limitations appear before the
+  handoff actions in reading and focus order and remain visible. At desktop
+  widths, notices and handoff sit side by side so Copy is visible in the
+  initial 1280 × 720 Review viewport; narrow layouts retain one-column order.
+- A short handoff block says the destination must accept instructions, gives
+  the paste order for the selected modality, and states that the destination's
+  privacy policy applies.
+- Copy and Download are adjacent primary peers in that handoff block and give
+  restrained visible success or failure feedback.
+- The behavior summary follows as three honest textual groups: `Keep`, `Change
+  only when you ask`, and `Follow these choices`. The third group keeps
+  selected operation and support behavior separate from preservation or
+  adaptation claims.
 - The English generated prompt uses one reading surface no wider than 68 characters per line.
-- Copy and Download are adjacent primary peers above the prompt.
 - Editing creates a visibly labeled `Your edited copy`; immutable canonical output remains available for regeneration.
+- Internal navigation preserves that edited copy. Any action that would replace
+  it requires explicit confirmation; refresh or close receives the browser's
+  native leave warning.
 - Provenance is a disclosure after the prompt and includes every required version and limitation.
 
 ### Local Recipe Library
@@ -90,9 +117,9 @@ Controls and navigation for a later gate are absent, not disabled or advertised.
 
 | Range | Contract |
 |---|---|
-| `< 600 px` | One column. Language rails stack with persistent `HOME` and `TARGET` text. Summary appears before the primary action. No connective gutter. |
+| `< 600 px` | One column. A current-choice Quick start action is visible in the initial 320 × 900 viewport, then language rails stack with persistent `HOME` and `TARGET` text. Summary appears before the Builder action. No connective gutter. |
 | `600–959 px` | One column for settings with a compact horizontal pair header. Shared safeguards remain full width. |
-| `≥ 960 px` | Maximum width 1280 px. Twelve-column grid: 5 columns per language side around a 2-column connective gutter. Summary spans columns 3–10. |
+| `≥ 960 px` | Maximum width 1280 px. Home places the language direction in a seven-column area and the selected support/tool/action in a five-column task area so the direct action is visible in the initial 1280 × 720 viewport. Builder uses 5 columns per language side around a 2-column connective gutter; its summary spans columns 3–10. |
 
 Page gutters are 16 px, 24 px, and 40 px at the three ranges. Layout reflows by available CSS pixels so browser zoom triggers the same safe stacked states. Nothing requires horizontal page scrolling at 320 CSS px.
 
@@ -153,7 +180,9 @@ Japanese never inherits uppercase transformation, italics, or Latin tracking. Mi
 ## Support-tier treatment
 
 - Exact tier is always textual: `Flagship`, `Reviewed`, `Community`, `Preview`, or `Generic`.
-- Preview says `Built-in, versioned guidance · external review not completed`; Generic says that no pair-specific guidance is included.
+- Preview says that this direction includes built-in guidance and independent
+  language review is not complete. Generic says that only general guidance is
+  used and no guidance was written for this exact direction.
 - Evidence-qualified tiers supply their verified review date/evidence scope. The UI never fabricates a review date or treats Preview as review evidence.
 - Home/target rails, tier colors, or decorative join marks never substitute for the text.
 

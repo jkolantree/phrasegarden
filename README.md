@@ -16,7 +16,7 @@ or pair-specific linguistic guidance.
 Open the public Prompt Studio at
 [jkolantree.github.io/phrasegarden](https://jkolantree.github.io/phrasegarden/).
 The versioned source and release evidence are available in the
-[`0.1.0-preview.1` release](https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1).
+[`0.1.0-preview.2` release](https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2).
 
 ## Run locally
 
@@ -31,9 +31,9 @@ Then:
 
 1. Choose a home and target language.
 2. Choose Written Translator or Live Voice Coach.
-3. Open the builder and adjust the settings that matter.
-4. Read the behavior summary and support limitation.
-5. Generate, inspect, copy, locally edit, or download the prompt.
+3. Read what the prompt will do and choose **Create prompt**.
+4. If you want more control, open **Optional settings** first.
+5. Copy or download the prompt and paste it into a compatible language tool.
 
 PhraseGarden never asks for the words you want to translate. Paste the
 generated prompt into a language tool of your choice, then provide source text
@@ -44,6 +44,7 @@ there.
 - English→Japanese and Japanese→English Preview guidance
 - Conservative Generic generation for all other bundled directions
 - Written Translator and Live Voice Coach recipes
+- Direct creation with safe defaults and an optional settings path
 - Relationship, hierarchy, register, ambiguity, name, teaching, correction,
   pronunciation, and pace controls
 - Pure deterministic compiler, validation, provenance, warnings, and summaries
@@ -107,7 +108,8 @@ pnpm test:e2e
 
 Browser tests run sequentially and use axe. Local Windows verification uses
 Microsoft Edge; the prepared Pages workflow uses Playwright Chromium.
-Versioned sample prompts are in
+The compiler is unchanged in this usability update. Its byte-qualified sample
+prompts remain in
 [`samples/0.1.0-preview.1`](samples/0.1.0-preview.1).
 The published repository inventory is recorded in
 [`docs/PUBLICATION-MANIFEST.md`](docs/PUBLICATION-MANIFEST.md); exact local

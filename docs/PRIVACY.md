@@ -37,7 +37,7 @@ analytics endpoints.
 
 ## Destination tools
 
-When a user copies a prompt into another language tool, that tool's privacy
-policy applies. PhraseGarden cannot control what a destination tool stores or
-how it processes later source text.
-
+When a user copies a prompt into another language tool or practices there,
+that tool's privacy policy applies. PhraseGarden cannot control what a
+destination tool stores or how it processes any text, audio, transcript, or
+other content it receives.

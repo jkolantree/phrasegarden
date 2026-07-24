@@ -19,12 +19,12 @@ export function SupportStatus({
     >
       <p class="support-tier">
         <span class="status-marker" aria-hidden="true" />
-        {preview ? "Preview" : "Generic"}
+        Support level: {preview ? "Preview" : "Generic"}
       </p>
       <p class="support-detail">
         {preview
-          ? "Built-in, versioned pair guidance · external review not completed"
-          : "Conservative universal instructions · no pair-specific guidance"}
+          ? "Includes built-in guidance for this language direction. Independent language review is not complete."
+          : "Uses general guidance only. No guidance written for this exact language direction is included."}
       </p>
     </div>
   );

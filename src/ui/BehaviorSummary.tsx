@@ -8,11 +8,13 @@ interface BehaviorSummaryProps {
 
 function SummaryList({
   items,
+  emptyText,
 }: {
   readonly items: readonly RenderedSummary["items"][number][];
+  readonly emptyText: string;
 }) {
   if (items.length === 0) {
-    return <p class="summary-empty">No optional adaptation is selected.</p>;
+    return <p class="summary-empty">{emptyText}</p>;
   }
   return (
     <ul>
@@ -25,7 +27,7 @@ function SummaryList({
 
 export function BehaviorSummary({
   summary,
-  title = "Your prompt will",
+  title = "Your prompt asks the tool to",
   review = false,
 }: BehaviorSummaryProps) {
   const preserves = summary.items.filter((item) =>
@@ -46,20 +48,29 @@ export function BehaviorSummary({
       aria-labelledby="behavior-summary-title"
       data-testid="behavior-summary"
     >
-      <p class="eyebrow">Behavior synthesis</p>
+      <p class="eyebrow">Your choices</p>
       <h2 id="behavior-summary-title">{title}</h2>
       <div class="summary-groups">
         <section>
-          <h3>Preserves</h3>
-          <SummaryList items={preserves} />
+          <h3>Keep</h3>
+          <SummaryList
+            items={preserves}
+            emptyText="No items to keep are listed."
+          />
         </section>
         <section>
-          <h3>Adapts only when asked</h3>
-          <SummaryList items={adapts} />
+          <h3>Change only when you ask</h3>
+          <SummaryList
+            items={adapts}
+            emptyText="No optional changes selected."
+          />
         </section>
         <section>
-          <h3>How it works</h3>
-          <SummaryList items={behavior} />
+          <h3>Follow these choices</h3>
+          <SummaryList
+            items={behavior}
+            emptyText="No other choices are listed."
+          />
         </section>
       </div>
     </section>

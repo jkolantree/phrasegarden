@@ -1,5 +1,53 @@
 # Release notes
 
+## 0.1.0-preview.2 — usability Preview update
+
+Date: 2026-07-24
+
+### Product behavior
+
+- Replaced the mandatory Builder stop with direct prompt creation from Home;
+  optional settings remain available when a visitor wants more control.
+- Rewrote the main journey in plain language so visitors learn what the
+  product makes, what their choices mean, and where the result goes.
+- Kept primary actions visible in initial desktop and narrow mobile viewports.
+- Added explicit destination handoff and modality-aware privacy guidance.
+- Added visible Copy and Download outcomes.
+- Preserved an edited prompt across app navigation, requires confirmation
+  before replacement, and uses the browser's native warning before tab close
+  or refresh.
+
+### Deterministic compiler
+
+- Unchanged. Compiler `0.1.0-preview.1`, recipes, profiles, pair pack,
+  generated instructions, prompt snapshots, and canonical prompt bytes remain
+  identical.
+
+### Tests and QA
+
+- Added complete interface-label coverage and direct-versus-optional canonical
+  equality checks.
+- Expanded sequential Playwright/axe coverage for first-viewport actions,
+  Browser Back, edited-draft protection, visible handoff failures, and a real
+  loaded-session offline path.
+- Passed 271/271 unit and snapshot tests, both TypeScript configurations, the
+  production build, release audit, deterministic-domain scan, and 9/9
+  sequential Microsoft Edge browser journeys before packaging.
+- An independent read-only review returned PASS with no open P1/P2/P3 finding
+  against a quiescent 20-file fingerprint.
+
+### Known limitations
+
+Preview linguistic review, Interpreter, Japanese interface, offline refresh,
+local persistence, sharing, and the manual assistive-technology matrix remain
+deferred. See [LIMITATIONS.md](LIMITATIONS.md).
+
+Versioned release:
+<https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
+
+GitHub Pages:
+<https://jkolantree.github.io/phrasegarden/>
+
 ## 0.1.0-preview.1 — public Preview
 
 Date: 2026-07-23

@@ -1,6 +1,6 @@
 import type { SummaryCatalog } from "../domain";
 
-export const SUMMARY_EN_VERSION = "1.0.0";
+export const SUMMARY_EN_VERSION = "1.1.0";
 
 type Message = SummaryCatalog["messages"][number];
 
@@ -24,140 +24,143 @@ export const SUMMARY_EN_CATALOG: SummaryCatalog = {
   messages: [
     message(
       "preserves.core",
-      "Preserves intended meaning, social force, ambiguity, register, and your voice before literal wording.",
+      "Keeps what you mean, how strongly you say it, the tone, formality, ambiguity, and your personal style—even when a word-for-word translation would not.",
     ),
     message(
       "preserves.non-invention",
-      "Does not invent gender, pronouns, hierarchy, intimacy, motives, certainty, consent, or cultural context.",
+      "Does not guess gender, pronouns, status, closeness, motives, certainty, consent, or cultural context.",
     ),
     {
       id: "behavior.support.preview",
       parts: [
-        { kind: "literal", text: "Uses built-in, versioned " },
+        { kind: "literal", text: "Uses guidance built into PhraseGarden from " },
         { kind: "value", name: "home" },
-        { kind: "literal", text: " → " },
+        { kind: "literal", text: " to " },
         { kind: "value", name: "target" },
         {
           kind: "literal",
-          text: " guidance; external linguistic review has not been completed.",
+          text: ". Independent language review is not complete.",
         },
       ],
     },
     {
       id: "behavior.support.generic",
       parts: [
-        { kind: "literal", text: "Uses conservative Generic behavior for " },
+        { kind: "literal", text: "Uses general guidance from " },
         { kind: "value", name: "home" },
-        { kind: "literal", text: " → " },
+        { kind: "literal", text: " to " },
         { kind: "value", name: "target" },
         {
           kind: "literal",
-          text: ", with no endpoint- or pair-specific linguistic guidance.",
+          text: ". It has no guidance written for this exact language direction.",
         },
       ],
     },
     message(
       "behavior.tool.written",
-      "Produces a portable Written Translator prompt; PhraseGarden never asks for the source text.",
+      "Creates a Written Translator prompt to copy or download. You enter the text to translate only after using that prompt in another tool.",
     ),
     message(
       "behavior.tool.voice",
-      "Produces a screenless Live Voice Coach prompt with short, speakable turns and honest host-capability limits.",
+      "Creates a Live Voice Coach prompt for short spoken turns. It does not assume audio features that your other tool has not confirmed.",
     ),
     ...choiceMessages("behavior", "relationship", {
       unspecified:
-        "Leaves the relationship unspecified and does not infer familiarity or distance.",
-      strangers: "Uses a stranger relationship without inventing extra formality.",
+        "Leaves the relationship open instead of guessing how close or formal the people are.",
+      strangers: "Treats the people as strangers without adding extra formality.",
       acquaintances:
-        "Accounts for an acquaintance relationship while preserving source warmth and distance.",
+        "Uses an acquaintance relationship while keeping the warmth or distance in the message.",
       friends:
-        "Accounts for friendship without adding intimacy the source does not express.",
+        "Uses a friendship without adding closeness that the message does not show.",
       "close-relationship":
-        "Accounts for a close relationship while preserving the source's actual intimacy.",
+        "Uses a close relationship while keeping the level of closeness expressed in the message.",
       family:
-        "Accounts for a family relationship without stereotyping roles or emotions.",
+        "Uses a family relationship without guessing roles or emotions.",
       "romantic-partners":
-        "Accounts for romantic partners while preserving affection or distance exactly as expressed.",
+        "Uses a romantic relationship while keeping the affection or distance actually expressed.",
       coworkers:
-        "Accounts for coworkers and preserves any explicitly supplied workplace hierarchy.",
+        "Uses a coworker relationship and keeps any workplace status you clearly provide.",
       "customer-service":
-        "Accounts for customer service without weakening complaints, requests, or refusals.",
+        "Uses a customer-service relationship without weakening complaints, requests, or refusals.",
       "teacher-learner":
-        "Accounts for a teacher–learner relationship without inventing rank.",
+        "Uses a teacher–learner relationship without guessing who has higher status.",
       other:
-        "Uses only relationship context explicitly supplied by the user or source.",
+        "Uses only the relationship details that you or the message clearly provide.",
     }),
     ...choiceMessages("behavior", "hierarchy", {
-      unspecified: "Leaves hierarchy unspecified instead of guessing status.",
-      peers: "Treats the participants as peers while preserving source-marked deference.",
+      unspecified: "Leaves relative status open instead of guessing.",
+      peers:
+        "Treats the people as equals while keeping any respect or formality in the message.",
       "source-speaker-higher":
-        "Accounts for the source speaker's stated higher status without exaggerating it.",
+        "Uses the speaker's or writer's stated higher status without exaggerating it.",
       "addressee-higher":
-        "Accounts for the addressee's stated higher status without inventing submissiveness.",
+        "Uses the listener's or reader's stated higher status without making the other person sound more submissive than intended.",
     }),
     ...choiceMessages("preserves", "register", {
       preserve:
-        "Preserves the source register rather than making it more casual, polite, formal, intimate, or blunt.",
+        "Keeps the message's tone and formality instead of making it more casual, polite, formal, close, or blunt.",
     }),
     ...choiceMessages("adapts", "register", {
       casual:
-        "Adapts toward casual language only when meaning and interpersonal force stay intact.",
+        "Uses more casual language only when the meaning and strength stay intact.",
       neutral:
-        "Adapts toward neutral language only when meaning and interpersonal force stay intact.",
+        "Uses more neutral language only when the meaning and strength stay intact.",
       polite:
-        "Adapts toward polite language without weakening boundaries or inventing hierarchy.",
+        "Uses more polite language without weakening boundaries or guessing status.",
       formal:
-        "Adapts toward formal language only when meaning and interpersonal force stay intact.",
+        "Uses more formal language only when the meaning and strength stay intact.",
     }),
     ...choiceMessages("behavior", "ambiguity", {
       "preserve-and-note":
-        "Preserves material ambiguity and adds a brief note only when it matters.",
+        "Keeps important ambiguity and adds a short note only when needed.",
       "ask-if-blocking":
-        "Asks one concise clarification only when ambiguity blocks a responsible result.",
+        "Asks one short question only when unclear wording prevents a reliable result.",
       "marked-best-effort":
-        "Makes a conservative best effort and marks material unresolved ambiguity.",
+        "Makes a careful best effort and clearly marks important uncertainty that remains.",
     }),
     ...choiceMessages("behavior", "written-detail", {
-      concise: "Keeps written output concise and translation-first.",
+      concise: "Keeps the answer short and shows the translation first.",
       "brief-notes":
-        "Adds brief notes for consequential wording, register, or ambiguity choices.",
+        "Adds short notes only when wording, formality, or ambiguity could change the meaning.",
       teaching:
-        "Gives the translation first, then compact teaching notes on important choices.",
+        "Shows the translation first, then briefly explains important choices.",
     }),
     ...choiceMessages("behavior", "voice-correction-timing", {
-      "on-request": "Corrects the learner only when asked.",
+      "on-request": "Gives corrections only when you ask.",
       "after-turn":
-        "Gives at most one useful correction after the learner finishes a turn.",
+        "Gives at most one useful correction after you finish a turn.",
       "blocking-only":
-        "Corrects only errors that block or materially change meaning or social force.",
+        "Corrects only mistakes that block understanding or change the meaning or tone.",
       "after-each-turn":
-        "Gives one prioritized correction after each learner turn.",
+        "Gives one important correction after each turn.",
     }),
     ...choiceMessages("behavior", "voice-correction-focus", {
       "meaning-and-force":
-        "Prioritizes corrections that protect intended meaning and social force.",
+        "Focuses on corrections that protect your meaning, tone, and strength.",
       balanced:
-        "Balances meaning, social force, grammar, and natural form in corrections.",
+        "Balances meaning and tone with grammar and natural wording.",
       "form-detail":
-        "Prioritizes grammar and form detail after preserving meaning and social force.",
+        "After protecting meaning and tone, focuses on grammar and wording details.",
     }),
     ...choiceMessages("behavior", "pronunciation", {
       off: "Does not provide pronunciation coaching.",
       "on-request":
-        "Provides pronunciation help on request, bounded by the evidence actually available.",
+        "Provides pronunciation help when asked, using only the audio or transcript information your tool provides.",
       "when-helpful":
-        "Offers brief pronunciation help when useful, bounded by the evidence actually available.",
+        "Offers brief pronunciation help when useful, using only the audio or transcript information your tool provides.",
     }),
     ...choiceMessages("behavior", "teaching-depth", {
-      minimal: "Keeps teaching explanations to a necessary phrase.",
-      brief: "Explains one useful pattern briefly in plain language.",
-      guided: "Uses a short cue, retry, and concise explanation.",
+      minimal: "Keeps explanations to one necessary phrase.",
+      brief: "Briefly explains one useful pattern in plain language.",
+      guided:
+        "Gives a short cue, lets you try again, then adds a brief explanation.",
       deep:
-        "Explains important patterns thoroughly while preserving conversational turns.",
+        "Explains important patterns in detail while keeping the practice conversational.",
     }),
     ...choiceMessages("behavior", "voice-pace", {
-      natural: "Uses a natural pace unless the learner asks to slow down.",
-      slower: "Uses shorter phrases and a slower pace without distorting pronunciation.",
+      natural: "Uses a natural pace unless you ask to slow down.",
+      slower:
+        "Uses shorter phrases and a slower pace while keeping pronunciation natural.",
     }),
   ],
 };

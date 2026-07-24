@@ -1,6 +1,6 @@
 # Product limitations
 
-This document describes PhraseGarden `0.1.0-preview.1`.
+This document describes PhraseGarden `0.1.0-preview.2`.
 
 ## Language and support
 
@@ -52,4 +52,3 @@ This document describes PhraseGarden `0.1.0-preview.1`.
 - The in-app manual localhost inspection was blocked by that browser surface's
   local-URL policy. Sequential Edge journeys, explicit focus assertions, and
   captured screenshots passed; no stronger manual-browser claim is made.
-
