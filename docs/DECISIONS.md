@@ -446,3 +446,33 @@ decision instead of looping. Historical ledgers are corrected only by a new
 append-only note that preserves the prior claim; published evidence is never
 silently rewritten. Remote verification and publication remain separately
 authorized actions.
+
+## ADR-027 — Advanced Controls is presentation-only disclosure
+
+Status: Accepted
+Date: 2026-07-24
+Supersedes: the current two-disclosure Builder arrangement
+
+**Context:** Gate 3 requires Advanced Controls, while the current schema already
+contains every approved setting and the Builder exposes nearly all of them at
+once. Adding more settings would expand prompt behavior without a captured
+failure; leaving two separate safeguard/capability disclosures would not meet
+the selected design's one-disclosure contract.
+
+**Decision:** Gate 3.5 adds no setting, enum, default, clause, rendering,
+summary semantic, warning, provenance field, or version. Relationship,
+register, and each modality's existing core controls stay visible. One native
+`Advanced settings` disclosure owns hierarchy; applicable ambiguity,
+title/honorific, and unknown-name handling; and Live Voice destination
+capability declarations. Interpreter continues to omit ambiguity and
+unknown-name controls under ADR-025.
+
+**Rationale:** Progressive disclosure makes the Builder easier to scan without
+creating a second configuration path or implying that uncommon social and host
+facts are required.
+
+**Consequences:** Opening or closing the disclosure is presentation state only.
+Direct and Builder compilation remain byte-identical for identical settings.
+Prompt snapshots, compiler data, summary semantics, and artifact versions must
+not change. A field-map, keyboard, axe, reflow, and protected-path matrix binds
+the package.

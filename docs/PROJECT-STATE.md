@@ -7,15 +7,15 @@ Updated: 2026-07-24
 | Field | Current value |
 |---|---|
 | `activePackage` | `G3.5-ADVANCED-DISCLOSURE` |
-| `state` | `READY` |
-| `candidateFingerprint` | product checkpoint `c2e6104e3b47ef180d5e27da5147d31b59ee4ebf`, tree `68b87eabf3bce25ee989d736787d259016072530`; normalized process core `PC-CORE-2` SHA-256 `BAAB01174082D20C7D4357E06F3695265CAD08DD9954ED16CBA9DA0AA2515887` |
-| `closedAcceptanceIds` | `PC-01`–`PC-10` verified; semantic PASS transferred to `PC-CORE-2` through the independently qualified whitespace-only delta |
-| `nextKnownBlocker` | the bounded `G3.5` package contract has not yet been written |
-| `lastCompletedCheck` | staged-byte transport PASS: exact nine paths, cached diff clean, no unstaged work, old core reconstructed byte-for-byte, `PC-CORE-2` exact |
-| `retryCounters` | process package closed at command 2, review repair cycle 2, administrative receipt correction 1, formatting repair 1; `G3.5` counters all 0 |
+| `state` | `COMPLETED_LOCAL` |
+| `candidateFingerprint` | `G3-ADV-CORE-2` SHA-256 `6B14FE99E5C91914873564CB6EC039AD437743CD787B4EC08A2BA35A206C0FBB`, based on checkpoint `e29342674c28b80be9cbc894abd2e5df17a7a1b1`; process core remains `PC-CORE-2` SHA-256 `BAAB01174082D20C7D4357E06F3695265CAD08DD9954ED16CBA9DA0AA2515887` |
+| `closedAcceptanceIds` | `PC-01`–`PC-10` and `G3-ADV-01`–`G3-ADV-09` verified; `G3-ADV-CORE-2` independent review PASS with zero open P1/P2/P3 |
+| `nextKnownBlocker` | none within `G3.5`; Gate 3 Preview publication qualification is separately active by explicit user authorization |
+| `lastCompletedCheck` | renewed explicit authorization cleared the transport blocker; exact seven-path checkpoint staging is in progress with implementation core unchanged |
+| `retryCounters` | process package: command 2, review repair 2, receipt correction 1, formatting repair 1; `G3.5`: command 5, implementation repair 0, review repair 1 |
 | `frozenManifestHash` | not frozen; no release-candidate qualification has begun |
-| `exactNextAction` | write the bounded `G3.5` contract from `G3-ADV-01`–`G3-ADV-09`, baseline exact owned/protected paths, then stop if any semantic or version change is required |
-| `forbiddenUntil` | no `G3.5` implementation before its contract and baseline pass; no Gate 4+ work before Gate 3 exit; no remote write without exact authorization |
+| `exactNextAction` | finish the exact local checkpoint, then qualify and publish only `0.1.0-preview.3` under the user's explicit release authorization |
+| `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
 
@@ -73,8 +73,8 @@ Detailed proof is preserved outside this cursor:
 | Published Preview 2 | completed | immutable release ledger and public-byte qualification |
 | Gate 3 Interpreter | completed locally | `c2e6104`; 277/277 Vitest, 10/10 Edge/axe, dual typechecks, build/audit, independent PASS |
 | Next-release process controls | completed | `PC-01`–`PC-10`, reviewed `PC-CORE-1`, normalized `PC-CORE-2`, and staged-byte transport PASS |
-| Gate 3 Advanced Controls | ready | approved semantics; bounded contract is the exact next action |
-| Gate 3 exit qualification | blocked by order | begins only after Advanced Controls passes |
+| Gate 3 Advanced Controls | completed locally | `G3-ADV-CORE-2`; 277/277 Vitest, 11/11 Edge/axe, dual typechecks, build/audit, protected paths unchanged, desktop/320 px closed/open screenshots, independent PASS |
+| Gate 3 Preview publication qualification | active by authorization | bounded to `0.1.0-preview.3`; no Gate 4+ feature work |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -102,12 +102,14 @@ Detailed proof is preserved outside this cursor:
 
 ## Credit-expensive work deliberately avoided
 
-No new visual ideation, full browser rerun, assistive-technology session,
-packaging, model evaluation, prospective-fixture use, remote CI, network write,
-release, or deployment was performed for this documentation-only package.
+No new visual ideation, assistive-technology session, packaging, model
+evaluation, prospective-fixture use, remote CI, network write, release, or
+deployment was performed. Deterministic checks preceded the one warranted full
+browser run.
 
 ## Exact next eligible action
 
-Write the bounded `G3.5` Advanced disclosure contract using
-`G3-ADV-01`–`G3-ADV-09`, then baseline its exact owned and protected paths.
-Do not implement Gate 4 or perform any remote release action.
+Complete the exact seven-path local checkpoint, then contract and execute only
+the minimum Preview 3 qualification, packaging, publication, and public-byte
+verification authorized by the user. Do not begin Gate 4 or claim stable
+release readiness.

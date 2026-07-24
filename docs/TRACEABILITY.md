@@ -102,17 +102,80 @@ Source: `PRODUCT.md` primary journey, `RECIPE-SCHEMA.md` existing settings,
 `DESIGN-CONTRACT.md` Builder disclosure, ADR-024, ADR-025, and the user's
 approved UI-only interpretation.
 
-| ID | User outcome | Owner/check | Privacy | Maximum claim | State / next blocker |
-|---|---|---|---|---|---|
-| `G3-ADV-01` | Optional complexity is behind one native `Advanced settings` disclosure. | `src/app/App.tsx`; UI/keyboard test | `not applicable` | progressive disclosure exists | open / package contract |
-| `G3-ADV-02` | Relationship, register, and the selected tool's core controls stay visible. | field map; modality UI test | `omitted` from persistence/sharing; memory-only | common choices remain immediately available | open / package contract |
-| `G3-ADV-03` | Hierarchy is advanced for every modality. | field map; modality UI test | `omitted` from persistence/sharing; memory-only | hierarchy is optional and hidden initially | open / package contract |
-| `G3-ADV-04` | Ambiguity and name/title behavior are advanced only where applicable. | field map; Written/Voice/Interpreter matrix | `omitted` from persistence/sharing; memory-only | irrelevant controls are absent | open / package contract |
-| `G3-ADV-05` | Voice destination capabilities are advanced and never imply detection. | Voice-only field map; copy test | `omitted` from persistence/sharing; memory-only | user declarations only | open / package contract |
-| `G3-ADV-06` | Opening or closing the disclosure cannot change effective settings. | normalized-config equality test | `omitted` from persistence/sharing; memory-only | UI organization only | open / package contract |
-| `G3-ADV-07` | Direct and Builder paths produce identical prompt, summary, warnings, and provenance for identical settings. | artifact byte/equality tests | `omitted` from network transmission | deterministic equivalence | open / package contract |
-| `G3-ADV-08` | No enum, clause, rendering, prompt text, summary semantics, or artifact version changes. | protected semantic-path diff and snapshots | `not applicable` | no product-semantics change | open / package contract |
-| `G3-ADV-09` | Disclosure works by keyboard, screen reader semantics, 320 px, and 200%/400% reflow. | native-details test, axe, manual viewport checks | `not applicable` | tested accessibility on named matrix only | open / package contract |
+`G3-ADV-BASE-1` is product/process checkpoint
+`e29342674c28b80be9cbc894abd2e5df17a7a1b1` with baseline SHA-256
+`9D316789A241142C827D9583718A1D60B2201CE7F33FBCA4E68B435A4D9BF9CF`
+for `App.tsx`,
+`4E83A9651684CB3DE68D21A65D45F1E2E07824DC4C810E0D6F7266C9289F1166`
+for `styles.css`, and
+`31C99D5A4CA213EFED79EB6208173D8D897D79CCAEF28AC84DEDFF3464C8044E`
+for `preview.spec.ts`. Nineteen existing field IDs were unique and protected
+semantic paths had zero diff.
 
-The package must fill exact test names, candidate fingerprint, repair counts,
-and evidence references before handoff.
+`G3-ADV-CORE-1` is the exact ordered manifest below. Each line is
+`path<TAB>byte-length<TAB>uppercase-SHA-256<LF>`; the concatenated manifest is
+UTF-8 without BOM or CR and has one terminal LF.
+
+```text
+docs/DECISIONS.md	32009	3F51E61A40E804950623E14AD71F179DAEC937AE40C61DC5268D1CDF64B92914
+docs/work-packages/GATE-3-ADVANCED-DISCLOSURE.md	5290	36165FD0E8638F5CAFB4E77AB8ED7A54CE6DC0383639797842E2D4465638CFFF
+src/app/App.tsx	61853	C486C3B15990827EB3FFE2511FAE895405CED3497EB33AAC9DA3A05AD8A90417
+src/ui/styles.css	23700	7F1602DC13494CDD69919FEA28F80F0B465743C01D728451250C5B80C2465B13
+tests/e2e/preview.spec.ts	37570	F98CCB83EE9FD3E51EBB783D9044B9B588460DAD12ACF76A7949E59474235893
+```
+
+Manifest SHA-256:
+`3E215A0645702168EFC3D10D05F1B071B9DD11E18167243DAD550CABF78B2423`.
+`PROJECT-STATE.md` and this matrix are administrative receipts outside that
+core so they can report its evidence without a self-hash claim.
+
+Independent review of `G3-ADV-CORE-1` passed the implementation, focused
+browser cases, 277/277 Vitest, both typechecks, build/audit, scope, and
+protected-path checks, but withheld its verdict for one P3 contract failure:
+the package source list omitted governing ADR-027. `G3-ADV-CORE-2` changes only
+that line by adding ADR-027; it does not reinterpret the failed review.
+
+```text
+docs/DECISIONS.md	32009	3F51E61A40E804950623E14AD71F179DAEC937AE40C61DC5268D1CDF64B92914
+docs/work-packages/GATE-3-ADVANCED-DISCLOSURE.md	5299	3011832DDCAA4E1BFC6D94C1C953845BFA276C13CF30977C6BF9F56AD1EECB17
+src/app/App.tsx	61853	C486C3B15990827EB3FFE2511FAE895405CED3497EB33AAC9DA3A05AD8A90417
+src/ui/styles.css	23700	7F1602DC13494CDD69919FEA28F80F0B465743C01D728451250C5B80C2465B13
+tests/e2e/preview.spec.ts	37570	F98CCB83EE9FD3E51EBB783D9044B9B588460DAD12ACF76A7949E59474235893
+```
+
+`G3-ADV-CORE-2` manifest SHA-256:
+`6B14FE99E5C91914873564CB6EC039AD437743CD787B4EC08A2BA35A206C0FBB`.
+
+Independent re-review reconstructed `G3-ADV-CORE-1`, proved that all four
+non-contract core blobs were identical, and verified the exact one-line source
+pointer repair. `G3-ADV-CORE-2` received PASS with zero open P1/P2/P3.
+The review also confirmed the seven authorized paths, zero protected-path
+diff, and accurate no-release/no-Gate-3-exit claim. This is package-level
+verification only; it is not linguistic review or release qualification.
+
+| ID | User outcome | Owner/check | Privacy | Maximum claim | Binding; failure / repair | State / next blocker |
+|---|---|---|---|---|---|---|
+| `G3-ADV-01` | Optional complexity is behind one native `Advanced settings` disclosure. | `one Advanced settings disclosure exposes the exact modality field map`; keyboard case | `not applicable` | progressive disclosure exists | `G3-ADV-CORE-2`; interface 0 | verified / none |
+| `G3-ADV-02` | Relationship, register, and the selected tool's core controls stay visible. | exact three-modality field-map assertions | `omitted` from persistence/sharing; memory-only | common choices remain immediately available | `G3-ADV-CORE-2`; interface 0 | verified / none |
+| `G3-ADV-03` | Hierarchy is advanced for every modality. | exact three-modality field-map assertions | `omitted` from persistence/sharing; memory-only | hierarchy is optional and hidden initially | `G3-ADV-CORE-2`; interface 0 | verified / none |
+| `G3-ADV-04` | Ambiguity and name/title behavior are advanced only where applicable. | Written/Voice/Interpreter field-map assertions | `omitted` from persistence/sharing; memory-only | irrelevant controls are absent | `G3-ADV-CORE-2`; interface 0 | verified / none |
+| `G3-ADV-05` | Voice destination capabilities are advanced and never imply detection. | Voice field-map/default assertions and unchanged explanatory copy | `omitted` from persistence/sharing; memory-only | user declarations only | `G3-ADV-CORE-2`; unsupported-capability 0 | verified / none |
+| `G3-ADV-06` | Opening or closing the disclosure cannot change effective settings. | `direct creation and the unchanged optional-settings path compile identical bytes` | `omitted` from persistence/sharing; memory-only | UI organization only | `G3-ADV-CORE-2`; interface 0 | verified / none |
+| `G3-ADV-07` | Direct and Builder paths produce identical prompt, summary, warnings, and provenance for identical settings. | full artifact-bundle equality in the direct/Builder test | `omitted` from network transmission | deterministic equivalence | `G3-ADV-CORE-2`; interface 0 | verified / none |
+| `G3-ADV-08` | No enum, clause, rendering, prompt text, summary semantics, or artifact version changes. | protected-path diff; 277/277 Vitest snapshots | `not applicable` | no product-semantics change | `G3-ADV-CORE-2`; compiler 0 | verified / none |
+| `G3-ADV-09` | Disclosure works by keyboard, screen reader semantics, 320 px, and 200%/400% reflow. | 11/11 sequential Playwright/axe; inspected desktop and 320 px closed/open screenshots | `not applicable` | tested accessibility on named matrix only | `G3-ADV-CORE-2`; accessibility 0 | verified / none |
+
+Gate 3.5 passes its bounded contract. No Gate 3 exit, release, publication,
+deployment, or linguistic-review claim follows from this package.
+
+The first local-checkpoint staging request was rejected before execution
+because the Codex `.git` write approval service reported its usage limit.
+Read-only inspection confirmed zero staged paths and the same exact seven
+authorized unstaged paths. This transport blocker does not alter
+`G3-ADV-CORE-2` or its independent PASS, but Gate 3 exit remains ineligible
+until the local checkpoint succeeds.
+
+Resolution: the user's later explicit release authorization permitted the
+same exact seven-path staging request. The containing local commit is the
+Gate 3.5 checkpoint; the rejected attempt remains recorded rather than being
+silently removed.

@@ -59,13 +59,33 @@ test("direct creation and the unchanged optional-settings path compile identical
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Create my prompt" }).click();
-  const direct = await page.getByTestId("canonical-prompt").textContent();
+  const direct = {
+    prompt: await page.getByTestId("canonical-prompt").textContent(),
+    summary: await page.getByTestId("behavior-summary").textContent(),
+    support: await page.getByTestId("support-status").textContent(),
+    notices: await page.getByTestId("limitations").textContent(),
+    provenance: await page.locator(".provenance").textContent(),
+  };
 
   await page.getByRole("button", { name: "Start another prompt" }).click();
   await openBuilder(page);
+  const advanced = page.locator(
+    "main.builder-page details.advanced-settings",
+  );
+  await expect(advanced).not.toHaveAttribute("open", "");
+  await advanced.locator("summary").click();
+  await expect(advanced).toHaveAttribute("open", "");
+  await advanced.locator("summary").click();
+  await expect(advanced).not.toHaveAttribute("open", "");
   await generate(page);
 
-  expect(await page.getByTestId("canonical-prompt").textContent()).toBe(direct);
+  expect({
+    prompt: await page.getByTestId("canonical-prompt").textContent(),
+    summary: await page.getByTestId("behavior-summary").textContent(),
+    support: await page.getByTestId("support-status").textContent(),
+    notices: await page.getByTestId("limitations").textContent(),
+    provenance: await page.locator(".provenance").textContent(),
+  }).toEqual(direct);
   await expect(page.getByTestId("prompt-handoff")).toContainText(
     "Paste the prompt first.",
   );
@@ -75,6 +95,110 @@ test("direct creation and the unchanged optional-settings path compile identical
   await expect(page.getByTestId("destination-privacy")).toContainText(
     "the text you enter there",
   );
+});
+
+test("one Advanced settings disclosure exposes the exact modality field map", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await openBuilder(page);
+
+  const advanced = page.locator(
+    "main.builder-page details.advanced-settings",
+  );
+  const advancedSummary = advanced.locator("summary");
+  await expect(
+    page.locator("main.builder-page details.safeguards"),
+  ).toHaveCount(1);
+  await expect(advancedSummary).toHaveText("Advanced settings");
+  await expect(advanced).not.toHaveAttribute("open", "");
+
+  await expect(page.getByLabel("Relationship")).toBeVisible();
+  await expect(page.getByLabel("Tone and formality")).toBeVisible();
+  await expect(page.getByLabel("How much detail")).toBeVisible();
+  await expect(page.getByLabel("Relative status")).toBeHidden();
+  await expect(page.getByLabel("If wording is unclear")).toBeHidden();
+  await expect(page.getByLabel("Titles and honorifics")).toBeHidden();
+  await expect(
+    page.getByLabel("Names with an unknown reading"),
+  ).toBeHidden();
+  await expect(page.getByLabel("What the tool receives from you")).toHaveCount(
+    0,
+  );
+
+  await advancedSummary.click();
+  await expect(page.getByLabel("Relative status")).toHaveValue("unspecified");
+  await expect(page.getByLabel("If wording is unclear")).toHaveValue(
+    "ask-if-blocking",
+  );
+  await expect(page.getByLabel("Titles and honorifics")).toHaveValue(
+    "preserve-marked-title",
+  );
+  await expect(
+    page.getByLabel("Names with an unknown reading"),
+  ).toHaveValue("preserve-and-ask");
+  await page.screenshot({
+    path: "artifacts/screenshots/builder-advanced-written-desktop.png",
+    fullPage: true,
+  });
+  await advancedSummary.click();
+
+  await page
+    .getByRole("radio", { name: /Live Voice Coach/ })
+    .check();
+  await expect(page.getByLabel("When to correct me")).toBeVisible();
+  await expect(page.getByLabel("What to correct first")).toBeVisible();
+  await expect(page.getByLabel("Pronunciation help")).toBeVisible();
+  await expect(page.getByLabel("Explanation detail")).toBeVisible();
+  await expect(page.getByLabel("Speaking pace")).toBeVisible();
+  await expect(page.getByLabel("Relative status")).toBeHidden();
+  await expect(page.getByLabel("What the tool receives from you")).toBeHidden();
+
+  await advancedSummary.click();
+  await expect(page.getByLabel("Relative status")).toBeVisible();
+  await expect(page.getByLabel("If wording is unclear")).toBeVisible();
+  await expect(page.getByLabel("Titles and honorifics")).toBeVisible();
+  await expect(
+    page.getByLabel("Names with an unknown reading"),
+  ).toBeVisible();
+  await expect(page.getByLabel("What the tool receives from you")).toHaveValue(
+    "unknown",
+  );
+  await expect(page.getByLabel("How the tool responds")).toHaveValue("unknown");
+  await expect(page.getByLabel("Can it detect interruptions?")).toHaveValue(
+    "unknown",
+  );
+  await expect(page.getByLabel("Can it detect silence?")).toHaveValue(
+    "unknown",
+  );
+  await expect(page.getByLabel("Can it change speaking speed?")).toHaveValue(
+    "unknown",
+  );
+  await advancedSummary.click();
+
+  await page.getByRole("radio", { name: /^Interpreter/ }).check();
+  await expect(page.getByLabel("How much to interpret at once")).toBeVisible();
+  await expect(page.getByLabel("If a turn is too unclear")).toBeVisible();
+  await expect(page.getByLabel("Relative status")).toBeHidden();
+  await expect(page.getByLabel("If wording is unclear")).toHaveCount(0);
+  await expect(
+    page.getByLabel("Names with an unknown reading"),
+  ).toHaveCount(0);
+  await expect(page.getByLabel("What the tool receives from you")).toHaveCount(
+    0,
+  );
+  await expect(
+    page.getByText("What your language tool can do", { exact: true }),
+  ).toHaveCount(0);
+
+  await advancedSummary.click();
+  await expect(page.getByLabel("Relative status")).toBeVisible();
+  await expect(page.getByLabel("Titles and honorifics")).toBeVisible();
+  await expect(page.getByLabel("If wording is unclear")).toHaveCount(0);
+  await expect(
+    page.getByLabel("Names with an unknown reading"),
+  ).toHaveCount(0);
+  await expectNoAxeViolations(page, "Interpreter advanced settings");
 });
 
 test("internal navigation preserves an edited prompt and replacement requires confirmation", async ({
@@ -292,6 +416,10 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   await expect(
     page.getByText("What your language tool can do", { exact: true }),
   ).toHaveCount(0);
+  await expect(page.getByLabel("Relative status")).toBeHidden();
+  await page.getByText("Advanced settings", { exact: true }).click();
+  await expect(page.getByLabel("Relative status")).toBeVisible();
+  await expect(page.getByLabel("Titles and honorifics")).toBeVisible();
   await page.screenshot({
     path: "artifacts/screenshots/builder-interpreter-desktop.png",
     fullPage: true,
@@ -365,6 +493,8 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
     fullPage: true,
   });
   await openBuilder(page);
+  await page.getByText("Advanced settings", { exact: true }).click();
+  await expect(page.getByLabel("Relative status")).toBeVisible();
   let dimensions = await page.evaluate(() => ({
     client: document.documentElement.clientWidth,
     scroll: document.documentElement.scrollWidth,
@@ -533,9 +663,7 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await expect(
     page.getByLabel("What the tool receives from you"),
   ).toBeHidden();
-  await page
-    .getByText("What your language tool can do", { exact: true })
-    .click();
+  await page.getByText("Advanced settings", { exact: true }).click();
   await expect(
     page.getByLabel("What the tool receives from you"),
   ).toHaveValue("unknown");
@@ -766,14 +894,23 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
   await expect(page.getByLabel("Relationship")).toBeFocused();
   await page.keyboard.press("ArrowDown");
   await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Relative status")).toBeFocused();
-  await page.keyboard.press("Tab");
   await expect(page.getByLabel("Tone and formality")).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(page.getByLabel("How much detail")).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByText("Names, titles, and unclear wording", { exact: true }),
+    page.getByText("Advanced settings", { exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Tab");
+  await expect(page.getByLabel("Relative status")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByLabel("If wording is unclear")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByLabel("Titles and honorifics")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByLabel("Names with an unknown reading"),
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
@@ -854,6 +991,7 @@ test("200% and 400% equivalent layout widths do not create page overflow", async
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
     await openBuilder(page);
+    await page.getByText("Advanced settings", { exact: true }).click();
     const dimensions = await page.evaluate(() => ({
       client: document.documentElement.clientWidth,
       scroll: document.documentElement.scrollWidth,

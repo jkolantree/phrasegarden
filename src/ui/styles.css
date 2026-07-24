@@ -737,6 +737,19 @@ code {
   color: var(--muted);
 }
 
+.capability-settings {
+  border-block-start: 1px solid var(--warm-rule);
+}
+
+.details-heading {
+  margin: var(--space-5) var(--space-5) 0;
+  font-size: 1.05rem;
+}
+
+.capability-settings .details-intro {
+  margin-block-start: var(--space-2);
+}
+
 .behavior-summary {
   position: relative;
   margin-block: var(--space-7);

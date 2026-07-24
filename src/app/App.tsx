@@ -1077,26 +1077,6 @@ export function App() {
                     )
                   }
                 />
-                <SelectField
-                  id="hierarchy"
-                  label="Relative status"
-                  value={configuration.socialContext.hierarchy}
-                  values={HIERARCHIES}
-                  help="Leave this as Not specified if you are not sure."
-                  onChange={(value) =>
-                    setCommon(
-                      (current) =>
-                        ({
-                          ...current,
-                          socialContext: {
-                            ...current.socialContext,
-                            hierarchy: value,
-                          },
-                        }) as RecipeConfiguration,
-                      "Relative status updated.",
-                    )
-                  }
-                />
               </fieldset>
 
               <div class="weave-gutter" aria-hidden="true">
@@ -1289,13 +1269,29 @@ export function App() {
               </fieldset>
             </div>
 
-            <details class="safeguards">
-              <summary>
-                {configuration.settings.modality === "interpreting"
-                  ? "Titles and honorifics"
-                  : "Names, titles, and unclear wording"}
-              </summary>
+            <details class="safeguards advanced-settings">
+              <summary>Advanced settings</summary>
               <div class="details-grid">
+                <SelectField
+                  id="hierarchy"
+                  label="Relative status"
+                  value={configuration.socialContext.hierarchy}
+                  values={HIERARCHIES}
+                  help="Leave this as Not specified if you are not sure."
+                  onChange={(value) =>
+                    setCommon(
+                      (current) =>
+                        ({
+                          ...current,
+                          socialContext: {
+                            ...current.socialContext,
+                            hierarchy: value,
+                          },
+                        }) as RecipeConfiguration,
+                      "Relative status updated.",
+                    )
+                  }
+                />
                 {configuration.settings.modality !== "interpreting" && (
                   <SelectField
                     id="ambiguity"
@@ -1349,116 +1345,124 @@ export function App() {
                   />
                 )}
               </div>
-            </details>
 
-            {configuration.settings.modality === "live-voice" && (
-              <details class="safeguards capability-settings">
-                <summary>What your language tool can do</summary>
-                <p class="details-intro">
-                  If you do not know, leave I don't know. PhraseGarden will not
-                  assume the tool can hear, speak, notice pauses, or change
-                  speaking speed.
-                </p>
-                <div class="details-grid">
-                  <SelectField
-                    id="user-evidence"
-                    label="What the tool receives from you"
-                    value={configuration.destination.userEvidence}
-                    values={USER_EVIDENCE_CAPABILITIES}
-                    help="The tool must receive audio to assess what you actually pronounced."
-                    onChange={(value) =>
-                      setCommon(
-                        (current) =>
-                          ({
-                            ...current,
-                            destination: {
-                              ...current.destination,
-                              userEvidence: value,
-                            },
-                          }) as RecipeConfiguration,
-                        "What the tool receives was updated.",
-                      )
-                    }
-                  />
-                  <SelectField
-                    id="assistant-output"
-                    label="How the tool responds"
-                    value={configuration.destination.assistantOutput}
-                    values={ASSISTANT_OUTPUT_CAPABILITIES}
-                    onChange={(value) =>
-                      setCommon(
-                        (current) =>
-                          ({
-                            ...current,
-                            destination: {
-                              ...current.destination,
-                              assistantOutput: value,
-                            },
-                          }) as RecipeConfiguration,
-                        "How the tool responds was updated.",
-                      )
-                    }
-                  />
-                  <SelectField
-                    id="interruption-signal"
-                    label="Can it detect interruptions?"
-                    value={configuration.destination.interruptionSignal}
-                    values={SIGNAL_CAPABILITIES}
-                    onChange={(value) =>
-                      setCommon(
-                        (current) =>
-                          ({
-                            ...current,
-                            destination: {
-                              ...current.destination,
-                              interruptionSignal: value,
-                            },
-                          }) as RecipeConfiguration,
-                        "Interruption detection updated.",
-                      )
-                    }
-                  />
-                  <SelectField
-                    id="silence-signal"
-                    label="Can it detect silence?"
-                    value={configuration.destination.silenceSignal}
-                    values={SIGNAL_CAPABILITIES}
-                    onChange={(value) =>
-                      setCommon(
-                        (current) =>
-                          ({
-                            ...current,
-                            destination: {
-                              ...current.destination,
-                              silenceSignal: value,
-                            },
-                          }) as RecipeConfiguration,
-                        "Silence detection updated.",
-                      )
-                    }
-                  />
-                  <SelectField
-                    id="playback-rate"
-                    label="Can it change speaking speed?"
-                    value={configuration.destination.playbackRateControl}
-                    values={SIGNAL_CAPABILITIES}
-                    onChange={(value) =>
-                      setCommon(
-                        (current) =>
-                          ({
-                            ...current,
-                            destination: {
-                              ...current.destination,
-                              playbackRateControl: value,
-                            },
-                          }) as RecipeConfiguration,
-                        "Speaking-speed control updated.",
-                      )
-                    }
-                  />
-                </div>
-              </details>
-            )}
+              {configuration.settings.modality === "live-voice" && (
+                <section
+                  class="capability-settings"
+                  aria-labelledby="capability-settings-heading"
+                >
+                  <h2
+                    id="capability-settings-heading"
+                    class="details-heading"
+                  >
+                    What your language tool can do
+                  </h2>
+                  <p class="details-intro">
+                    If you do not know, leave I don't know. PhraseGarden will
+                    not assume the tool can hear, speak, notice pauses, or
+                    change speaking speed.
+                  </p>
+                  <div class="details-grid">
+                    <SelectField
+                      id="user-evidence"
+                      label="What the tool receives from you"
+                      value={configuration.destination.userEvidence}
+                      values={USER_EVIDENCE_CAPABILITIES}
+                      help="The tool must receive audio to assess what you actually pronounced."
+                      onChange={(value) =>
+                        setCommon(
+                          (current) =>
+                            ({
+                              ...current,
+                              destination: {
+                                ...current.destination,
+                                userEvidence: value,
+                              },
+                            }) as RecipeConfiguration,
+                          "What the tool receives was updated.",
+                        )
+                      }
+                    />
+                    <SelectField
+                      id="assistant-output"
+                      label="How the tool responds"
+                      value={configuration.destination.assistantOutput}
+                      values={ASSISTANT_OUTPUT_CAPABILITIES}
+                      onChange={(value) =>
+                        setCommon(
+                          (current) =>
+                            ({
+                              ...current,
+                              destination: {
+                                ...current.destination,
+                                assistantOutput: value,
+                              },
+                            }) as RecipeConfiguration,
+                          "How the tool responds was updated.",
+                        )
+                      }
+                    />
+                    <SelectField
+                      id="interruption-signal"
+                      label="Can it detect interruptions?"
+                      value={configuration.destination.interruptionSignal}
+                      values={SIGNAL_CAPABILITIES}
+                      onChange={(value) =>
+                        setCommon(
+                          (current) =>
+                            ({
+                              ...current,
+                              destination: {
+                                ...current.destination,
+                                interruptionSignal: value,
+                              },
+                            }) as RecipeConfiguration,
+                          "Interruption detection updated.",
+                        )
+                      }
+                    />
+                    <SelectField
+                      id="silence-signal"
+                      label="Can it detect silence?"
+                      value={configuration.destination.silenceSignal}
+                      values={SIGNAL_CAPABILITIES}
+                      onChange={(value) =>
+                        setCommon(
+                          (current) =>
+                            ({
+                              ...current,
+                              destination: {
+                                ...current.destination,
+                                silenceSignal: value,
+                              },
+                            }) as RecipeConfiguration,
+                          "Silence detection updated.",
+                        )
+                      }
+                    />
+                    <SelectField
+                      id="playback-rate"
+                      label="Can it change speaking speed?"
+                      value={configuration.destination.playbackRateControl}
+                      values={SIGNAL_CAPABILITIES}
+                      onChange={(value) =>
+                        setCommon(
+                          (current) =>
+                            ({
+                              ...current,
+                              destination: {
+                                ...current.destination,
+                                playbackRateControl: value,
+                              },
+                            }) as RecipeConfiguration,
+                          "Speaking-speed control updated.",
+                        )
+                      }
+                    />
+                  </div>
+                </section>
+              )}
+            </details>
 
             {presentation.ok ? (
               <BehaviorSummary summary={presentation.summary} />
