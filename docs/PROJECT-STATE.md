@@ -4,11 +4,12 @@ Updated: 2026-07-24
 
 ## Current state
 
-Shipping milestone D — public usability Preview. PhraseGarden
-`0.1.0-preview.2` is committed, tagged, released as a public pre-release, and
-deployed at <https://jkolantree.github.io/phrasegarden/>. Release tag
+Shipping milestone D — public usability Preview, plus one unpublished Gate 3
+candidate. PhraseGarden `0.1.0-preview.2` remains committed, tagged, released
+as a public pre-release, and deployed at
+<https://jkolantree.github.io/phrasegarden/>. Release tag
 `v0.1.0-preview.2` identifies exact package commit
-`6e55e8d142c748de181cd5136076d576d0994e19`. The previous Preview remains
+`6e55e8d142c748de181cd5136076d576d0994e19`. Both published Previews remain
 immutable.
 
 Two bounded usability packages are included:
@@ -21,10 +22,18 @@ Two bounded usability packages are included:
   handoff, reports Copy/Download outcomes visibly, and protects edited prompts
   from silent replacement.
 
-The compiler, generated prompt instructions, canonical prompt bytes, language
-identities, pair guidance, support resolution, and review evidence remain
-unchanged. The package/release identity advances to `0.1.0-preview.2`; compiler
-provenance remains `0.1.0-preview.1`.
+Within the published Preview 2 usability packages, the compiler, generated
+prompt instructions, canonical prompt bytes, language identities, pair
+guidance, support resolution, and review evidence remained unchanged. The
+package/release identity advanced to `0.1.0-preview.2`; its compiler provenance
+remains `0.1.0-preview.1`.
+
+The current workspace additionally contains a completed, locally verified, and
+independently re-approved, but unpublished, Gate 3 Interpreter slice. It adds a
+one-way, host-bounded relay recipe, its plain-language controls and review
+handoff, deterministic prompt renderings, and regression coverage. It does not
+alter published package bytes, support-tier claims, authored language profiles,
+pair packs, or review evidence.
 
 ## Durable decisions
 
@@ -53,6 +62,17 @@ provenance remains `0.1.0-preview.1`.
   `Technical details and versions`, not in the main task path.
 - Gate 2I evidence semantics remain intact and separate. This candidate does
   not create reviewer evidence or derive Community, Reviewed, or Flagship.
+- Interpreter is a one-way relay from the selected home language into the
+  selected target language. Reversing direction requires swapping languages
+  and creating a new prompt.
+- The host or user supplies each complete turn, message, or short segment.
+  PhraseGarden does not claim speaker detection, language-direction detection,
+  audio handling, pause detection, interruption detection, or turn-boundary
+  inference.
+- Interpreter clarification owns blocked recovery: `ask-if-blocking` permits
+  at most one concise question; `mark-uncertainty` never asks and instead
+  produces the narrowest responsible marked relay or states that no responsible
+  relay is possible. This is ADR-025.
 
 ## Shipping milestones
 
@@ -70,14 +90,14 @@ provenance remains `0.1.0-preview.1`.
 | Plain-language usability pass | Completed | Published Home explains what a prompt is and where to use it; Builder exposes intentional labels; Review leads with plain-language choices and keeps technical identifiers in disclosure |
 | Plain-language independent review | Completed | Independent current-byte review returned PASS with no open P1/P2/P3 findings after the final option-label and empty-caution fixes |
 | Zero-friction entry and safe handoff | Completed | Published direct Home creation, mobile Quick start, optional Builder, initial-viewport actions, explicit paste order, modality-aware privacy, visible feedback, artifact-preserving navigation, and edit-loss protection |
-| Current local automated QA | Completed | 271/271 Vitest; 9/9 sequential Edge Playwright/axe journeys; dual typechecks, Vite build, release audit, forbidden-domain scan, and diff check passed |
-| Current usability independent review | Completed | Final quiescent current-byte review: PASS with no open P1/P2/P3 findings; 20-file start/end fingerprint had zero drift |
+| Current local automated QA | Completed | Interpreter candidate: 277/277 Vitest; 10/10 sequential Edge Playwright/axe journeys; dual typechecks, Vite build, release audit, and forbidden-domain scan passed |
+| Published usability independent review | Completed | Preview 2 quiescent current-byte review: PASS with no open P1/P2/P3 findings; 20-file start/end fingerprint had zero drift |
 | First Preview 2 packaging review | Superseded | It passed, but GitHub Actions run `30096526036` exposed a Chromium viewport failure before tagging, release, or deployment; its package bytes were replaced |
 | Corrected Preview 2 packaging review | Completed | Follow-up independent read-only review: PASS with zero P1/P2/P3; 9/9 checksums, 3/3 archive members, exact source binding, old-release preservation, unchanged regression assertion, and zero post-freeze runtime drift verified |
 | `0.1.0-preview.2` publication package | Completed | Corrected source `78452fe797ee1f6c98ae06dba6f0aa2ffceb127c`; exact package/tag commit `6e55e8d142c748de181cd5136076d576d0994e19`; local, CI, release-asset, Pages-byte, and production-journey checks passed |
 | In-app localhost manual inspection | Blocked | The Codex in-app Browser rejected further local URL navigation by policy; automated Edge inspection and direct screenshot inspection passed, but this is not claimed as an in-app manual browser pass |
 | External linguistic review | Deferred | Preview labels and limitations state that English↔Japanese review is incomplete |
-| Interpreter | Deferred | Deliberately outside this usability candidate; ADR-013 keeps it as the next uncompleted ordered Gate 3 slice |
+| Interpreter | Completed | Unpublished one-way, host-bounded relay slice; two P2 findings from the first independent review were repaired; 277/277 Vitest, 10/10 Edge Playwright/axe, and the independent re-review pass with no open P1/P2/P3 findings |
 | Japanese interface, service worker, persistence, and sharing | Deferred | Deliberately outside this usability candidate and not eligible ahead of the remaining Gate 3 slice |
 | Manual screen-reader, real IME, and forced-colors matrix | Deferred | Automated axe, keyboard, composition-event, bidi, reduced-motion, and reflow coverage passed; independent manual assistive-technology evidence is not claimed |
 | Model and prospective evaluation | Skipped | No runtime or evaluation model calls; no prospective fixtures consumed |
@@ -89,6 +109,65 @@ provenance remains `0.1.0-preview.1`.
 | Production bytes and journey | Completed | 3/3 Pages files and 3/3 release attachments matched local bytes; production EN→JA Written creation, copy, and download passed |
 
 ## Current verification evidence
+
+### Unpublished Gate 3 Interpreter candidate
+
+- The bounded contract is
+  `docs/work-packages/GATE-3-INTERPRETER-SLICE.md`; ADR-025 records the one-way,
+  host-bounded protocol and clarification precedence.
+- Focused recipe, compiler-policy, prompt-surface, summary, and UI-copy tests:
+  76/76 passed. Full unit and snapshot suite: 12 files, 277/277 passed.
+- TypeScript: both `tsconfig.json` and `tsconfig.domain.json` passed. Vite build
+  and the release audit passed.
+- Browser: 10/10 sequential Microsoft Edge Playwright/axe journeys passed. The
+  added journey covers native keyboard tool selection, direct creation,
+  unchanged Builder-byte equality, copy/download byte identity, one-way
+  direction and swap behavior, both turn modes, both clarification modes,
+  Generic isolation, destination privacy, 320 px layout, initial desktop
+  action visibility, horizontal-overflow checks, axe, and no runtime remote
+  request APIs.
+- Current deterministic Interpreter prompt SHA-256 values are:
+  `C28BDC4269D12A8E2074E4A7A4FD12F7FE40E3E100AD2CCF1605B0C7F9096A22`
+  for default English→Japanese,
+  `5A68717E877B4A9C8A52200CA55EADF7F2AF24570C47EC6CC81150E931491896`
+  for Japanese→English short-relay plus mark-uncertainty, and
+  `083ED45DDFB3FCA34A06D60938D82ECF6CA85AD1AFBC658166F520FCE902BCDC`
+  for Generic English→Indonesian.
+- Current build bytes are `index.html` at 899 bytes with SHA-256
+  `B6FAF2B18B4E78C302CA884FAC4A2C6950AD62CA756952667C8118598BD7DEA7`,
+  CSS at 19,054 bytes with SHA-256
+  `29453814FEDB64FC8F6B42E17E66BD8473D8F3BA6E2DAE7C7C910CF4D9537FD4`,
+  and JavaScript at 155,624 bytes with SHA-256
+  `CD57DE393A78B882302CD5C6A322B9B690D59750F0450AA665BA7BAA6A5EAB3D`.
+- Eight current Interpreter/default desktop and 320 px screenshots were
+  captured and inspected. No clipping, overlap, or horizontal overflow was
+  observed.
+- The deterministic-domain forbidden-API scan returned zero matches.
+- The first authored compiler-policy run failed closed with
+  `E-UNSORTED-IN-VALUES`; sorting the declared values fixed the responsible
+  policy layer. The first two desktop layout attempts placed the primary action
+  at 818.109375 px and 776.109375 px respectively; compacting the three-card
+  layout brought it inside the unchanged 720 px acceptance boundary.
+- The first independent current-byte review returned FAIL with two P2 findings:
+  mark-uncertainty still received ask-capable pair/name wording, and Review
+  described a complete turn after short-relay was selected. The repair
+  neutralized pair/name guidance so the active clarification rule is the sole
+  blocked-recovery authority, covers both directions and both unknown-name
+  choices, and derives Review handoff wording from the selected turn mode.
+  Repair-focused tests passed 26/26; the full 277/277 suite, both typechecks,
+  Vite build, release audit, and all 10 Edge/axe journeys then passed.
+- The second independent current-byte review returned PASS with no open
+  P1/P2/P3 findings. It independently compiled and inspected all 12 mark-mode
+  direction × ambiguity × name configurations, confirmed exactly one bounded
+  ask instruction in ask mode, verified both handoff branches, matched the
+  three prompt hashes and build hashes, and found zero published/package drift.
+  Its quiescent repaired-diff SHA-256 was
+  `4A1E656556DE71822CD6B75E46FA69104431CAFCEB368BD8E2021FFADC4831FE`
+  before this final evidence-only state update.
+- Published samples, release material, package identity, compiler identity,
+  language profiles, pair pack, support resolution, and review-evidence
+  semantics are unchanged. No commit, push, package, tag, release, or deployment
+  was performed.
 
 ### Published `0.1.0-preview.2`
 
@@ -226,8 +305,10 @@ provenance remains `0.1.0-preview.1`.
 - The interface and generated instruction surface are English-only.
 - PhraseGarden generates prompts; it does not translate, assess pronunciation,
   listen to audio, or call an AI model.
-- Interpreter remains unimplemented; Written Translator and Live Voice Coach
-  are the only current modalities.
+- The local Interpreter candidate is one-way only and relies on the host or
+  user to supply complete turn boundaries. It does not detect speakers,
+  direction, audio, pauses, interruptions, or turn boundaries, and it has not
+  been published.
 - No local library, import/export, sharing, service worker, or offline refresh
   exists. A loaded page compiles without runtime network calls, but opening or
   refreshing a hosted copy requires its static host unless the browser cache
@@ -247,10 +328,10 @@ provenance remains `0.1.0-preview.1`.
 
 No second visual ideation batch, model evaluation, prospective-fixture
 consumption, external linguistic evaluation, remote browser farm, telemetry,
-backend, or runtime AI work was performed.
+backend, runtime AI work, packaging, remote write, or deployment was performed.
 
 ## Exact next eligible action
 
-The next eligible implementation package under the accepted gate order is the
-bounded Gate 3 Interpreter slice. It requires its own task contract and must
-pass before Gate 4 local ownership begins.
+The next eligible implementation package under the accepted gate order is a
+bounded Gate 3 Advanced controls slice. It requires its own task contract and
+must pass before Gate 4 local ownership begins. It has not started.

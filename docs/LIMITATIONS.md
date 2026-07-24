@@ -1,6 +1,7 @@
 # Product limitations
 
-This document describes PhraseGarden `0.1.0-preview.2`.
+The deployed public release is PhraseGarden `0.1.0-preview.2`. The current
+workspace also contains an unpublished Gate 3 Interpreter candidate.
 
 ## Language and support
 
@@ -27,6 +28,12 @@ This document describes PhraseGarden `0.1.0-preview.2`.
 - Unknown destination capabilities remain unknown. The prompt cannot create
   microphone input, spoken output, interruption, silence detection, or
   playback-rate controls that the destination does not expose.
+- Interpreter is one-way from the selected home language into the selected
+  target language. Reversing direction requires swapping languages and
+  creating another prompt.
+- Interpreter uses only each complete turn, message, or short complete segment
+  supplied by the destination. It cannot identify speakers, hear unavailable
+  audio, or detect pauses, interruptions, or turn boundaries.
 - Unknown Japanese name readings are preserved rather than invented.
 - A locally edited prompt is visibly marked as modified and is no longer
   canonical compiler output.
@@ -52,3 +59,5 @@ This document describes PhraseGarden `0.1.0-preview.2`.
 - The in-app manual localhost inspection was blocked by that browser surface's
   local-URL policy. Sequential Edge journeys, explicit focus assertions, and
   captured screenshots passed; no stronger manual-browser claim is made.
+- The Interpreter candidate has not been committed, packaged, published,
+  deployed, or independently linguistically reviewed.

@@ -17,6 +17,9 @@ Open the public Prompt Studio at
 [jkolantree.github.io/phrasegarden](https://jkolantree.github.io/phrasegarden/).
 The versioned source and release evidence are available in the
 [`0.1.0-preview.2` release](https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2).
+That deployed release contains Written Translator and Live Voice Coach. The
+current workspace adds the next ordered Gate 3 Interpreter slice but has not
+been packaged, published, or deployed.
 
 ## Run locally
 
@@ -30,7 +33,7 @@ pnpm dev
 Then:
 
 1. Choose a home and target language.
-2. Choose Written Translator or Live Voice Coach.
+2. Choose Written Translator, Live Voice Coach, or Interpreter.
 3. Read what the prompt will do and choose **Create prompt**.
 4. If you want more control, open **Optional settings** first.
 5. Copy or download the prompt and paste it into a compatible language tool.
@@ -43,10 +46,10 @@ there.
 
 - English→Japanese and Japanese→English Preview guidance
 - Conservative Generic generation for all other bundled directions
-- Written Translator and Live Voice Coach recipes
+- Written Translator, Live Voice Coach, and one-way Interpreter recipes
 - Direct creation with safe defaults and an optional settings path
 - Relationship, hierarchy, register, ambiguity, name, teaching, correction,
-  pronunciation, and pace controls
+  pronunciation, pace, Interpreter turn, and clarification controls
 - Pure deterministic compiler, validation, provenance, warnings, and summaries
 - Visible and editable generated prompts
 - Exact UTF-8/LF plain-text downloads
@@ -88,7 +91,7 @@ recipe configuration
 
 - `src/domain`: pure types, validation, materialization, resolution, compiler
 - `src/packs`: versioned profiles and the English↔Japanese Preview pack
-- `src/recipes`: Written, Voice, policy, and English prompt surface
+- `src/recipes`: Written, Voice, Interpreter, policy, and English prompt surface
 - `src/locales`: English interface, warning, limitation, and summary strings
 - `src/app` and `src/ui`: memory-only Preact presentation and interactions
 - `tests`: deterministic, snapshot, browser, privacy, and accessibility checks
@@ -108,8 +111,11 @@ pnpm test:e2e
 
 Browser tests run sequentially and use axe. Local Windows verification uses
 Microsoft Edge; the prepared Pages workflow uses Playwright Chromium.
-The compiler is unchanged in this usability update. Its byte-qualified sample
-prompts remain in
+The core compiler implementation and version remain `0.1.0-preview.1`.
+Interpreter adds versioned recipe `1.0.0`, compiler policy `1.1.0`, English
+prompt surface `1.1.0`, and English summary catalog `1.2.0`. Exact current
+Interpreter prompt hashes are locked in compiler tests. Published
+byte-qualified sample prompts remain unchanged in
 [`samples/0.1.0-preview.1`](samples/0.1.0-preview.1).
 The published repository inventory is recorded in
 [`docs/PUBLICATION-MANIFEST.md`](docs/PUBLICATION-MANIFEST.md); exact local

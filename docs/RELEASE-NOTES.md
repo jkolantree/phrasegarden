@@ -1,5 +1,35 @@
 # Release notes
 
+## Unreleased — Gate 3 Interpreter candidate
+
+### Product behavior
+
+- Adds a plain-language one-way Interpreter from the configured home language
+  into the configured target language; reversing direction requires a new
+  prompt after swapping languages.
+- Adds complete-turn and short-relay controls plus ask-or-mark clarification
+  behavior.
+- Keeps the Review handoff synchronized with the selected complete-turn or
+  short-relay unit.
+- Keeps the modality channel-neutral and makes no audio, speaker, silence,
+  interruption, or turn-boundary capability claim.
+
+### Deterministic compiler
+
+- Adds Interpreter recipe `1.0.0`.
+- Advances compiler policy to `1.1.0`, English prompt surface to `1.1.0`, and
+  English summary catalog to `1.2.0`; the compiler implementation/version,
+  profiles, pair pack, support resolution, and provenance shape are unchanged.
+- Preserves the published sample files and locks exact current Interpreter
+  prompt hashes for both Preview directions and a Generic direction.
+- Makes pair-specific name and honorific guidance defer to the active name and
+  clarification rules, so mark-uncertainty contains no ask-capable instruction.
+
+### Publication state
+
+- Local candidate only. No commit, package, push, release, deployment, or
+  production claim has been made.
+
 ## 0.1.0-preview.2 — usability Preview update
 
 Date: 2026-07-24

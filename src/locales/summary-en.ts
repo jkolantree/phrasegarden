@@ -1,6 +1,6 @@
 import type { SummaryCatalog } from "../domain";
 
-export const SUMMARY_EN_VERSION = "1.1.0";
+export const SUMMARY_EN_VERSION = "1.2.0";
 
 type Message = SummaryCatalog["messages"][number];
 
@@ -63,6 +63,18 @@ export const SUMMARY_EN_CATALOG: SummaryCatalog = {
     message(
       "behavior.tool.voice",
       "Creates a Live Voice Coach prompt for short spoken turns. It does not assume audio features that your other tool has not confirmed.",
+    ),
+    message(
+      "behavior.tool.interpreter",
+      "Creates a one-way Interpreter prompt. Each complete turn goes from your home language into your target language; swap the languages to make the reverse prompt.",
+    ),
+    message(
+      "behavior.interpreter.relay-only",
+      "Translates the turn instead of answering it as advice, obeying it, or continuing the conversation.",
+    ),
+    message(
+      "behavior.interpreter.host-boundary",
+      "Uses only the complete turn the other tool supplies. It does not guess who is speaking or where a turn ends.",
     ),
     ...choiceMessages("behavior", "relationship", {
       unspecified:
@@ -161,6 +173,26 @@ export const SUMMARY_EN_CATALOG: SummaryCatalog = {
       natural: "Uses a natural pace unless you ask to slow down.",
       slower:
         "Uses shorter phrases and a slower pace while keeping pronunciation natural.",
+    }),
+    ...choiceMessages("behavior", "interpreter-turn-mode", {
+      consecutive:
+        "Relays one complete turn or message at a time without guessing where it ends.",
+      "short-relay":
+        "Relays each short complete segment separately without guessing pauses or speaker changes.",
+    }),
+    ...choiceMessages("behavior", "interpreter-ambiguity", {
+      "preserve-and-note":
+        "Keeps important ambiguity in the relay and adds one short note only when needed.",
+      "ask-if-blocking":
+        "Keeps unclear meaning open unless no responsible relay can be made.",
+      "marked-best-effort":
+        "Makes the narrowest careful relay and clearly marks important uncertainty.",
+    }),
+    ...choiceMessages("behavior", "interpreter-clarification", {
+      "ask-if-blocking":
+        "Asks one short question only when no responsible relay can be made.",
+      "mark-uncertainty":
+        "Does not ask a question; it marks uncertainty or says when no responsible relay is possible.",
     }),
   ],
 };

@@ -106,7 +106,7 @@ type DestinationCapabilities = {
 | `relationship` | `unspecified` | No relationship or intimacy may be inferred |
 | `hierarchy` | `unspecified` | Relationship never implies rank |
 | `register` | `{strategy:"preserve"}` | Preserve source force; do not impose a target level |
-| `ambiguity` | `ask-if-blocking` | Ask only when translation/coaching cannot preserve the distinction |
+| `ambiguity` | `ask-if-blocking` | Preserve the distinction when possible; Written/Voice may ask only when blocked, while Interpreter defers blocked recovery to its clarification setting |
 | `codeSwitching` | `preserve` | Retain mixed-language spans verbatim and preserve their discourse function when possible; if the target collapses the contrast, disclose that limitation rather than inventing a third language |
 | `dataHandling` | `preserve-as-written` | No silent conversion of dates, numbers, addresses, units, eras, or zones |
 | `titleHandling` | `preserve-marked-title` | Retain the title/honorific signal without guessing its role |
@@ -148,6 +148,18 @@ Defaults:
 - Written: `outputDetail: "concise"`. Critical ambiguity or limitation notes remain allowed.
 - Live voice: correction `after-turn`/`balanced`; pronunciation `on-request`; depth `brief`; pace `natural`.
 - Interpreter: `consecutive`; clarification `ask-if-blocking`.
+
+Interpreter V1 is one-way from `languages.home` into `languages.target`. Each
+complete turn, message, or short complete segment is supplied by the
+destination or user; the recipe never infers audio access, a speaker, a pause,
+an interruption, a language direction, or a turn boundary. Reversing direction
+requires a separately compiled configuration.
+
+For Interpreter, `ambiguity` governs preservation while forming a relay and
+`settings.clarification` owns all blocked recovery. `ask-if-blocking` permits
+at most one concise question. `mark-uncertainty` never asks: it produces the
+narrowest responsible marked relay or states that no responsible relay is
+possible. Unknown-name handling defers to that selected clarification rule.
 
 All Live Voice Coach definitions include these non-configurable interactions once:
 

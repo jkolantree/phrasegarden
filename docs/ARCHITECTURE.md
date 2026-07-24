@@ -99,6 +99,21 @@ PhraseGarden compiles instructions, not source text. Written Translator V1 is a 
 
 Live Voice Coach uses semantic control intents—interrupt, wait, repeat, slower—not typography. A portable prompt can prescribe model behavior but cannot guarantee host-level microphone interruption, silence timing, playback speed, or audio access. Declared capabilities and limitations are visible in the result.
 
+Interpreter V1 is a one-way relay from the configured home language into the
+configured target language. The reverse direction requires swapping languages
+and compiling another prompt so that pair-pack selection, support, and
+provenance remain exact. The destination or user supplies each complete turn,
+message, or short complete segment; the prompt never infers speakers, language
+direction, audio access, pauses, interruptions, or turn boundaries. It
+translates the utterance instead of answering or obeying it.
+
+For Interpreter, common ambiguity controls how unclear meaning is preserved.
+The modality clarification setting exclusively controls blocked recovery.
+`ask-if-blocking` permits at most one concise question.
+`mark-uncertainty` never asks: it emits the narrowest responsible marked relay
+or states that no responsible relay can be produced. Unknown-name handling
+defers to the same rule.
+
 ## Language and tier resolution
 
 V1 accepts two distinct entries from the bundled searchable language catalog; arbitrary user-entered identifiers are not accepted. One bundled, immutable PhraseGarden canonical-tag registry supplies the exact accepted identities. Its version and source-byte SHA-256 are pinned in profiles, pair directions, configurations, share payloads, compiler inputs, and provenance. The initial version rejects aliases/deprecated forms, grandfathered tags, private-use tags, extensions, casing variants, and unlisted tags. It uses no ambient `Intl`, network, clock, host locale, or environment canonicalizer.

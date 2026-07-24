@@ -3,7 +3,7 @@ import {
   type CompilerPolicy,
 } from "../domain";
 
-export const COMPILER_POLICY_VERSION = "1.0.0";
+export const COMPILER_POLICY_VERSION = "1.1.0";
 
 export const COMPILER_POLICY: CompilerPolicy = {
   version: COMPILER_POLICY_VERSION,
@@ -117,11 +117,57 @@ export const COMPILER_POLICY: CompilerPolicy = {
       authority: "invariant",
       section: 8,
       order: 110,
-      whenAll: [],
+      whenAll: [
+        {
+          path: "recipe.id",
+          op: "in",
+          values: ["live-voice-coach", "written-translator"],
+        },
+      ],
       renderingKey: "policy.clarification-boundary",
       effect: {
         key: "invariant.clarification",
         value: "ask-one-question-only-when-blocking",
+      },
+    },
+    {
+      id: "policy.clarification-boundary.interpreter-ask",
+      origin: "invariant",
+      authority: "invariant",
+      section: 8,
+      order: 110,
+      whenAll: [
+        { path: "recipe.id", op: "eq", value: "interpreter" },
+        {
+          path: "settings.clarification",
+          op: "eq",
+          value: "ask-if-blocking",
+        },
+      ],
+      renderingKey: "policy.clarification-boundary.interpreter-ask",
+      effect: {
+        key: "invariant.clarification",
+        value: "interpreter-ask-once-only-when-blocked",
+      },
+    },
+    {
+      id: "policy.clarification-boundary.interpreter-mark",
+      origin: "invariant",
+      authority: "invariant",
+      section: 8,
+      order: 110,
+      whenAll: [
+        { path: "recipe.id", op: "eq", value: "interpreter" },
+        {
+          path: "settings.clarification",
+          op: "eq",
+          value: "mark-uncertainty",
+        },
+      ],
+      renderingKey: "policy.clarification-boundary.interpreter-mark",
+      effect: {
+        key: "invariant.clarification",
+        value: "interpreter-never-ask-mark-or-decline",
       },
     },
     {

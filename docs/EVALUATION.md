@@ -27,6 +27,9 @@ Use `current candidate` and `next known blocker` until a frozen candidate passes
 | Source remains data | next-turn/source role contract | reject invalid boundary | quoted/fenced/prompt-like cases | adversarial downstream trial |
 | Voice is not visual-only | semantic control clauses | reject layout-only control | prompt scan; screenless turn scripts | host/model voice qualification |
 | Pronunciation evidence is honest | capability-conditional clause | transcript/unknown warning | result/summary snapshots | no heard/accent claim without audio |
+| Interpreter direction is exact | one home→target configuration and directed pair realization | reverse requires a new materialized configuration | both Preview directions plus Japanese-endpoint Generic snapshots | no bidirectional claim |
+| Interpreter turn boundary is honest | destination supplies each complete turn/segment | no inferred speaker, pause, audio, or boundary | prompt scan, UI copy, offline browser journey | host capability is not established |
+| Interpreter clarification has one owner | recipe-conditioned invariant selects ask or mark behavior | exactly one selected effect; mark mode contains no ask instruction | ambiguity×clarification matrix and negative prompt scans | uncertainty never licenses invention |
 | Summary matches behavior | summary items from normalized config | missing locale item is error | locale snapshots and UI inspection | not independently rewritten |
 | Provenance is complete | compiler emits all version records | missing/false tier/date is error | prompt/download snapshots | artifact hashes verify bytes |
 | Sharing excludes sensitive data | allowlist serializer | reject unknown/oversized fields | fragment privacy tests | not a model claim |
@@ -50,6 +53,9 @@ Gate 2 must include:
 - Generic pairs with Japanese as one endpoint proving that identity labels remain while every Japanese/profile and EN↔JA/pair linguistic clause is absent.
 - Summary-item agreement with normalized configuration and warnings.
 - Transcript/unknown/audio capability matrices.
+- Interpreter one-way direction, complete-turn/short-segment, no-answer,
+  no-speaker/turn inference, ambiguity×clarification, mark-without-question,
+  exact reverse-direction, and Generic-isolation matrices.
 - Quoted, fenced, bidi, combining-mark, astral, CRLF, and delimiter-looking input.
 - A compiler-network test that makes network globals throw and a dependency check that keeps browser/network imports out of `src/domain`.
 

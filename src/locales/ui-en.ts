@@ -100,8 +100,11 @@ export const OPTION_LABELS_EN: Readonly<Record<string, string>> = {
   natural: "Natural pace",
   slower: "Slower, shorter phrases",
   "preserve-and-note": "Keep it and add a note",
-  "ask-if-blocking": "Ask only if needed",
+  "ask-if-blocking": "Ask one short question only if needed",
   "marked-best-effort": "Make a careful best effort",
+  consecutive: "One complete turn or message",
+  "short-relay": "One short, complete chunk",
+  "mark-uncertainty": "Continue carefully and mark uncertainty",
   "preserve-marked-title":
     "Keep the title, marking it if there is no safe equivalent",
   "adapt-only-known-role": "Adapt only when the person's role is clear",

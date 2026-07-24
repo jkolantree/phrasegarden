@@ -41,16 +41,6 @@ function selectionRecipeId(
     issue(issues, "configuration", "E-INVALID-ENUM", "$.recipeId", { value });
     return undefined;
   }
-  if (value === "interpreter") {
-    issue(
-      issues,
-      "configuration",
-      "E-RECIPE-NOT-IN-PREVIEW",
-      "$.recipeId",
-      { value },
-    );
-    return undefined;
-  }
   return value as RecipeId;
 }
 

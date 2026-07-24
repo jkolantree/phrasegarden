@@ -9,6 +9,8 @@ import {
   AMBIGUITY_STRATEGIES,
   ASSISTANT_OUTPUT_CAPABILITIES,
   HIERARCHIES,
+  INTERPRETER_CLARIFICATIONS,
+  INTERPRETER_TURN_MODES,
   PRONUNCIATION_MODES,
   REGISTER_LEVELS,
   RELATIONSHIPS,
@@ -25,6 +27,7 @@ import {
   materializeSelection,
   renderSummary,
   type CompileResult,
+  type InterpreterSettings,
   type RecipeConfiguration,
   type RenderedSummary,
   type ValidationIssue,
@@ -56,6 +59,9 @@ import {
 } from "./runtime-catalog";
 
 type View = "home" | "builder" | "review";
+type ActiveRecipeId = RecipeConfiguration["recipe"]["id"];
+type ActiveModality = RecipeConfiguration["settings"]["modality"];
+type ActiveSettings = RecipeConfiguration["settings"];
 
 interface ActionFeedback {
   readonly kind: "success" | "error";
@@ -145,11 +151,49 @@ function humanize(value: string): string {
   return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
+function toolName(recipeId: ActiveRecipeId): string {
+  switch (recipeId) {
+    case "written-translator":
+      return "Written Translator";
+    case "live-voice-coach":
+      return "Live Voice Coach";
+    case "interpreter":
+      return "Interpreter";
+  }
+}
+
+function reviewUseInstruction(settings: ActiveSettings): string {
+  switch (settings.modality) {
+    case "written":
+      return "Paste the prompt first. Send the text you want translated as your next message.";
+    case "live-voice":
+      return "Paste the prompt before practice begins. Voice features still depend on the other tool.";
+    case "interpreting": {
+      const sourceUnit =
+        settings.turnMode === "short-relay"
+          ? "one short, complete home-language chunk at a time"
+          : "one complete home-language turn or message at a time";
+      return `Paste the prompt before interpreting starts. Then give the tool ${sourceUnit}. It translates only into the target language; swap the languages and make another prompt for the reverse direction.`;
+    }
+  }
+}
+
+function destinationPrivacyObject(modality: ActiveModality): string {
+  switch (modality) {
+    case "written":
+      return "the text you enter there.";
+    case "live-voice":
+      return "any audio, transcripts, or text it receives during practice.";
+    case "interpreting":
+      return "any participant's text, transcript, or audio while interpreting.";
+  }
+}
+
 function rematerialize(
   current: RecipeConfiguration,
   homeLanguageId: string,
   targetLanguageId: string,
-  recipeId: "written-translator" | "live-voice-coach",
+  recipeId: ActiveRecipeId,
 ): RecipeConfiguration {
   const materialized = materializeSelection(
     { homeLanguageId, targetLanguageId, recipeId },
@@ -232,10 +276,8 @@ function LanguageSelect({
 
 interface ToolChooserProps {
   readonly prefix: string;
-  readonly value: RecipeConfiguration["recipe"]["id"];
-  readonly onChange: (
-    recipeId: "written-translator" | "live-voice-coach",
-  ) => void;
+  readonly value: ActiveRecipeId;
+  readonly onChange: (recipeId: ActiveRecipeId) => void;
 }
 
 function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
@@ -254,7 +296,7 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
           />
           <span>
             <strong>Written Translator</strong>
-            <small>Translate text while keeping meaning and tone.</small>
+            <small>Translate text. Keep meaning and tone.</small>
           </span>
         </label>
         <label for={`${prefix}-voice`}>
@@ -268,9 +310,21 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
           />
           <span>
             <strong>Live Voice Coach</strong>
-            <small>
-              Practice speaking with corrections and pacing you control.
-            </small>
+            <small>Practice speaking with useful corrections.</small>
+          </span>
+        </label>
+        <label for={`${prefix}-interpreter`}>
+          <input
+            id={`${prefix}-interpreter`}
+            type="radio"
+            name={`${prefix}-tool`}
+            value="interpreter"
+            checked={value === "interpreter"}
+            onChange={() => onChange("interpreter")}
+          />
+          <span>
+            <strong>Interpreter</strong>
+            <small>Translate each complete turn in one direction.</small>
           </span>
         </label>
       </div>
@@ -348,6 +402,19 @@ function updateVoiceSettings(
   } as RecipeConfiguration;
 }
 
+function updateInterpreterSettings(
+  configuration: RecipeConfiguration,
+  update: (settings: InterpreterSettings) => InterpreterSettings,
+): RecipeConfiguration {
+  if (configuration.settings.modality !== "interpreting") {
+    return configuration;
+  }
+  return {
+    ...configuration,
+    settings: update(configuration.settings),
+  } as RecipeConfiguration;
+}
+
 function PairRails({
   configuration,
   onHome,
@@ -367,7 +434,9 @@ function PairRails({
     <div class={`pair-rails${compact ? " pair-rails-compact" : ""}`}>
       <section class="language-rail home-rail" aria-labelledby="home-rail-title">
         <p class="rail-kicker" id="home-rail-title">
-          Start with
+          {configuration.settings.modality === "interpreting"
+            ? "Translate from"
+            : "Start with"}
         </p>
         <LanguageLabel profile={home} showCode={false} />
         <LanguageSelect
@@ -390,13 +459,15 @@ function PairRails({
         aria-labelledby="target-rail-title"
       >
         <p class="rail-kicker" id="target-rail-title">
-          Work in
+          {configuration.settings.modality === "interpreting"
+            ? "Translate into"
+            : "Work in"}
         </p>
         <LanguageLabel profile={target} showCode={false} />
         <LanguageSelect
           id={compact ? "builder-target-language" : "target-language"}
           label="Target language"
-          help="The language you want to produce or practice."
+          help="The language you want to produce, practice, or interpret into."
           value={target.ref.id}
           excludedId={home.ref.id}
           onChange={onTarget}
@@ -572,15 +643,13 @@ export function App() {
         current,
         homeLanguageId,
         targetLanguageId,
-        current.recipe.id as "written-translator" | "live-voice-coach",
+        current.recipe.id,
       ),
     );
     setAnnouncement(message);
   }
 
-  function chooseTool(
-    recipeId: "written-translator" | "live-voice-coach",
-  ): void {
+  function chooseTool(recipeId: ActiveRecipeId): void {
     setConfiguration((current) =>
       rematerialize(
         current,
@@ -589,11 +658,14 @@ export function App() {
         recipeId,
       ),
     );
-    setAnnouncement(
-      recipeId === "written-translator"
-        ? "Written Translator selected."
-        : "Live Voice Coach selected. Voice-tool abilities reset to I don't know.",
-    );
+    const message: Readonly<Record<ActiveRecipeId, string>> = {
+      "written-translator": "Written Translator selected.",
+      "live-voice-coach":
+        "Live Voice Coach selected. Voice-tool abilities reset to I don't know.",
+      interpreter:
+        "Interpreter selected. It translates one way from the home language into the target language.",
+    };
+    setAnnouncement(message[recipeId]);
   }
 
   function setCommon(
@@ -805,9 +877,7 @@ export function App() {
                   .searchableNames[0] ??
                   configuration.languages.target.id}
                 {" · "}
-                {configuration.recipe.id === "written-translator"
-                  ? "Written Translator"
-                  : "Live Voice Coach"}
+                {toolName(configuration.recipe.id)}
               </h2>
               <p>These choices are ready. You can change them below.</p>
               <button
@@ -862,8 +932,9 @@ export function App() {
                 onChange={chooseTool}
               />
               <p class="quick-start-note">
-                Most people can use these choices as they are. Create the
-                prompt now, or change optional details first.
+                {configuration.settings.modality === "interpreting"
+                  ? "One direction at a time. Swap the languages and create another prompt for the reverse direction."
+                  : "Most people can use these choices as they are. Create the prompt now, or change optional details first."}
               </p>
               <div class="home-actions">
                 <button
@@ -934,8 +1005,8 @@ export function App() {
             </h1>
             <p>
               Most people can use the defaults. Change only what matters for
-              tone, corrections, or teaching; your source text stays outside
-              PhraseGarden.
+              tone, corrections, turn handling, or teaching; your source text
+              stays outside PhraseGarden.
             </p>
           </div>
 
@@ -1034,7 +1105,11 @@ export function App() {
 
               <fieldset class="settings-side settings-target">
                 <legend>
-                  <span>How the result should sound (optional)</span>
+                  <span>
+                    {configuration.settings.modality === "interpreting"
+                      ? "How each translated turn should work (optional)"
+                      : "How the result should sound (optional)"}
+                  </span>
                   <bdi
                     lang={targetProfile.ref.id}
                     dir={targetProfile.direction}
@@ -1173,26 +1248,72 @@ export function App() {
                       }
                     />
                   </>
+                ) : configuration.settings.modality === "interpreting" ? (
+                  <>
+                    <SelectField
+                      id="interpreter-turn-mode"
+                      label="How much to interpret at once"
+                      value={configuration.settings.turnMode}
+                      values={INTERPRETER_TURN_MODES}
+                      help="The other tool must receive the complete turn or chunk. This prompt cannot detect where it ends."
+                      onChange={(value) =>
+                        setCommon(
+                          (current) =>
+                            updateInterpreterSettings(current, (settings) => ({
+                              ...settings,
+                              turnMode: value,
+                            })),
+                          "Interpreter turn handling updated.",
+                        )
+                      }
+                    />
+                    <SelectField
+                      id="interpreter-clarification"
+                      label="If a turn is too unclear"
+                      value={configuration.settings.clarification}
+                      values={INTERPRETER_CLARIFICATIONS}
+                      help="Continuing carefully never means guessing missing meaning."
+                      onChange={(value) =>
+                        setCommon(
+                          (current) =>
+                            updateInterpreterSettings(current, (settings) => ({
+                              ...settings,
+                              clarification: value,
+                            })),
+                          "Interpreter clarification choice updated.",
+                        )
+                      }
+                    />
+                  </>
                 ) : null}
               </fieldset>
             </div>
 
             <details class="safeguards">
-              <summary>Names, titles, and unclear wording</summary>
+              <summary>
+                {configuration.settings.modality === "interpreting"
+                  ? "Titles and honorifics"
+                  : "Names, titles, and unclear wording"}
+              </summary>
               <div class="details-grid">
-                <SelectField
-                  id="ambiguity"
-                  label="If wording is unclear"
-                  value={configuration.ambiguity}
-                  values={AMBIGUITY_STRATEGIES}
-                  onChange={(value) =>
-                    setCommon(
-                      (current) =>
-                        ({ ...current, ambiguity: value }) as RecipeConfiguration,
-                      "Unclear-wording choice updated.",
-                    )
-                  }
-                />
+                {configuration.settings.modality !== "interpreting" && (
+                  <SelectField
+                    id="ambiguity"
+                    label="If wording is unclear"
+                    value={configuration.ambiguity}
+                    values={AMBIGUITY_STRATEGIES}
+                    onChange={(value) =>
+                      setCommon(
+                        (current) =>
+                          ({
+                            ...current,
+                            ambiguity: value,
+                          }) as RecipeConfiguration,
+                        "Unclear-wording choice updated.",
+                      )
+                    }
+                  />
+                )}
                 <SelectField
                   id="title-handling"
                   label="Titles and honorifics"
@@ -1209,22 +1330,24 @@ export function App() {
                     )
                   }
                 />
-                <SelectField
-                  id="unknown-name"
-                  label="Names with an unknown reading"
-                  value={configuration.unknownName}
-                  values={UNKNOWN_NAME_STRATEGIES}
-                  onChange={(value) =>
-                    setCommon(
-                      (current) =>
-                        ({
-                          ...current,
-                          unknownName: value,
-                        }) as RecipeConfiguration,
-                      "Unknown-name choice updated.",
-                    )
-                  }
-                />
+                {configuration.settings.modality !== "interpreting" && (
+                  <SelectField
+                    id="unknown-name"
+                    label="Names with an unknown reading"
+                    value={configuration.unknownName}
+                    values={UNKNOWN_NAME_STRATEGIES}
+                    onChange={(value) =>
+                      setCommon(
+                        (current) =>
+                          ({
+                            ...current,
+                            unknownName: value,
+                          }) as RecipeConfiguration,
+                        "Unknown-name choice updated.",
+                      )
+                    }
+                  />
+                )}
               </div>
             </details>
 
@@ -1430,10 +1553,9 @@ export function App() {
                   AI chat or language tool.
                 </li>
                 <li>
-                  {artifact.result.normalizedConfiguration.settings.modality ===
-                  "written"
-                    ? "Paste the prompt first. Send the text you want translated as your next message."
-                    : "Paste the prompt before practice begins. Voice features still depend on the other tool."}
+                  {reviewUseInstruction(
+                    artifact.result.normalizedConfiguration.settings,
+                  )}
                 </li>
               </ol>
               <div class="prompt-actions" aria-label="Prompt actions">
@@ -1471,10 +1593,9 @@ export function App() {
               >
                 Before you paste: the other tool's privacy policy applies.
                 PhraseGarden cannot control what it stores or how it handles{" "}
-                {artifact.result.normalizedConfiguration.settings.modality ===
-                "written"
-                  ? "the text you enter there."
-                  : "any audio, transcripts, or text it receives during practice."}
+                {destinationPrivacyObject(
+                  artifact.result.normalizedConfiguration.settings.modality,
+                )}
               </p>
             </section>
           </div>

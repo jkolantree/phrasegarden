@@ -196,6 +196,208 @@ test("a fully loaded session creates, copies, and downloads while offline", asyn
   }
 });
 
+test("Interpreter stays one-way, exact, local, and accessible across Preview and Generic", async ({
+  context,
+  page,
+}) => {
+  const audit = requestAudit(page);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: "http://127.0.0.1:4173",
+  });
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+
+  const written = page.getByRole("radio", { name: /Written Translator/ });
+  await written.focus();
+  await page.keyboard.press("ArrowRight");
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: /^Interpreter/ })).toBeChecked();
+  await expect(page.getByText("Translate from", { exact: true })).toBeVisible();
+  await expect(page.getByText("Translate into", { exact: true })).toBeVisible();
+  await expect(page.getByText(/One direction at a time/)).toBeVisible();
+  const homeActionBox = await page
+    .getByRole("button", { name: "Create my prompt" })
+    .boundingBox();
+  expect(homeActionBox).not.toBeNull();
+  expect(homeActionBox!.y + homeActionBox!.height).toBeLessThanOrEqual(
+    page.viewportSize()!.height,
+  );
+  await page.screenshot({
+    path: "artifacts/screenshots/home-interpreter-desktop.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "Interpreter home");
+
+  await context.setOffline(true);
+  let direct: string | null = null;
+  try {
+    await page.getByRole("button", { name: "Create my prompt" }).click();
+    direct = await page.getByTestId("canonical-prompt").textContent();
+    expect(direct).toContain("portable one-way Interpreter");
+    expect(direct).toContain("For English→Japanese");
+    expect(direct).not.toContain("For Japanese→English");
+    expect(direct).toContain(
+      "Do not claim to identify a speaker, hear unprovided tone, detect silence or interruption, or infer where a turn ends.",
+    );
+    await expect(page.getByTestId("prompt-handoff")).toContainText(
+      "one complete home-language turn or message at a time",
+    );
+    await expect(page.getByTestId("prompt-handoff")).toContainText(
+      "swap the languages and make another prompt for the reverse direction",
+    );
+    await expect(page.getByTestId("destination-privacy")).toContainText(
+      "any participant's text, transcript, or audio while interpreting",
+    );
+    await expect(page.getByTestId("behavior-summary")).toContainText(
+      "Translates the turn instead of answering it as advice",
+    );
+    await expect(page.getByTestId("behavior-summary")).toContainText(
+      "does not guess who is speaking or where a turn ends",
+    );
+
+    await page.getByTestId("copy-prompt").click();
+    expect(
+      normalizeClipboardText(
+        await page.evaluate(() => navigator.clipboard.readText()),
+      ),
+    ).toBe(direct);
+    const downloadEvent = page.waitForEvent("download");
+    await page.getByTestId("download-prompt").click();
+    const download = await downloadEvent;
+    expect(readFileSync((await download.path())!, "utf8")).toBe(direct);
+  } finally {
+    await context.setOffline(false);
+  }
+  await page.screenshot({
+    path: "artifacts/screenshots/review-interpreter-desktop.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "Interpreter review");
+
+  await page.getByRole("button", { name: "Start another prompt" }).click();
+  await openBuilder(page);
+  await expect(page.getByLabel("How much to interpret at once")).toHaveValue(
+    "consecutive",
+  );
+  await expect(page.getByLabel("If a turn is too unclear")).toHaveValue(
+    "ask-if-blocking",
+  );
+  await expect(page.getByLabel("How much detail")).toHaveCount(0);
+  await expect(page.getByLabel("When to correct me")).toHaveCount(0);
+  await expect(page.getByLabel("Pronunciation help")).toHaveCount(0);
+  await expect(page.getByLabel("If wording is unclear")).toHaveCount(0);
+  await expect(
+    page.getByLabel("Names with an unknown reading"),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("What your language tool can do", { exact: true }),
+  ).toHaveCount(0);
+  await page.screenshot({
+    path: "artifacts/screenshots/builder-interpreter-desktop.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "Interpreter builder");
+
+  await generate(page);
+  expect(await page.getByTestId("canonical-prompt").textContent()).toBe(direct);
+
+  await page
+    .getByRole("button", { name: "Adjust optional settings" })
+    .click();
+  await page
+    .getByLabel("How much to interpret at once")
+    .selectOption("short-relay");
+  await page
+    .getByLabel("If a turn is too unclear")
+    .selectOption("mark-uncertainty");
+  await expect(page.getByTestId("behavior-summary")).toContainText(
+    "Does not ask a question",
+  );
+  await generate(page);
+  const marked = await page.getByTestId("canonical-prompt").textContent();
+  expect(marked).toContain("Do not ask a clarification.");
+  expect(marked).not.toContain("Ask at most one concise clarification");
+  expect(marked).not.toContain("ask or note it according to");
+  expect(marked).not.toContain("mark or ask according to");
+  await expect(page.getByTestId("prompt-handoff")).toContainText(
+    "one short, complete home-language chunk at a time",
+  );
+  await expect(page.getByTestId("prompt-handoff")).not.toContainText(
+    "one complete home-language turn or message at a time",
+  );
+
+  await page
+    .getByRole("button", { name: "Adjust optional settings" })
+    .click();
+  await page.getByRole("button", { name: "Swap languages" }).click();
+  await generate(page);
+  const reverse = await page.getByTestId("canonical-prompt").textContent();
+  expect(reverse).toContain("For Japanese→English");
+  expect(reverse).not.toContain("For English→Japanese");
+
+  await page
+    .getByRole("button", { name: "Adjust optional settings" })
+    .click();
+  await page.getByLabel("Target language").selectOption("id");
+  await expect(page.getByTestId("support-status")).toContainText("Generic");
+  await generate(page);
+  const generic = await page.getByTestId("canonical-prompt").textContent();
+  expect(generic).toContain("Support tier: Generic");
+  expect(generic).not.toContain("## 6. Exact pair guidance");
+  expect(generic).not.toContain("ordinary Japanese omission");
+
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto("/");
+  await page.getByRole("radio", { name: /^Interpreter/ }).check();
+  await expect(page.locator(".mobile-quick-start")).toContainText(
+    "Interpreter",
+  );
+  const mobileQuickAction = page.getByRole("button", {
+    name: "Create with these choices",
+  });
+  const mobileQuickActionBox = await mobileQuickAction.boundingBox();
+  expect(mobileQuickActionBox).not.toBeNull();
+  expect(
+    mobileQuickActionBox!.y + mobileQuickActionBox!.height,
+  ).toBeLessThanOrEqual(page.viewportSize()!.height);
+  await page.screenshot({
+    path: "artifacts/screenshots/home-interpreter-mobile-320.png",
+    fullPage: true,
+  });
+  await openBuilder(page);
+  let dimensions = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 1);
+  await page.screenshot({
+    path: "artifacts/screenshots/builder-interpreter-mobile-320.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "mobile Interpreter builder");
+  await generate(page);
+  dimensions = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 1);
+  await page.screenshot({
+    path: "artifacts/screenshots/review-interpreter-mobile-320.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "mobile Interpreter review");
+
+  const remoteRequests = audit.requests.filter(
+    (request) => new URL(request.url()).origin !== "http://127.0.0.1:4173",
+  );
+  const runtimeNetwork = audit.requests.filter((request) =>
+    ["fetch", "xhr", "eventsource"].includes(request.resourceType()),
+  );
+  expect(remoteRequests.map((request) => request.url())).toEqual([]);
+  expect(runtimeNetwork.map((request) => request.url())).toEqual([]);
+  expect(audit.webSockets).toEqual([]);
+});
+
 test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   context,
   page,

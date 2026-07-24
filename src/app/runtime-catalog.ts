@@ -17,6 +17,8 @@ import {
   COMPILER_POLICY_VERSION,
   INSTRUCTIONS_EN_PROMPT_SURFACE,
   INSTRUCTIONS_EN_VERSION,
+  INTERPRETER_RECIPE,
+  INTERPRETER_VERSION,
   LIVE_VOICE_COACH_RECIPE,
   LIVE_VOICE_COACH_VERSION,
   WRITTEN_TRANSLATOR_RECIPE,
@@ -37,6 +39,10 @@ export const PHRASEGARDEN_CATALOG: CompilerCatalog = Object.freeze({
         id: "live-voice-coach" as const,
         version: LIVE_VOICE_COACH_VERSION,
       }),
+      Object.freeze({
+        id: "interpreter" as const,
+        version: INTERPRETER_VERSION,
+      }),
     ]),
     promptSurface: Object.freeze({
       id: "instructions-en",
@@ -54,6 +60,7 @@ export const PHRASEGARDEN_CATALOG: CompilerCatalog = Object.freeze({
   recipes: Object.freeze([
     WRITTEN_TRANSLATOR_RECIPE,
     LIVE_VOICE_COACH_RECIPE,
+    INTERPRETER_RECIPE,
   ]),
   promptSurfaces: Object.freeze([INSTRUCTIONS_EN_PROMPT_SURFACE]),
   compilerPolicies: Object.freeze([COMPILER_POLICY]),
@@ -61,7 +68,7 @@ export const PHRASEGARDEN_CATALOG: CompilerCatalog = Object.freeze({
 });
 
 function defaultConfiguration(
-  recipeId: "written-translator" | "live-voice-coach",
+  recipeId: RecipeConfiguration["recipe"]["id"],
 ): RecipeConfiguration {
   const result = materializeSelection(
     {
@@ -87,3 +94,5 @@ export const DEFAULT_WRITTEN_CONFIGURATION = defaultConfiguration(
 export const DEFAULT_VOICE_CONFIGURATION = defaultConfiguration(
   "live-voice-coach",
 );
+export const DEFAULT_INTERPRETER_CONFIGURATION =
+  defaultConfiguration("interpreter");

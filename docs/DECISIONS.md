@@ -366,3 +366,45 @@ so the shorter route introduces no alternate prompt semantics.
 canonical output for identical effective configurations. Session-only state is
 not described as saved. PhraseGarden never sends or runs the result, and no
 destination-tool compatibility or privacy guarantee is implied.
+
+## ADR-025 — Interpreter is a one-way, host-bounded relay
+
+Status: Accepted
+Date: 2026-07-24
+Supersedes: none
+
+**Context:** The Gate 0 schema names Interpreter settings but does not state
+whether one prompt mediates both directions, where turns come from, or how the
+common ambiguity setting interacts with Interpreter clarification. The
+compiler resolves exactly one directed pair realization. Treating that result
+as bidirectional would silently apply only half the required pair guidance.
+The destination-capability schema also cannot establish speaker identity,
+audio access, pauses, interruptions, or turn boundaries.
+
+**Decision:** Interpreter V1 is one-way from the exact configured home profile
+to the exact configured target profile. Swapping languages and compiling a new
+prompt creates the reverse direction. It operates on each complete turn,
+message, or short complete segment that the destination actually supplies; it
+never infers a speaker, language direction, audio evidence, pause, interruption,
+or boundary.
+
+`ambiguity` governs preservation while forming a relay. Interpreter
+`clarification` owns all blocked recovery. `ask-if-blocking` permits at most
+one concise question. `mark-uncertainty` never asks: it emits the narrowest
+responsible marked relay or states that no responsible relay can be produced.
+Unknown-name handling defers to the same clarification choice. Written and
+Voice retain their existing blocking-question behavior through a
+recipe-conditioned compiler-policy clause.
+
+**Rationale:** One direction matches configuration, provenance, support tier,
+and exact pack resolution without inventing reverse coverage. Host-bounded
+turns make the same prompt usable with text, transcript, or audio-capable tools
+without promising any capability PhraseGarden cannot verify. One clarification
+owner prevents equal-authority instructions from contradicting each other.
+
+**Consequences:** The compiler-policy, English prompt-surface, and English
+summary-catalog artifacts advance independently. Published samples remain
+immutable; current-byte tests record the exact declared transition. The UI
+exposes only turn mode and Interpreter clarification, not the overlapping
+common ambiguity or unknown-name controls. Bidirectional or simultaneous
+interpreting requires a later explicit schema and pair-resolution decision.
