@@ -11,7 +11,14 @@ review has not been completed. Every other direction between bundled language
 profiles uses the conservative **Generic** compiler and receives no endpoint-
 or pair-specific linguistic guidance.
 
-## Try the local candidate
+## Use PhraseGarden
+
+Open the public Prompt Studio at
+[jkolantree.github.io/phrasegarden](https://jkolantree.github.io/phrasegarden/).
+The versioned source and release evidence are available in the
+[`0.1.0-preview.1` release](https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1).
+
+## Run locally
 
 Requirements: Node.js 24 or later and pnpm 11.9.0.
 
@@ -102,7 +109,7 @@ Browser tests run sequentially and use axe. Local Windows verification uses
 Microsoft Edge; the prepared Pages workflow uses Playwright Chromium.
 Versioned sample prompts are in
 [`samples/0.1.0-preview.1`](samples/0.1.0-preview.1).
-The proposed repository inventory is recorded in
+The published repository inventory is recorded in
 [`docs/PUBLICATION-MANIFEST.md`](docs/PUBLICATION-MANIFEST.md); exact local
 artifact and sample hashes are in [`SHA256SUMS`](SHA256SUMS).
 

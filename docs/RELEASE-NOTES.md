@@ -1,6 +1,6 @@
 # Release notes
 
-## 0.1.0-preview.1 — local publication candidate
+## 0.1.0-preview.1 — public Preview
 
 Date: 2026-07-23
 
@@ -44,5 +44,11 @@ has not completed external linguistic review; Generic has no pair-specific
 guidance; there is no runtime AI, persistence, service worker, Japanese
 interface, or completed assistive-technology matrix.
 
-This is a local candidate. No repository, release, or deployment provenance is
-claimed.
+Public source:
+<https://github.com/jkolantree/phrasegarden>
+
+Versioned release:
+<https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
+
+GitHub Pages:
+<https://jkolantree.github.io/phrasegarden/>

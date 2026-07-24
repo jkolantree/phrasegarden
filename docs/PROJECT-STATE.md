@@ -4,10 +4,11 @@ Updated: 2026-07-23
 
 ## Current state
 
-Shipping milestone D — local publication candidate. PhraseGarden
-`0.1.0-preview.1` is built, locally verified, and publication-authorized.
-MIT and CC BY 4.0 license files are present. It has not yet been committed,
-published, released, or deployed.
+Shipping milestone D — public Preview. PhraseGarden `0.1.0-preview.1` is built,
+locally and remotely verified, committed to public `main`, released as
+`v0.1.0-preview.1`, and deployed at
+<https://jkolantree.github.io/phrasegarden/>. Source code is MIT-licensed;
+maintained content is CC BY 4.0-licensed.
 
 ## Durable decisions
 
@@ -48,7 +49,9 @@ published, released, or deployed.
 | Manual screen-reader, real IME, and forced-colors matrix | Deferred | Automated axe, keyboard, composition-event, bidi, reduced-motion, and reflow coverage passed; independent manual assistive-technology evidence is not claimed |
 | Model and prospective evaluation | Skipped | No runtime or evaluation model calls; no prospective fixtures consumed |
 | Publication authorization and license files | Completed | User authorized the exact plan; `LICENSE` is MIT and `LICENSE-CONTENT` applies CC BY 4.0 to maintained content |
-| Repository initialization, commit, push, release, and deployment | In progress | Authorized exact remote plan; no remote result is claimed until verified |
+| Public repository and `main` | Completed | <https://github.com/jkolantree/phrasegarden>; exact local and remote refs matched after push |
+| Versioned GitHub release | Completed | `v0.1.0-preview.1`; qualified Pages ZIP, byte manifest, and `SHA256SUMS` attached |
+| GitHub Pages deployment | Completed | Workflow run `30065621412`, attempt 2; <https://jkolantree.github.io/phrasegarden/> |
 
 ## Current verification evidence
 
@@ -86,6 +89,13 @@ published, released, or deployed.
 - Publication boundary audit: all 23 manifest paths exist; all 108 proposed
   public text files decode as strict UTF-8; no machine username, attachment
   path, private-key marker, or token signature remains.
+- GitHub Actions build: 11/11 test files and 270/270 tests passed on Ubuntu;
+  the first deploy attempt failed closed because Pages had not yet been
+  enabled. After selecting GitHub Actions as the Pages source, failed-job
+  rerun attempt 2 deployed successfully.
+- Production-byte qualification: `index.html`, CSS, and JavaScript were
+  downloaded from the public Pages URL and matched all 3/3 manifest byte
+  lengths and SHA-256 values exactly.
 
 ## Known limitations
 
@@ -102,20 +112,22 @@ published, released, or deployed.
   satisfies the request.
 - Hosted infrastructure may retain ordinary request logs even though
   PhraseGarden has no project analytics or telemetry.
-- The archive proves captured local build bytes, not a Git commit, hosted
-  download, deployment, or UI-mediated download identity.
+- The archive proves captured build bytes. Production Pages bytes were
+  independently downloaded and matched, but this does not by itself prove
+  UI-mediated download identity for the GitHub release attachment.
 - Source code is MIT-licensed. Maintained prompts/content are CC BY
   4.0-licensed under `LICENSE-CONTENT`.
+- GitHub currently emits a non-blocking deprecation warning because several
+  upstream actions target Node.js 20 while GitHub forces them onto Node.js 24.
 
 ## Credit-expensive work deliberately avoided
 
 No second visual ideation batch, model evaluation, prospective-fixture
-consumption, external linguistic evaluation, remote browser farm, repository
-write, release creation, Pages deployment, telemetry, backend, or runtime AI
-work was performed.
+consumption, external linguistic evaluation, remote browser farm, telemetry,
+backend, or runtime AI work was performed.
 
 ## Exact next eligible action
 
-Execute the authorized publication plan with exact-scope Git history, public
-`jkolantree/phrasegarden`, `main`, release `v0.1.0-preview.1`, qualified release
-assets, and GitHub Pages; verify each remote object before claiming success.
+No further publication action is required for `0.1.0-preview.1`. Any next
+compiler, pair-review, accessibility, localization, persistence, sharing, or
+release package requires a separately scoped authorization.

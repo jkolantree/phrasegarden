@@ -1,16 +1,18 @@
 # Publication manifest
 
 This manifest defines the authorized public repository contents for
-PhraseGarden `0.1.0-preview.1`. The license split is recorded locally;
-repository, release, and Pages publication remain pending until the remote
-steps complete.
+PhraseGarden `0.1.0-preview.1`. The repository, release, license split, and
+GitHub Pages deployment are public.
 
 ## Authorized repository
 
 - Owner and name: `jkolantree/phrasegarden`
 - Visibility: public
 - Default branch: `main`
-- Initialization: use the existing empty `.git` directory in this workspace
+- Repository: <https://github.com/jkolantree/phrasegarden>
+- Release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
+- Pages: <https://jkolantree.github.io/phrasegarden/>
+- Initialization: the existing empty `.git` directory was initialized in place
 - Licenses: MIT for code; CC BY 4.0 for maintained prompts, recipes,
   pair/profile content, samples, and documentation
 
@@ -52,4 +54,7 @@ The Pages archive contains only the three files listed and byte-qualified in
 `release/phrasegarden-0.1.0-preview.1-pages-manifest.json`, rooted as
 `index.html` and `assets/**`. `SHA256SUMS` qualifies the archive, manifest, and
 published prompt samples. The archive is not evidence of a repository commit,
-hosted download, deployment, or UI-mediated download identity.
+hosted release-download identity, or UI-mediated download identity. Repository
+refs and release assets require separate remote verification. The three Pages
+files served from the production URL were downloaded and matched the manifest
+byte lengths and SHA-256 values exactly.
