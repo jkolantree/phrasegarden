@@ -1,0 +1,43 @@
+{
+  "name": "phrasegarden",
+  "version": "0.1.0-preview.1",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "preview": "vite preview",
+    "build": "pnpm typecheck && vite build",
+    "audit:release": "node scripts/release-audit.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.domain.json --noEmit",
+    "test": "vitest run",
+    "test:compiler": "vitest run tests/domain/compiler.test.ts",
+    "test:e2e": "pnpm build && playwright test",
+    "verify:release": "pnpm test && pnpm build && pnpm audit:release && pnpm test:e2e",
+    "test:clause": "vitest run tests/domain/clause-validation.test.ts",
+    "test:compiler-policy": "vitest run tests/domain/compiler-policy-validation.test.ts",
+    "test:language-profile": "vitest run tests/domain/language-profile-validation.test.ts",
+    "test:prompt-surface": "vitest run tests/domain/prompt-surface-validation.test.ts",
+    "test:review-evidence": "vitest run tests/domain/review-evidence-validation.test.ts",
+    "test:spec": "vitest run tests/domain/spec-validation.test.ts",
+    "test:summary-catalog": "vitest run tests/domain/summary-catalog-validation.test.ts",
+    "test:watch": "vitest",
+    "check": "pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "preact": "10.29.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.12.1",
+    "@babel/core": "7.29.7",
+    "@playwright/test": "1.61.1",
+    "@preact/preset-vite": "2.10.6",
+    "@types/node": "24.13.3",
+    "typescript": "7.0.2",
+    "vite": "8.1.5",
+    "vitest": "4.1.10"
+  }
+}

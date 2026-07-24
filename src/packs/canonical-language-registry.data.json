@@ -1,0 +1,66 @@
+{
+  "registryId": "phrasegarden-canonical-language-tags",
+  "version": "2026-07-23.1",
+  "source": {
+    "name": "IANA Language Subtag Registry",
+    "registryFileDate": "2026-06-15",
+    "uri": "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry"
+  },
+  "policy": {
+    "aliases": "reject",
+    "grandfathered": "reject",
+    "privateUse": "reject",
+    "extensions": "reject"
+  },
+  "canonicalTags": [
+    "en",
+    "he",
+    "id",
+    "ja",
+    "tlh",
+    "yi",
+    "zh-Hant-TW"
+  ],
+  "deprecatedForms": [
+    {
+      "tag": "in",
+      "preferredTag": "id"
+    },
+    {
+      "tag": "iw",
+      "preferredTag": "he"
+    },
+    {
+      "tag": "ji",
+      "preferredTag": "yi"
+    }
+  ],
+  "grandfatheredTags": [
+    "art-lojban",
+    "cel-gaulish",
+    "en-GB-oed",
+    "i-ami",
+    "i-bnn",
+    "i-default",
+    "i-enochian",
+    "i-hak",
+    "i-klingon",
+    "i-lux",
+    "i-mingo",
+    "i-navajo",
+    "i-pwn",
+    "i-tao",
+    "i-tay",
+    "i-tsu",
+    "no-bok",
+    "no-nyn",
+    "sgn-BE-FR",
+    "sgn-BE-NL",
+    "sgn-CH-DE",
+    "zh-guoyu",
+    "zh-hakka",
+    "zh-min",
+    "zh-min-nan",
+    "zh-xiang"
+  ]
+}

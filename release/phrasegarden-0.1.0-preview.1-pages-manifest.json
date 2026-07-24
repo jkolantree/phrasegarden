@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": "0.1.0-preview.1",
+  "artifactName": "phrasegarden-0.1.0-preview.1-pages.zip",
+  "sourceProvenance": {
+    "kind": "local-workspace",
+    "gitCommit": null,
+    "statement": "Built from the local workspace; no repository commit or remote publication is claimed."
+  },
+  "build": {
+    "command": "pnpm build",
+    "base": "./",
+    "sourceMaps": false
+  },
+  "files": [
+    {
+      "path": "assets/index-BxUVLzPO.css",
+      "bytes": 15925,
+      "sha256": "51A89FCD583723513D08E69324DD89167806CF6E81F3B7B1BAE584DC64014625"
+    },
+    {
+      "path": "assets/index-C--6uDj9.js",
+      "bytes": 137522,
+      "sha256": "2CAB03D48063F0BF95747E77C17F037144033173A96AF4881FB54BD184FD6802"
+    },
+    {
+      "path": "index.html",
+      "bytes": 899,
+      "sha256": "A043350C46D79344B041619AD494CD3BA2D677117C0F6B164B3290C28EEE9FEA"
+    }
+  ]
+}

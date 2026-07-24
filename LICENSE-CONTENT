@@ -1,0 +1,33 @@
+PhraseGarden Content License
+
+Copyright (c) 2026 jkolantree
+
+Except where a file or section states otherwise, PhraseGarden's maintained
+non-code content is licensed under the Creative Commons Attribution 4.0
+International Public License (CC BY 4.0).
+
+This content includes:
+
+- documentation;
+- generated-prompt samples;
+- maintained prompt and recipe wording;
+- language-profile and pair-pack linguistic content; and
+- interface and behavior-summary copy.
+
+SPDX license identifier: CC-BY-4.0
+
+Canonical license:
+https://creativecommons.org/licenses/by/4.0/
+
+Legal code:
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+Preferred attribution:
+"PhraseGarden by jkolantree, licensed under CC BY 4.0."
+
+When sharing modified content, identify that changes were made. Third-party
+material, if any, remains subject to its own stated terms. Source code and
+software infrastructure are licensed separately under the MIT License in
+LICENSE. Where code and maintained content appear in the same source file, the
+code is MIT-licensed and the maintained content identified above is CC BY
+4.0-licensed.
