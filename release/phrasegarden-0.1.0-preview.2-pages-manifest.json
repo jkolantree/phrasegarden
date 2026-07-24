@@ -4,7 +4,7 @@
   "artifactName": "phrasegarden-0.1.0-preview.2-pages.zip",
   "sourceProvenance": {
     "kind": "git-commit",
-    "gitCommit": "c9fe52db2e4aa22d141acbc9668a80d26854aacb",
+    "gitCommit": "78452fe797ee1f6c98ae06dba6f0aa2ffceb127c",
     "statement": "Built from this exact committed source; the following packaging commit adds only release evidence."
   },
   "build": {
@@ -14,19 +14,19 @@
   },
   "files": [
     {
-      "path": "assets/index-B94Y9q7K.css",
+      "path": "assets/index-BjQ0pqo0.css",
       "bytes": 18674,
-      "sha256": "48D704328CC092BC897ED13EE3B1EE11421281013B930E947D1C2D25657A1FC3"
+      "sha256": "BC79B6F84CD4A832BE24633B0AB139E0D5FE2BA9D62463EC66883A451827F7DF"
     },
     {
-      "path": "assets/index-rJLSNRcR.js",
+      "path": "assets/index-Dt4wG1oY.js",
       "bytes": 145347,
       "sha256": "6FC247AC92CB9CE53E5280DEBF4CA49870E989595936C375581FA5A94745C1F6"
     },
     {
       "path": "index.html",
       "bytes": 899,
-      "sha256": "C203281FD5001C62F2558F38DFA82ADC3AE620852AE6E28B86A1917AAD984508"
+      "sha256": "A3DE753057F92E2124265D5335E54E9CDA8C2621CFE8991C65A09C880573CE98"
     }
   ]
 }

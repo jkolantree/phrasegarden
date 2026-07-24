@@ -70,8 +70,9 @@ provenance remains `0.1.0-preview.1`.
 | Zero-friction entry and safe handoff | Completed locally | Direct Home creation, mobile Quick start, optional Builder, initial-viewport Home/Review actions, explicit paste order and modality-aware destination privacy, visible action feedback, artifact-preserving navigation, replacement confirmation, and native refresh/close warning |
 | Current local automated QA | Completed | 271/271 Vitest; 9/9 sequential Edge Playwright/axe journeys; dual typechecks, Vite build, release audit, forbidden-domain scan, and diff check passed |
 | Current usability independent review | Completed | Final quiescent current-byte review: PASS with no open P1/P2/P3 findings; 20-file start/end fingerprint had zero drift |
-| Preview 2 publication review | Completed | Independent read-only packaging review: PASS with zero P1/P2/P3 findings; 9/9 checksum targets, 3/3 archive members, source binding, old-release preservation, and zero post-freeze runtime drift verified |
-| `0.1.0-preview.2` publication package | Completed locally | Source frozen at `c9fe52db2e4aa22d141acbc9668a80d26854aacb`; 3/3 archive entries and 9/9 checksum targets match; fast-forward push, release, and Pages verification remain |
+| First Preview 2 packaging review | Superseded | It passed, but GitHub Actions run `30096526036` exposed a Chromium viewport failure before tagging, release, or deployment; its package bytes were replaced |
+| Corrected Preview 2 packaging review | Completed | Follow-up independent read-only review: PASS with zero P1/P2/P3; 9/9 checksums, 3/3 archive members, exact source binding, old-release preservation, unchanged regression assertion, and zero post-freeze runtime drift verified |
+| `0.1.0-preview.2` publication package | Completed locally | Corrected source frozen at `78452fe797ee1f6c98ae06dba6f0aa2ffceb127c`; refreshed archive, manifest, checksum ledger, full local QA, and independent review pass; remote replacement push remains |
 | In-app localhost manual inspection | Blocked | The Codex in-app Browser rejected further local URL navigation by policy; automated Edge inspection and direct screenshot inspection passed, but this is not claimed as an in-app manual browser pass |
 | External linguistic review | Deferred | Preview labels and limitations state that English↔Japanese review is incomplete |
 | Interpreter | Deferred | Deliberately outside this usability candidate; ADR-013 keeps it as the next uncompleted ordered Gate 3 slice |
@@ -109,26 +110,33 @@ provenance remains `0.1.0-preview.1`.
 
   | Pages path | Bytes | SHA-256 |
   |---|---:|---|
-  | `assets/index-B94Y9q7K.css` | 18,674 | `48D704328CC092BC897ED13EE3B1EE11421281013B930E947D1C2D25657A1FC3` |
-  | `assets/index-rJLSNRcR.js` | 145,347 | `6FC247AC92CB9CE53E5280DEBF4CA49870E989595936C375581FA5A94745C1F6` |
-  | `index.html` | 899 | `C203281FD5001C62F2558F38DFA82ADC3AE620852AE6E28B86A1917AAD984508` |
+  | `assets/index-BjQ0pqo0.css` | 18,674 | `BC79B6F84CD4A832BE24633B0AB139E0D5FE2BA9D62463EC66883A451827F7DF` |
+  | `assets/index-Dt4wG1oY.js` | 145,347 | `6FC247AC92CB9CE53E5280DEBF4CA49870E989595936C375581FA5A94745C1F6` |
+  | `index.html` | 899 | `A3DE753057F92E2124265D5335E54E9CDA8C2621CFE8991C65A09C880573CE98` |
 
 - Source freeze:
-  `c9fe52db2e4aa22d141acbc9668a80d26854aacb`.
+  `78452fe797ee1f6c98ae06dba6f0aa2ffceb127c`.
 - Pages archive:
-  `release/phrasegarden-0.1.0-preview.2-pages.zip`, 44,011 bytes,
+  `release/phrasegarden-0.1.0-preview.2-pages.zip`, 44,006 bytes,
   SHA-256
-  `DFEE850B331143A1F1EDA1685457E5576DAC49F23802A1D6BFF3D960DECE363F`.
+  `F76C665A2919B5403627667CB76D72015B0A4E79C0D95D653B4AD9EB6D4C15CF`.
 - Byte manifest SHA-256:
-  `061DFE27D6EC3781A63C724B15D334D89856246281CBCC160D196430B902C38C`.
+  `54EA72417BFCC34246E937A427DD0C7BFD17132FA9EB8C42D7B173D51CEBAE38`.
 - Local artifact qualification: all 9/9 `SHA256SUMS` entries and all 3/3
   extracted Preview 2 Pages files matched their recorded byte lengths and
   SHA-256 values. ZIP member paths use forward slashes.
-- Independent read-only publication review returned PASS with zero open
-  P1/P2/P3 findings. It independently verified the 9/9 checksum ledger, 3/3
-  Preview 2 archive members and current `dist`, exact source-commit binding,
-  byte preservation of every Preview 1 artifact/sample against the old tag,
-  version-separation honesty, and no post-freeze runtime/code changes.
+- GitHub Actions run `30096526036` failed closed before deployment: Ubuntu
+  Chromium measured the default Home primary-action bottom at `742.140625` px
+  in a 720 px viewport. This was classified as an interface failure. The
+  existing negative assertion remains unchanged; large-screen top/hero spacing
+  was reduced by 28 px in the smallest responsible CSS layer. The focused
+  browser case and all 9/9 local Edge journeys then passed.
+- The corrected package's follow-up independent review returned PASS with zero
+  open P1/P2/P3 findings. It independently reverified all 9/9 checksum
+  targets, all 3/3 archive entries against the manifest and current `dist`,
+  exact corrected-source binding, byte preservation of the old release,
+  unchanged viewport assertion, version honesty, and zero post-freeze runtime
+  drift.
 
 - Current screenshots:
   `artifacts/screenshots/home-desktop.png`,

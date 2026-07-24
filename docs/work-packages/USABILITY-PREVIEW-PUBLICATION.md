@@ -78,3 +78,12 @@ Report the exact source and release commits, tag, release URL, Pages URL,
 artifact hashes, workflow status, production-byte comparison, journey result,
 known Preview limitations, and all Completed, Failed, Blocked, Unchanged, and
 Skipped states. Update `docs/PROJECT-STATE.md`, then stop.
+
+## Failure-directed correction
+
+GitHub Actions run `30096526036` failed closed before deployment. At the
+default 1280×720 Ubuntu Chromium viewport, the Home primary-action bottom was
+`742.140625` px, exceeding the 720 px viewport. Classification: interface.
+The existing first-viewport assertion remains the permanent regression
+fixture. The smallest responsible fix reduced only large-screen Home and hero
+top spacing by 28 px; no acceptance criterion or prompt behavior was changed.
