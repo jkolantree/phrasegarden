@@ -87,3 +87,18 @@ default 1280×720 Ubuntu Chromium viewport, the Home primary-action bottom was
 The existing first-viewport assertion remains the permanent regression
 fixture. The smallest responsible fix reduced only large-screen Home and hero
 top spacing by 28 px; no acceptance criterion or prompt behavior was changed.
+
+## Completed handoff
+
+- Corrected source:
+  `78452fe797ee1f6c98ae06dba6f0aa2ffceb127c`
+- Package/tag:
+  `6e55e8d142c748de181cd5136076d576d0994e19`
+- Corrected Actions and Pages run: `30097157552`
+- Release: `v0.1.0-preview.2`
+- Pages ZIP: 44,006 bytes,
+  `F76C665A2919B5403627667CB76D72015B0A4E79C0D95D653B4AD9EB6D4C15CF`
+- Manifest:
+  `54EA72417BFCC34246E937A427DD0C7BFD17132FA9EB8C42D7B173D51CEBAE38`
+- Remote evidence: 3/3 release attachments and 3/3 production Pages files
+  matched local bytes; the production create/copy/download journey passed.

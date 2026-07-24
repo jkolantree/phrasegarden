@@ -4,10 +4,12 @@ Updated: 2026-07-24
 
 ## Current state
 
-Shipping milestone D — usability Preview publication. PhraseGarden
-`0.1.0-preview.1` remains the immutable published baseline. The reviewed
-plain-language and zero-friction usability work is now the authorized
-`0.1.0-preview.2` publication candidate.
+Shipping milestone D — public usability Preview. PhraseGarden
+`0.1.0-preview.2` is committed, tagged, released as a public pre-release, and
+deployed at <https://jkolantree.github.io/phrasegarden/>. Release tag
+`v0.1.0-preview.2` identifies exact package commit
+`6e55e8d142c748de181cd5136076d576d0994e19`. The previous Preview remains
+immutable.
 
 Two bounded usability packages are included:
 
@@ -58,21 +60,21 @@ provenance remains `0.1.0-preview.1`.
 |---|---|---|
 | Milestone A — compiler and authored data | Completed | Seven exact language profiles; EN↔JA Preview pack; Written Translator and Live Voice Coach; pure resolution/compiler; five snapshots in `samples/0.1.0-preview.1/` |
 | Milestone B — Woven Conversation slice | Completed | Memory-only Home → Review direct path plus optional Builder in `src/app/App.tsx`; behavior summary, provenance, copy, edit, restore, and exact text download |
-| Milestone C — published automated QA | Unchanged | Published `0.1.0-preview.1`: 270/270 Vitest and 4/4 sequential Edge Playwright/axe journeys; dual typechecks, Vite build, and release audit passed |
+| Milestone C — published automated QA | Completed | `0.1.0-preview.2`: 271/271 Vitest and 9/9 sequential Playwright/axe journeys passed locally and on Ubuntu; dual typechecks, Vite build, release audit, and domain scan passed |
 | Keyboard-only primary journey | Completed | Focused Playwright path uses Tab/Enter through skip link, selectors, tool, controls, generation, copy, download, readable prompt surface, and editing |
 | Narrow/reflow and visual inspection | Completed | Playwright 320 px, 200%, and 400%-equivalent checks; five current screenshots inspected with no visible clipping, overlap, or stray focused skip link |
 | Deterministic-domain boundary | Completed | Forbidden-API scan returned zero matches in `src/domain` |
 | Milestone D — documentation and packaging | Completed | Public docs, samples, Pages workflow, publication manifest, byte manifest, Pages archive, and `SHA256SUMS` are present locally |
 | Published release independent review | Unchanged | Published `0.1.0-preview.1` verdict: PASS with no open P1/P2/P3 findings |
 | Gate 2I review-evidence semantics | Unchanged | ADR-022 and its pure structural validator remain separate from this candidate; no fabricated review or tier evidence was added |
-| Plain-language usability pass | Completed locally | Home explains what a prompt is and where to use it; Builder exposes intentional labels for every option; Review leads with plain-language choices and keeps technical identifiers in disclosure |
+| Plain-language usability pass | Completed | Published Home explains what a prompt is and where to use it; Builder exposes intentional labels; Review leads with plain-language choices and keeps technical identifiers in disclosure |
 | Plain-language independent review | Completed | Independent current-byte review returned PASS with no open P1/P2/P3 findings after the final option-label and empty-caution fixes |
-| Zero-friction entry and safe handoff | Completed locally | Direct Home creation, mobile Quick start, optional Builder, initial-viewport Home/Review actions, explicit paste order and modality-aware destination privacy, visible action feedback, artifact-preserving navigation, replacement confirmation, and native refresh/close warning |
+| Zero-friction entry and safe handoff | Completed | Published direct Home creation, mobile Quick start, optional Builder, initial-viewport actions, explicit paste order, modality-aware privacy, visible feedback, artifact-preserving navigation, and edit-loss protection |
 | Current local automated QA | Completed | 271/271 Vitest; 9/9 sequential Edge Playwright/axe journeys; dual typechecks, Vite build, release audit, forbidden-domain scan, and diff check passed |
 | Current usability independent review | Completed | Final quiescent current-byte review: PASS with no open P1/P2/P3 findings; 20-file start/end fingerprint had zero drift |
 | First Preview 2 packaging review | Superseded | It passed, but GitHub Actions run `30096526036` exposed a Chromium viewport failure before tagging, release, or deployment; its package bytes were replaced |
 | Corrected Preview 2 packaging review | Completed | Follow-up independent read-only review: PASS with zero P1/P2/P3; 9/9 checksums, 3/3 archive members, exact source binding, old-release preservation, unchanged regression assertion, and zero post-freeze runtime drift verified |
-| `0.1.0-preview.2` publication package | Completed locally | Corrected source frozen at `78452fe797ee1f6c98ae06dba6f0aa2ffceb127c`; refreshed archive, manifest, checksum ledger, full local QA, and independent review pass; remote replacement push remains |
+| `0.1.0-preview.2` publication package | Completed | Corrected source `78452fe797ee1f6c98ae06dba6f0aa2ffceb127c`; exact package/tag commit `6e55e8d142c748de181cd5136076d576d0994e19`; local, CI, release-asset, Pages-byte, and production-journey checks passed |
 | In-app localhost manual inspection | Blocked | The Codex in-app Browser rejected further local URL navigation by policy; automated Edge inspection and direct screenshot inspection passed, but this is not claimed as an in-app manual browser pass |
 | External linguistic review | Deferred | Preview labels and limitations state that English↔Japanese review is incomplete |
 | Interpreter | Deferred | Deliberately outside this usability candidate; ADR-013 keeps it as the next uncompleted ordered Gate 3 slice |
@@ -82,12 +84,13 @@ provenance remains `0.1.0-preview.1`.
 | Publication authorization and license files | Completed | User authorized the exact plan; `LICENSE` is MIT and `LICENSE-CONTENT` applies CC BY 4.0 to maintained content |
 | Public repository and `main` | Completed | <https://github.com/jkolantree/phrasegarden>; exact local and remote refs matched after push |
 | Previous versioned GitHub release | Unchanged | `v0.1.0-preview.1`; qualified Pages ZIP, byte manifest, and `SHA256SUMS` remain immutable |
-| Current versioned GitHub release | In progress | Proposed unused tag `v0.1.0-preview.2`; release creation follows local packaging and fast-forward push |
-| Published GitHub Pages baseline | Unchanged | `0.1.0-preview.1`, workflow run `30065621412`, attempt 2; <https://jkolantree.github.io/phrasegarden/> |
+| Current versioned GitHub release | Completed | Public pre-release `v0.1.0-preview.2` at <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>; tag resolves to `6e55e8d142c748de181cd5136076d576d0994e19` |
+| GitHub Pages deployment | Completed | Corrected workflow run `30097157552`; build and deploy jobs passed; <https://jkolantree.github.io/phrasegarden/> |
+| Production bytes and journey | Completed | 3/3 Pages files and 3/3 release attachments matched local bytes; production EN→JA Written creation, copy, and download passed |
 
 ## Current verification evidence
 
-### `0.1.0-preview.2` publication candidate
+### Published `0.1.0-preview.2`
 
 - Focused UI-copy and prompt-artifact tests: 2 files, 4/4 passed.
 - Full unit and snapshot suite: 12 files, 271/271 passed.
@@ -137,6 +140,25 @@ provenance remains `0.1.0-preview.1`.
   exact corrected-source binding, byte preservation of the old release,
   unchanged viewport assertion, version honesty, and zero post-freeze runtime
   drift.
+- Corrected GitHub Actions run `30097157552` passed 271/271 Vitest, both
+  typechecks, the Vite build, release audit, 9/9 Ubuntu Chromium
+  Playwright/axe journeys, Pages artifact upload, and deployment.
+- Public pre-release
+  <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
+  resolves to package commit
+  `6e55e8d142c748de181cd5136076d576d0994e19`.
+- The ZIP, manifest, and `SHA256SUMS` attachments were downloaded from their
+  public release URLs. All 3/3 matched their exact local byte lengths and
+  SHA-256 values; `SHA256SUMS` itself is 1,008 bytes with SHA-256
+  `47B0294830BB8E6E5B68B4FEB170691E41F02745736CAF5396FDF51879DBBFDF`.
+- Production `index.html`, CSS, and JavaScript were independently downloaded
+  from Pages and matched all 3/3 manifest path, length, and SHA-256 bindings.
+- A clean production Microsoft Edge journey generated the default
+  English→Japanese Written prompt, confirmed the Preview limitation, copied
+  all 5,155 characters exactly after Windows clipboard newline normalization,
+  and downloaded byte-identical text as
+  `phrasegarden-en-ja-written-translator-0.1.0-preview.1.txt`. The filename
+  correctly reflects unchanged compiler provenance.
 
 - Current screenshots:
   `artifacts/screenshots/home-desktop.png`,
@@ -212,9 +234,10 @@ provenance remains `0.1.0-preview.1`.
   satisfies the request.
 - Hosted infrastructure may retain ordinary request logs even though
   PhraseGarden has no project analytics or telemetry.
-- The archive proves captured build bytes. Production Pages bytes were
-  independently downloaded and matched, but this does not by itself prove
-  UI-mediated download identity for the GitHub release attachment.
+- The archive, direct GitHub release-attachment downloads, direct production
+  Pages downloads, and the in-product prompt download were verified as
+  separate transport boundaries. This evidence does not generalize to every
+  browser, destination tool, or future host response.
 - Source code is MIT-licensed. Maintained prompts/content are CC BY
   4.0-licensed under `LICENSE-CONTENT`.
 - GitHub currently emits a non-blocking deprecation warning because several
@@ -228,10 +251,6 @@ backend, or runtime AI work was performed.
 
 ## Exact next eligible action
 
-Complete the authorized `0.1.0-preview.2` publication package: bind the audited
-Pages bytes to a new manifest and archive, fast-forward public `main`, create
-the immutable tag and release, deploy Pages, and compare the production bytes.
-
-After that handoff, the next eligible implementation package under the accepted
-gate order is the bounded Gate 3 Interpreter slice. It requires its own task
-contract and must pass before Gate 4 local ownership begins.
+The next eligible implementation package under the accepted gate order is the
+bounded Gate 3 Interpreter slice. It requires its own task contract and must
+pass before Gate 4 local ownership begins.

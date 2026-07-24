@@ -60,3 +60,23 @@ qualifies both release archives, both manifests, and the published prompt
 samples. An archive is not by itself evidence of hosted release-download
 identity or UI-mediated download identity. Repository refs, release assets,
 and production responses require separate remote verification.
+
+## Preview 2 publication evidence
+
+- Release source/tag commit:
+  `6e55e8d142c748de181cd5136076d576d0994e19`
+- Corrected source commit named by the byte manifest:
+  `78452fe797ee1f6c98ae06dba6f0aa2ffceb127c`
+- GitHub Actions build and Pages deployment:
+  <https://github.com/jkolantree/phrasegarden/actions/runs/30097157552>
+- Public release:
+  <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
+- Public Pages:
+  <https://jkolantree.github.io/phrasegarden/>
+
+The three attached release files were downloaded through their public release
+URLs and matched local byte lengths and SHA-256 values exactly. The three
+production Pages files were downloaded separately and matched every manifest
+binding. A separate production-browser journey verified default
+English→Japanese Written creation, copied text after platform newline
+normalization, and byte-identical prompt download.
