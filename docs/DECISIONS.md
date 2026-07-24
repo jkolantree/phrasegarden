@@ -1,7 +1,7 @@
 # PhraseGarden decision records
 
 Status: Gate 0 source of durable decisions  
-Updated: 2026-07-23
+Updated: 2026-07-24
 
 Changes supersede an ADR by adding a new record and linking both records. Existing rationale is not rewritten.
 
@@ -408,3 +408,41 @@ immutable; current-byte tests record the exact declared transition. The UI
 exposes only turn mode and Interpreter clarification, not the overlapping
 common ambiguity or unknown-name controls. Bidirectional or simultaneous
 interpreting requires a later explicit schema and pair-resolution decision.
+
+## ADR-026 — Current state is a cursor, not the evidence archive
+
+Status: Accepted
+Date: 2026-07-24
+Supersedes: the use of `PROJECT-STATE.md` as both live cursor and historical
+release ledger
+
+**Context:** The live state file grew to 337 lines because it carried detailed
+proof for two published releases and an unpublished candidate. Resuming work
+required rereading history, and activity could be mistaken for progress.
+Recording a review verdict inside the reviewed candidate also changed the
+reviewed bytes.
+
+**Decision:** `PROJECT-STATE.md` contains only the current resume cursor,
+durable boundaries, compact milestone state, known blockers, and exact next
+action. Detailed release and candidate proof moves to named, versioned evidence
+ledgers. Active requirements use stable IDs in `TRACEABILITY.md`. Work follows
+the state machine, retry budgets, and Return Desk in `RELEASE-WORKFLOW.md` and
+`RETURN-DESK.md`.
+
+A candidate fingerprint identifies the product/source checkpoint under work;
+administrative evidence can reference that checkpoint without pretending to be
+part of its review. Qualification evidence uses layered manifests so an
+attestation never claims to be included in the hash it cites. No review,
+qualification, or publication state advances merely because commands ran.
+
+**Rationale:** One small cursor makes the next safe action obvious, while
+separate ledgers preserve negative results and immutable proof without turning
+every package into a historical re-audit. Layered evidence removes self-hash
+and post-review mutation ambiguity.
+
+**Consequences:** Every package closes with one current-state update and one
+local checkpoint. Repeated failures exhaust explicit budgets and return for a
+decision instead of looping. Historical ledgers are corrected only by a new
+append-only note that preserves the prior claim; published evidence is never
+silently rewritten. Remote verification and publication remain separately
+authorized actions.
