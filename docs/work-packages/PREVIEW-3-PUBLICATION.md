@@ -35,6 +35,12 @@ Each subpackage has its own exact owned paths, acceptance, checks, independent
 review, and local checkpoint. Their clean combined descendant becomes the
 source freeze; neither subpackage alone is a publication candidate.
 
+The source-claims subpackage is checkpointed at
+`aa75e60040ad2eeb5b55223fa83ff87b71031eaf`. The same-byte pipeline is the
+current bounded package and is itself split into archive-bindings and
+Pages-policy checkpoints at the review-size limit. The combined source is not
+frozen until both pass.
+
 Source-freeze phase:
 
 - Add missing axe coverage for Advanced-open Written and Voice, Voice Review,
@@ -68,6 +74,7 @@ package.json
 scripts/release-audit.mjs
 scripts/verify-release-archive.py
 tests/e2e/preview.spec.ts
+tests/release/release-audit.test.ts
 tests/release/test_verify_release_archive.py
 ```
 
@@ -122,7 +129,7 @@ Publication phase:
 | `P3-04` | Manual screenshot inspection covers desktop and 320 px closed/open states with no visible clipping, overlap, or page overflow. |
 | `P3-05` | The release archive contains exactly the manifest paths and bytes from the single qualified `dist`; ZIP paths are canonical. |
 | `P3-06` | CI extracts and verifies the checked-in ZIP, runs tests against those bytes, and uploads the same extracted directory without rebuilding it. |
-| `P3-07` | `SHA256SUMS` preserves every old target and adds exact Preview 3 archive, manifest, and any new samples. |
+| `P3-07` | `SHA256SUMS` preserves all nine old targets and adds exactly the Preview 3 archive and manifest. |
 | `P3-08` | Independent review reports zero open P1/P2/P3 for frozen source, package, claims, and rollback boundary. |
 | `P3-09` | Remote `main`, tag, release assets, and Pages deployment use only the exact confirmed commits and bytes. |
 | `P3-10` | Public release assets and every Pages file re-download with exact expected length and SHA-256. |
@@ -133,7 +140,8 @@ Publication phase:
 
 1. Focused accessibility/browser cases and documentation scans.
 2. Full Vitest and both typechecks.
-3. Freeze and commit the clean source.
+3. Checkpoint archive bindings and Pages policy; their clean combined
+   descendant is the same-byte pipeline checkpoint and source freeze.
 4. Build once, audit, run Playwright directly against that `dist`, and inspect
    screenshots.
 5. Package, hash, extract, compare, and independently review exact bytes.

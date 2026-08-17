@@ -197,15 +197,40 @@ therefore split into separately reviewed and checkpointed source-claims and
 same-byte-pipeline packages. No acceptance criterion or negative test is
 removed.
 
+The first bounded source-claims review then withheld PASS for two P3
+documentation-control failures: the umbrella's exact source union omitted
+both subpackage contracts, and the bottom resume cursor skipped the required
+pipeline checkpoint. Repair 2 corrected only those two controls. Re-review
+passed with zero open P1/P2/P3 on exact staged fingerprint
+`c4cf32696e838036a3fe80516a481edf0280f430a9d8b680244992aab98bafaf`;
+checkpoint `aa75e60040ad2eeb5b55223fa83ff87b71031eaf` preserves the exact 13
+reviewed paths.
+
+The pre-stage same-byte audit then returned the pipeline with one P1, four P2,
+and three P3 findings: manual dispatch was not main-only; packaging identity
+did not constrain one parent and seven paths; the parent checksum ledger could
+be deleted; Windows-drive and case-colliding paths were host-dependent;
+actions used movable tags; the post-browser audit followed symlinks; archive
+decompression was unbounded; and permanent negative coverage was incomplete.
+The projected repaired package crossed 700 net lines, so process split 2
+creates separately reviewed archive-bindings and Pages-policy checkpoints
+without removing an invariant or negative case.
+
+The first archive check batch stopped because bundled `pnpm` could not find
+bundled Node; the exact pinned-path rerun passed. Safety/usage controls blocked
+a synthetic retry, cache deletion, and remote action-ref read without
+workaround. Twelve archive regressions and all nine old checksums passed; the
+cache stays unstaged and Pages policy stays blocked on exact action refs.
+
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
-| `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; compiler/artifact versions remain unchanged. | prerelease identity only | verified / source-claims review |
+| `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; compiler/artifact versions remain unchanged. | prerelease identity only | verified / full source freeze |
 | `P3-02` | `preview.spec.ts` adds Written/Voice Advanced-open axe, Voice Review axe, and 320 px Voice-open overflow coverage. | named automated accessibility evidence | verified / full source run |
 | `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | open / source freeze |
 | `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | open / source freeze |
-| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | open / package |
-| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | separate pipeline package / not staged here |
-| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum ledger | separate pipeline package / P2 preserved |
+| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | implemented / archive-bindings review |
+| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | returned / Pages-policy repair |
+| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | implemented / archive-bindings review |
 | `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | open / review |
 | `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | open / exact confirmation |
 | `P3-10` | Unauthenticated asset and Pages downloads match every local length/hash. | captured public-byte identity | open / publication |

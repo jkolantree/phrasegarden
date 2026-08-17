@@ -6,15 +6,15 @@ Updated: 2026-07-24
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-SOURCE-CLAIMS` |
+| `activePackage` | `PREVIEW-3-ARCHIVE-BINDINGS` |
 | `state` | `QUIESCENT_AWAITING_REVIEW` |
-| `candidateFingerprint` | product base `e96f4b51a3bc49102acd66361b1a88d38f40e472`, tree `82d7c972a6272dd4ad66abdbf09b1e92196cf3ef`; Preview 3 source is not frozen yet |
-| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, and `G3-ADV-01`–`G3-ADV-09` verified; `P3-01`–`P3-12` active |
-| `nextKnownBlocker` | independent review and exact checkpoint of the source-claims subpackage |
-| `lastCompletedCheck` | source claims: focused Playwright/axe 2/2, 277/277 Vitest, dual typechecks, zero forbidden-domain matches, screenshot and diff inspection pass |
-| `retryCounters` | process package: command 2, review repair 2, receipt correction 1, formatting repair 1; `G3.5`: command 5, implementation repair 0, review repair 1; Preview 3: command 2, review repair 1, process split 1 |
+| `candidateFingerprint` | source-claims checkpoint `aa75e60040ad2eeb5b55223fa83ff87b71031eaf`, tree `0fb8cab046585700c09b7234fc6480d1dcf5e632`; Preview 3 source is not frozen yet |
+| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, and Preview 3 source claims `P3-01`–`P3-02` verified; `P3-03`–`P3-12` active |
+| `nextKnownBlocker` | independent review and exact six-path checkpoint of archive bindings |
+| `lastCompletedCheck` | archive bindings: 12/12 focused tests, 277/277 Vitest, dual typechecks, nine historical checksums, and zero forbidden-domain matches passed |
+| `retryCounters` | process package: command 2, review repair 2, receipt correction 1, formatting repair 1; `G3.5`: command 5, implementation repair 0, review repair 1; Preview 3: command 10, review repair 3, process split 2 |
 | `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
-| `exactNextAction` | review and checkpoint source claims, then review and checkpoint the separately bounded same-byte pipeline |
+| `exactNextAction` | independently review and checkpoint archive bindings, then contract and resolve the separately bounded Pages policy |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -26,8 +26,10 @@ It includes Written Translator and Live Voice Coach.
 
 The local `release/next` branch adds the independently reviewed Gate 3
 Interpreter at `c2e6104`, process controls at `e293426`, and progressive
-Advanced settings at `e96f4b5`. The proposed package identity is
-`0.1.0-preview.3`; it is not yet frozen, packaged, published, or deployed.
+Advanced settings at `e96f4b5`, and the independently reviewed Preview 3
+source claims at `aa75e60`. The proposed package identity is
+`0.1.0-preview.3`; its combined source is not yet frozen, packaged, published,
+or deployed.
 
 Detailed proof is preserved outside this cursor:
 
@@ -74,8 +76,9 @@ Detailed proof is preserved outside this cursor:
 | Gate 3 Interpreter | completed locally | `c2e6104`; 277/277 Vitest, 10/10 Edge/axe, dual typechecks, build/audit, independent PASS |
 | Next-release process controls | completed | `PC-01`–`PC-10`, reviewed `PC-CORE-1`, normalized `PC-CORE-2`, and staged-byte transport PASS |
 | Gate 3 Advanced Controls | completed locally | `G3-ADV-CORE-2`; 277/277 Vitest, 11/11 Edge/axe, dual typechecks, build/audit, protected paths unchanged, desktop/320 px closed/open screenshots, independent PASS |
-| Preview 3 source claims and accessibility | current candidate | bounded contract; focused checks green, independent review pending |
-| Preview 3 same-byte pipeline | next package | implementation remains unstaged until source-claims checkpoint |
+| Preview 3 source claims and accessibility | completed locally | exact 13-path checkpoint `aa75e60`; focused checks and independent PASS |
+| Preview 3 archive bindings | current candidate | portable archive, exact ledger, source-parent, and seven-path packaging controls under validation |
+| Preview 3 Pages policy | blocked next package | immutable action refs and main-only deployment remain unresolved |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -110,7 +113,8 @@ where its exact bytes remain bound.
 
 ## Exact next eligible action
 
-Pass independent review and checkpoint the source-claims package, then review
-and checkpoint the same-byte pipeline package. Only after both checkpoints
-combine cleanly may the source be frozen, built once, and packaged by exact
-bytes. Do not begin Gate 4 or claim stable release readiness.
+Pass focused checks and independent review for archive bindings, then
+checkpoint its exact owned paths. Next, resolve and review the separately
+bounded Pages policy. Only their clean combined descendant may become the
+source freeze, be built once, and be packaged by exact bytes. Do not begin
+Gate 4 or claim stable release readiness.
