@@ -571,3 +571,15 @@ cannot serve as untouched or independent release evidence.
 | `P4-FOLD-04` | Mobile, keyboard, bidi, reduced-motion, zoom/reflow, and axe journeys remain enabled. | named browser/accessibility coverage | verified / 12/12 local Edge/axe |
 | `P4-FOLD-05` | No compiler, prompt, language, tier, privacy, public identity, or existing Preview 1–3 archive, manifest, ledger-prefix, tag, or public-asset bytes change in this package. Future Preview 4 distributable bytes are intentionally not claimed unchanged. | bounded development correction | verified / exact seven-path diff and immutable public identities |
 | `P4-FOLD-06` | The prior substantive seven-path freeze, including the public-state transition regression, receives independent UI and release review; the current Project/Trace state-only closure inherits no substantive verdict and is bound only by a separate administrative rebind. | reviewed development checkpoint | verified / two substantive PASSes plus separate administrative rebind, zero open P1/P2/P3 |
+
+### Preview 4 closed release tooling
+
+Source: ADR-035 and `PREVIEW-4-RELEASE-TOOLING.md`. The fixed local
+candidate extracts one shared engine, retains a pinned Preview 3 adapter, and
+adds a pinned Preview 4 adapter with committed-version and predecessor-ledger
+bindings. Synthetic fixtures are development/regression evidence only.
+
+| ID | Deterministic owner | State / next blocker |
+|---|---|---|
+| `P4-RT-01`–`P4-RT-07` | Shared engine, closed specs, adapters, and cross-version negatives. | six unchanged substantive files retain exact-byte PASS |
+| `P4-RT-08` | Full gates, exact accounting, and independent frozen-byte review. | substantive PASS retained / state-only closure separately rebound; checkpoint pending |

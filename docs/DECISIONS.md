@@ -736,3 +736,18 @@ truth remain governance/evidence claims rather than validator conclusions.
 path. Any future embedded qualification schema is a separately versioned
 migration. Until `P` exists and its evidence record is complete, package bytes
 are structurally bound but not release-qualified or publication-ready.
+
+## ADR-035 — Release tooling selects one closed immutable specification
+
+Status: Accepted
+Date: 2026-08-18
+
+**Decision:** One shared deterministic engine receives a frozen internal
+`ReleaseSpec`; tiny Preview 3 and Preview 4 adapters select exact IDs. No CLI,
+file, alias, environment, locale, clock, network, or default can choose a
+version. The committed `package.json` version, release paths, manifest identity,
+and predecessor ledger must agree before output.
+
+**Consequences:** Preview 3 behavior stays available through its pinned adapter
+without copied security logic. Preview 4 remains blocked until the archive
+verifier and Pages workflow select the same closed specification.

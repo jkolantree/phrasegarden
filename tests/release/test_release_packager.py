@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+from dataclasses import replace
+from functools import partial
 import hashlib
 import io
 import json
@@ -21,31 +23,41 @@ import zlib
 from zipfile import ZIP_STORED, ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
+BASE = "3a2cfd0f81a6a9513991eef4f3b1e604185536bc"
 SCRIPT = ROOT / "scripts" / "preview3-package.py"
-MODULE = runpy.run_path(str(SCRIPT))
+P4_SCRIPT = ROOT / "scripts" / "preview4-package.py"
+CORE = ROOT / "scripts" / "release_packager.py"
+MODULE = runpy.run_path(str(CORE))
+ENGINE_GLOBALS = MODULE["main"].__globals__
 ToolError = MODULE["ToolError"]
-build_source_manifest = MODULE["build_source_manifest"]
+ReleaseSpec = MODULE["ReleaseSpec"]
+RELEASE_SPECS = MODULE["RELEASE_SPECS"]
+PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
+PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
+build_source_manifest = partial(MODULE["build_source_manifest"], PREVIEW3_SPEC)
 canonical_repo_path = MODULE["canonical_repo_path"]
 commit_tree = MODULE["commit_tree"]
-freeze_source = MODULE["freeze_source"]
+freeze_source = partial(MODULE["freeze_source"], PREVIEW3_SPEC)
 git_object_size = MODULE["git_object_size"]
-main = MODULE["main"]
+main = partial(MODULE["main"], PREVIEW3_SPEC)
 MAX_GIT_OUTPUT_BYTES = MODULE["MAX_GIT_OUTPUT_BYTES"]
 reject_config_indirection = MODULE["reject_config_indirection"]
 require_directories = MODULE["require_directories"]
 run_bounded = MODULE["run_bounded"]
-source_entries = MODULE["source_entries"]
-verify_source = MODULE["verify_source"]
+source_entries = partial(MODULE["source_entries"], PREVIEW3_SPEC)
+verify_source = partial(MODULE["verify_source"], PREVIEW3_SPEC)
 validate_paths = MODULE["validate_paths"]
-SOURCE_MANIFEST = MODULE["SOURCE_MANIFEST"]
-STAGE_ROOT = MODULE["STAGE_ROOT"]
-STAGE_ARCHIVE = MODULE["STAGE_ARCHIVE"]
-STAGE_MANIFEST = MODULE["STAGE_MANIFEST"]
-STAGE_LEDGER = MODULE["STAGE_LEDGER"]
-FINAL_ARCHIVE = MODULE["FINAL_ARCHIVE"]
-FINAL_MANIFEST = MODULE["FINAL_MANIFEST"]
-stage_package = MODULE["stage_package"]
-promote_package = MODULE["promote_package"]
+validate_release_specs = MODULE["validate_release_specs"]
+resolve_release_spec = MODULE["resolve_release_spec"]
+SOURCE_MANIFEST = PREVIEW3_SPEC.source_manifest
+STAGE_ROOT = PREVIEW3_SPEC.stage_root
+STAGE_ARCHIVE = PREVIEW3_SPEC.stage_archive
+STAGE_MANIFEST = PREVIEW3_SPEC.stage_manifest
+STAGE_LEDGER = PREVIEW3_SPEC.stage_ledger
+FINAL_ARCHIVE = PREVIEW3_SPEC.final_archive
+FINAL_MANIFEST = PREVIEW3_SPEC.final_manifest
+stage_package = partial(MODULE["stage_package"], PREVIEW3_SPEC)
+promote_package = partial(MODULE["promote_package"], PREVIEW3_SPEC)
 scan_dist = MODULE["scan_dist"]
 
 ARCHIVE_MODULE = runpy.run_path(str(ROOT / "scripts" / "verify-release-archive.py"))
@@ -84,7 +96,7 @@ def commit(root: Path, message: str) -> str:
     return git(root, "rev-parse", "HEAD").decode("ascii").strip()
 
 @contextmanager
-def repository():
+def repository(version: str = PREVIEW3_SPEC.release_version):
     temporary = tempfile.TemporaryDirectory(prefix="phrasegarden-source-test-")
     root = Path(temporary.name)
     try:
@@ -94,7 +106,10 @@ def repository():
         git(root, "config", "user.email", "fixture@example.invalid")
         (root / ".gitignore").write_bytes(b"artifacts/\n")
         (root / "README.md").write_bytes(b"fixture\n")
-        git(root, "add", ".gitignore", "README.md")
+        (root / "package.json").write_bytes(
+            (json.dumps({"version": version}, separators=(",", ":")) + "\n").encode()
+        )
+        git(root, "add", ".gitignore", "README.md", "package.json")
         commit(root, "base")
         (root / "src").mkdir()
         (root / "src" / "value.txt").write_bytes(b"exact source bytes\n")
@@ -105,8 +120,8 @@ def repository():
         temporary.cleanup()
 
 @contextmanager
-def package_repository():
-    with repository() as (root, _):
+def package_repository(spec: ReleaseSpec = PREVIEW3_SPEC):
+    with repository(spec.required_package_version) as (root, _):
         (root / ".gitignore").write_bytes(b"artifacts/\ndist/\n")
         release = root / "release"
         release.mkdir()
@@ -116,27 +131,157 @@ def package_repository():
         (root / "SHA256SUMS").write_bytes(
             f"{digest}  release/old.zip\n".encode("ascii")
         )
+        if spec is PREVIEW4_SPEC:
+            (root / "SHA256SUMS").write_bytes((ROOT / "SHA256SUMS").read_bytes())
+            for path in spec.predecessor_paths:
+                value = (ROOT / path).read_bytes()
+                target = root / path
+                target.write_bytes(value)
         git(root, "add", ".gitignore", "SHA256SUMS", "release/old.zip")
+        if spec is PREVIEW4_SPEC:
+            git(root, "add", *(path.as_posix() for path in spec.predecessor_paths))
         head = commit(root, "package source")
         assets = root / "dist" / "assets"
         assets.mkdir(parents=True)
         (root / "dist" / "index.html").write_bytes(b"<!doctype html>\n")
         (assets / "index-a.css").write_bytes(b"body{}\n")
         (assets / "index-b.js").write_bytes(b"console.log('fixture')\n")
-        frozen = tool(root, "freeze-source", head)
+        adapter = P4_SCRIPT if spec is PREVIEW4_SPEC else SCRIPT
+        frozen = tool(root, "freeze-source", head, adapter=adapter)
         if frozen.returncode != 0:
             raise AssertionError(frozen.stderr)
         yield root, head
 
-def tool(root: Path, command: str, source: str, *, env=None):
+def tool(root: Path, command: str, source: str, *, env=None,
+         adapter: Path = SCRIPT):
     return subprocess.run(
-        [sys.executable, "-B", str(SCRIPT), command,
+        [sys.executable, "-B", str(adapter), command,
          "--source-commit", source],
         cwd=root,
         env=fixture_git_environment() if env is None else env,
         capture_output=True,
         text=True,
     )
+
+class ReleaseSpecificationTest(unittest.TestCase):
+    def assert_failure(self, result, code: str) -> None:
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertRegex(result.stderr, rf"\A{code}: [^\r\n]+\n\Z")
+
+    def test_closed_specs_adapters_and_committed_versions(self) -> None:
+        self.assertEqual(tuple(RELEASE_SPECS), ("preview3", "preview4"))
+        with self.assertRaises(TypeError):
+            RELEASE_SPECS["preview5"] = PREVIEW4_SPEC
+        for value in ("Preview4", "preview-4", "0.1.0-preview.4"):
+            with self.assertRaises(ToolError) as raised:
+                resolve_release_spec(value)
+            self.assertEqual(raised.exception.code, "E-RELEASE-SPEC")
+        for field in ("source_manifest", "stage_root", "final_archive",
+                      "final_manifest", "evidence_path", "publication_contract"):
+            rerouted = replace(PREVIEW4_SPEC,
+                               **{field: Path("changed") / getattr(PREVIEW4_SPEC, field).name})
+            with self.assertRaises(ToolError) as raised:
+                validate_release_specs({"preview3": PREVIEW3_SPEC, "preview4": rerouted})
+            self.assertEqual(raised.exception.code, "E-RELEASE-SPEC")
+        for version, adapter, code in (
+            (PREVIEW4_SPEC.release_version, SCRIPT, "E-RELEASE-SOURCE-VERSION"),
+            (PREVIEW3_SPEC.release_version, P4_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
+        ):
+            with repository(version) as (root, head):
+                self.assert_failure(tool(root, "freeze-source", head,
+                                         adapter=adapter), code)
+        for raw in (b"{}\n", b'{"Version":"0.1.0-preview.3"}\n',
+                    b'{"version":true}\n',
+                    b'{"version":"0.1.0-preview.3","version":"0.1.0-preview.3"}\n',
+                    b'{"version":"0.1.0-preview.3","x":NaN}\n'):
+            with repository() as (root, _):
+                (root / "package.json").write_bytes(raw)
+                git(root, "add", "package.json")
+                head = commit(root, "malformed package identity")
+                self.assert_failure(tool(root, "freeze-source", head),
+                                    "E-RELEASE-SOURCE-VERSION")
+        with repository() as (root, head):
+            attempted = subprocess.run(
+                [sys.executable, "-B", str(SCRIPT), "freeze-source",
+                 "--source-commit", head, "--release", "preview4"],
+                cwd=root, env=fixture_git_environment(), capture_output=True, text=True,
+            )
+            self.assertEqual(attempted.returncode, 2)
+            self.assertFalse((root / SOURCE_MANIFEST).exists())
+
+    def test_preview4_stage_and_predecessor_binding(self) -> None:
+        with package_repository(PREVIEW4_SPEC) as (root, head):
+            staged = tool(root, "stage-package", head, adapter=P4_SCRIPT)
+            self.assertEqual(staged.returncode, 0, staged.stderr)
+            manifest = json.loads((root / PREVIEW4_SPEC.stage_manifest).read_bytes())
+            self.assertEqual((manifest["releaseVersion"], manifest["artifactName"]),
+                             (PREVIEW4_SPEC.release_version,
+                              PREVIEW4_SPEC.archive_name))
+            parent = (root / "SHA256SUMS").read_bytes()
+            self.assertTrue((root / PREVIEW4_SPEC.stage_ledger).read_bytes().startswith(parent))
+            self.assert_failure(tool(root, "freeze-source", head),
+                                "E-RELEASE-SOURCE-VERSION")
+        for mutation in ("reorder", "joint", "prefix", "active"):
+            with self.subTest(mutation=mutation), \
+                    package_repository(PREVIEW4_SPEC) as (root, _):
+                source = root / PREVIEW4_SPEC.source_manifest
+                source.unlink()
+                ledger = root / "SHA256SUMS"
+                lines = ledger.read_bytes().splitlines(keepends=True)
+                if mutation == "reorder":
+                    ledger.write_bytes(b"".join([*lines[:-2], lines[-1], lines[-2]]))
+                    git(root, "add", "SHA256SUMS")
+                elif mutation == "joint":
+                    path = PREVIEW4_SPEC.predecessor_paths[0]
+                    value = b"jointly changed predecessor\n"
+                    (root / path).write_bytes(value)
+                    lines[-2] = (f"{hashlib.sha256(value).hexdigest().upper()}  "
+                                 f"{path.as_posix()}\n").encode()
+                    ledger.write_bytes(b"".join(lines))
+                    git(root, "add", "SHA256SUMS", path.as_posix())
+                elif mutation == "prefix":
+                    lines[0] = b"0" * 64 + lines[0][64:]
+                    ledger.write_bytes(b"".join(lines))
+                    git(root, "add", "SHA256SUMS")
+                else:
+                    ledger.write_bytes(ledger.read_bytes() +
+                        f"{'0' * 64}  {PREVIEW4_SPEC.final_archive.as_posix()}\n".encode())
+                    git(root, "add", "SHA256SUMS")
+                head = commit(root, f"{mutation} predecessor")
+                self.assertEqual(tool(root, "freeze-source", head,
+                                      adapter=P4_SCRIPT).returncode, 0)
+                self.assert_failure(tool(root, "stage-package", head,
+                                         adapter=P4_SCRIPT), "E-PACKAGE-PREDECESSOR")
+
+    def test_preview3_golden_bytes_survive_shared_core_extraction(self) -> None:
+        with package_repository() as (root, head), \
+                tempfile.TemporaryDirectory(prefix="phrasegarden-old-packager-") as temp:
+            expected_source = (root / SOURCE_MANIFEST).read_bytes()
+            (root / SOURCE_MANIFEST).unlink()
+            old_script = Path(temp) / "preview3-package.py"
+            old_script.write_bytes(subprocess.run(
+                ["git", "-c", f"safe.directory={ROOT}", "-C", str(ROOT), "show",
+                 f"{BASE}:scripts/preview3-package.py"], check=True,
+                capture_output=True, env=fixture_git_environment(),
+            ).stdout)
+            old_help = subprocess.run([sys.executable, "-B", str(old_script), "--help"],
+                cwd=root, env=fixture_git_environment(), capture_output=True, text=True)
+            new_help = subprocess.run([sys.executable, "-B", str(SCRIPT), "--help"],
+                cwd=root, env=fixture_git_environment(), capture_output=True, text=True)
+            self.assertEqual((new_help.returncode, new_help.stdout, new_help.stderr),
+                             (old_help.returncode, old_help.stdout, old_help.stderr))
+            self.assertEqual(tool(root, "freeze-source", head,
+                                  adapter=old_script).returncode, 0)
+            self.assertEqual((root / SOURCE_MANIFEST).read_bytes(), expected_source)
+            self.assertEqual(tool(root, "stage-package", head,
+                                  adapter=old_script).returncode, 0)
+            expected_stage = SameBytePackageTest.staged(root)
+            shutil.rmtree(root / STAGE_ROOT)
+            (root / SOURCE_MANIFEST).unlink()
+            self.assertEqual(tool(root, "freeze-source", head).returncode, 0)
+            self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+            self.assertEqual(SameBytePackageTest.staged(root), expected_stage)
 
 class SourceManifestTest(unittest.TestCase):
     def assert_tool_failure(
@@ -157,7 +302,7 @@ class SourceManifestTest(unittest.TestCase):
             raw = output.read_bytes()
             source_tree = git(root, "rev-parse", "HEAD^{tree}").decode().strip()
             expected_files = []
-            for path in [".gitignore", "README.md", "src/value.txt"]:
+            for path in [".gitignore", "README.md", "package.json", "src/value.txt"]:
                 value = git(root, "show", f"HEAD:{path}")
                 expected_files.append({
                     "path": path, "mode": "100644", "bytes": len(value),
@@ -182,7 +327,8 @@ class SourceManifestTest(unittest.TestCase):
                 ["schemaVersion", "kind", "sourceCommit", "sourceTree", "files"],
             )
             paths = [entry["path"] for entry in manifest["files"]]
-            self.assertEqual(paths, [".gitignore", "README.md", "src/value.txt"])
+            self.assertEqual(paths, [".gitignore", "README.md", "package.json",
+                                     "src/value.txt"])
             for entry in manifest["files"]:
                 self.assertEqual(list(entry), ["path", "mode", "bytes", "sha256"])
             report = json.loads(result.stdout)
@@ -390,7 +536,7 @@ class SourceManifestTest(unittest.TestCase):
 
     def test_unexpected_boundary_errors_have_one_stable_code(self) -> None:
         error = io.StringIO()
-        with mock.patch.dict(main.__globals__, {
+        with mock.patch.dict(ENGINE_GLOBALS, {
             "verify_source": mock.Mock(side_effect=PermissionError)
         }), mock.patch.object(sys, "argv", [str(SCRIPT), "verify-source",
                                              "--source-commit", "0" * 40]), \
@@ -429,7 +575,7 @@ class SourceManifestTest(unittest.TestCase):
                 manifest_read = mock.Mock(side_effect=lambda *_, **__: (
                     events.append("read"), b"{}\n"
                 )[1])
-                with mock.patch.dict(verify_source.__globals__, {
+                with mock.patch.dict(ENGINE_GLOBALS, {
                     "build_source_manifest": mock.Mock(return_value=(b"{}\n", manifest)),
                     "require_directories": directories,
                     "read_regular": manifest_read,
@@ -473,7 +619,7 @@ class SourceManifestTest(unittest.TestCase):
     def test_raw_tree_topology_and_object_preflight_fail_before_blob_read(self) -> None:
         root_id, first_id, second_id = "1" * 40, "2" * 40, "3" * 40
         slash_tree = b"100644 a/b\0" + bytes.fromhex(first_id)
-        with mock.patch.dict(source_entries.__globals__, {
+        with mock.patch.dict(ENGINE_GLOBALS, {
             "git_object": mock.Mock(return_value=slash_tree)
         }), self.assertRaises(ToolError) as slash:
             source_entries(root_id)
@@ -482,7 +628,7 @@ class SourceManifestTest(unittest.TestCase):
                           + b"40000 a\0" + bytes.fromhex(second_id))
         objects = mock.Mock(side_effect=lambda _, object_id, __:
                             collision_tree if object_id == root_id else b"")
-        with mock.patch.dict(source_entries.__globals__, {"git_object": objects}), \
+        with mock.patch.dict(ENGINE_GLOBALS, {"git_object": objects}), \
                 self.assertRaises(ToolError) as collision:
             source_entries(root_id)
         self.assertEqual(collision.exception.code, "E-SOURCE-PATH-COLLISION")
@@ -500,7 +646,7 @@ class SourceManifestTest(unittest.TestCase):
         one_blob = b"100644 value\0" + bytes.fromhex(first_id)
         per_blob_content = mock.Mock(side_effect=lambda _, object_id, __:
                                      one_blob if object_id == root_id else b"unreachable")
-        with mock.patch.dict(source_entries.__globals__, {
+        with mock.patch.dict(ENGINE_GLOBALS, {
             "git_object": per_blob_content,
             "git_object_size": mock.Mock(side_effect=ToolError(
                 "E-SOURCE-BLOB-LIMIT", "blob byte budget exceeded"
@@ -512,7 +658,7 @@ class SourceManifestTest(unittest.TestCase):
 
         content = mock.Mock(side_effect=lambda _, object_id, __:
                             one_blob if object_id == root_id else b"unreachable")
-        with mock.patch.dict(source_entries.__globals__, {
+        with mock.patch.dict(ENGINE_GLOBALS, {
             "git_object": content,
             "git_object_size": mock.Mock(return_value=2),
             "MAX_TOTAL_BYTES": 1,
@@ -526,7 +672,7 @@ class SourceManifestTest(unittest.TestCase):
             original = Path.cwd()
             os.chdir(root)
             try:
-                globals_ = build_source_manifest.__globals__
+                globals_ = ENGINE_GLOBALS
                 for name, value, code in (
                     ("MAX_FILES", 1, "E-SOURCE-FILE-LIMIT"),
                     ("MAX_TREES", 0, "E-SOURCE-TREE-LIMIT"),
@@ -551,11 +697,14 @@ class SourceManifestTest(unittest.TestCase):
 
 class SameBytePackageTest(unittest.TestCase):
     def assert_package_failure(self, root: Path, head: str, command: str,
-                               code: str) -> None:
+                               code: str, message: str | None = None) -> None:
         result = tool(root, command, head)
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertEqual(result.stdout, "")
-        self.assertRegex(result.stderr, rf"\A{re.escape(code)}: [^\r\n]+\n\Z")
+        if message is None:
+            self.assertRegex(result.stderr, rf"\A{re.escape(code)}: [^\r\n]+\n\Z")
+        else:
+            self.assertEqual(result.stderr, f"{code}: {message}\n")
 
     @staticmethod
     def staged(root: Path) -> dict[Path, bytes]:
@@ -687,7 +836,7 @@ class SameBytePackageTest(unittest.TestCase):
                 head = commit(root, "case-variant future path")
                 self.assertEqual(tool(root, "freeze-source", head).returncode, 0)
                 self.assert_package_failure(root, head, "stage-package",
-                                            "E-PACKAGE-LEDGER")
+                    "E-PACKAGE-LEDGER", "source ledger has a duplicate or Preview 3 path")
                 self.assertFalse((root / STAGE_ROOT).exists())
 
     def test_hardlinked_ledger_fails_before_final_writes(self) -> None:
@@ -706,15 +855,15 @@ class SameBytePackageTest(unittest.TestCase):
         with package_repository() as (root, head):
             self.assertEqual(tool(root, "stage-package", head).returncode, 0)
             parent = (root / "SHA256SUMS").read_bytes()
-            original_verify = promote_package.__globals__["verify_package_stage"]
-            def drift_after_verify(source: str):
-                values = original_verify(source)
+            original_verify = ENGINE_GLOBALS["verify_package_stage"]
+            def drift_after_verify(spec: ReleaseSpec, source: str):
+                values = original_verify(spec, source)
                 (root / STAGE_ARCHIVE).write_bytes(values["archive"] + b"x")
                 return values
             cwd = Path.cwd()
             os.chdir(root)
             try:
-                with mock.patch.dict(promote_package.__globals__,
+                with mock.patch.dict(ENGINE_GLOBALS,
                                      {"verify_package_stage": drift_after_verify}), \
                         self.assertRaises(ToolError) as raised:
                     promote_package(head)
@@ -727,7 +876,7 @@ class SameBytePackageTest(unittest.TestCase):
         for target in (STAGE_ARCHIVE, Path("dist/index.html")):
             with self.subTest(target=target), package_repository() as (root, head):
                 self.assertEqual(tool(root, "stage-package", head).returncode, 0)
-                append = promote_package.__globals__["append_ledger"]
+                append = ENGINE_GLOBALS["append_ledger"]
                 def append_then_drift(parent: bytes, tail: bytes) -> None:
                     append(parent, tail)
                     path = root / target
@@ -735,7 +884,7 @@ class SameBytePackageTest(unittest.TestCase):
                 cwd = Path.cwd()
                 os.chdir(root)
                 try:
-                    with mock.patch.dict(promote_package.__globals__,
+                    with mock.patch.dict(ENGINE_GLOBALS,
                                          {"append_ledger": append_then_drift}), \
                             self.assertRaises(ToolError) as raised:
                         promote_package(head)
@@ -768,7 +917,7 @@ class SameBytePackageTest(unittest.TestCase):
             self.assertEqual((root / "SHA256SUMS").read_bytes(), staged[STAGE_LEDGER])
             self.assertTrue(staged[STAGE_LEDGER].startswith(parent))
             self.assert_package_failure(root, head, "promote-package",
-                                        "E-PACKAGE-FINAL-EXISTS")
+                "E-PACKAGE-FINAL-EXISTS", "Preview 3 final output already exists")
 
     def test_promoted_seven_path_commit_passes_existing_verifier(self) -> None:
         with package_repository() as (root, head):

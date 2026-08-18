@@ -6,16 +6,16 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-4-DESKTOP-FOLD-CORRECTION` development repair |
+| `activePackage` | `PREVIEW-4-RELEASE-TOOLING` shared engine and closed specs |
 | `state` | `COMPLETED_LOCAL_CHECKPOINT_AWAITING_COMMIT` |
-| `candidateFingerprint` | immutable public Preview 3 package `0482c8adb4aeefdbb7b6329e6408fd6c29fd96d4`, tag object `12afe35384c59341d39861a47884eb20e56c93cb`, archive `48C2A6CE…DAFA`, release manifest `C72862B5…3B5F`, and ledger `E65D2D74…EA2A`; current correction is an unfrozen seven-path development diff and has no Preview 4 public identity |
-| `closedAcceptanceIds` | prior local IDs; Preview 3 public main/tag/release assets and 3/3 unauthenticated downloads are established, while `P3-06` execution and `P3-11` returned at the browser fold assertion; `P4-FOLD-01`–`P4-FOLD-06` passed on the prior substantive seven-path freeze, while this two-document state-only closure is bound only by its separate administrative rebind |
-| `nextKnownBlocker` | exact seven-path local checkpoint commit, then a separately bounded Preview 4 identity/tooling package before any new source freeze or public action |
-| `lastCompletedCheck` | Preview 3 public assets matched all three local lengths/hashes; Pages run `32155197089` returned at exact `728.9375 > 720` interface fixture with deploy skipped; the prior substantive seven-path freeze measures 48.78125 px Generic Edge headroom and 71.109375 px Preview/Interpreter headroom at `1280 x 720`, passes 1/1 focused fold, 24/24 focused release-state, 12/12 sequential Edge/axe, 312/312 Vitest, dual typechecks, the current development build/audit, zero forbidden-domain matches and direct screenshot inspection, and received independent UI/accessibility and release/security PASSes; this Project/Trace closure receives only a separate administrative rebind |
-| `retryCounters` | prior counters retained; Preview 3 public Pages fold failure 1; Preview 4 desktop-fold causal repair 1; public-state regression-fixture repair 1 |
+| `candidateFingerprint` | clean base `3a2cfd0f81a6a9513991eef4f3b1e604185536bc`; immutable public Preview 3 identities remain unchanged; current tooling diff has no source freeze, package, or Preview 4 public identity |
+| `closedAcceptanceIds` | prior IDs; six unchanged substantive files retain their exact-byte PASS and this Project/Trace state-only closure received separate administrative rebind |
+| `nextKnownBlocker` | checkpoint this exact tooling package; then make the archive verifier and Pages policy spec-aware in a separate package |
+| `lastCompletedCheck` | six unchanged substantive files: 28/28 within 48/48 Python, 312/312 Vitest, dual typechecks, build/audit, 11 checksums, scans/golden, exact-byte PASS; state-only closure separately rebound; net 496 |
+| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 2; help-text regression 1; security-review return 1 |
 | `frozenManifestHash` | Preview 3 historical source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; no Preview 4 manifest exists |
-| `exactNextAction` | stage and commit only the exact seven-path development correction; then define closed Preview 3/4 release specs and new Preview 4 identity without mutating Preview 3 |
-| `forbiddenUntil` | no Gate 4+ work and no Preview 3 mutation or redeploy; Preview 4 identity/tooling must qualify before its source freeze and package, while push, tag, assets, and deployment require later confirmation of the resulting exact public values |
+| `exactNextAction` | stage and commit only the exact closed release-tooling allowlist; then contract spec-aware verifier/Pages work |
+| `forbiddenUntil` | no Gate 4+ work, Preview 3 mutation/redeploy, Preview 4 source freeze/package, or public write; verifier/workflow spec parity is a later package |
 
 ## Current product state
 
@@ -135,7 +135,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 frozen source and package | returned | `S=9bc73b96a48d2ca96f0b4460da860afe954a3eb8`; archive `48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`; final product/language review returned P2 on commit-unstable limitations wording, so no `P` was created |
 | Preview 3 commit-stable claims | completed locally | checkpoint `58890218721c16e2226d42d6bc6ccd98622ae30c`; exact twelve paths, closed old→stable regression mapping, 312/312, dual typechecks, and two independent final PASSes |
 | Preview 3 public prerelease | assets completed; Pages returned | `P=0482c8adb4aeefdbb7b6329e6408fd6c29fd96d4`; tag/release plus 3/3 unauthenticated asset hashes verified; run `32155197089` failed `728.9375 > 720`, upload/deploy skipped |
-| Preview 4 desktop-fold correction | completed locally; checkpoint pending | prior substantive seven-path freeze: 1/1 focused fold, 24/24 focused release-state, 12/12 Edge/axe, 312/312 Vitest after one returned public-state fixture, dual typechecks, build/audit, zero domain matches, screenshot inspection, and two independent PASSes; current Project/Trace closure separately rebound as administrative-only |
+| Preview 4 desktop-fold correction | completed locally | checkpoint `3a2cfd0`; 1/1 fold, 24/24 release-state, 12/12 Edge/axe, 312/312 Vitest, dual typechecks, build/audit, screenshot inspection, and independent PASSes |
+| Preview 4 closed release tooling | completed locally; checkpoint pending | six substantive files retain full gates/exact-byte PASS; Project/Trace closure separately rebound with zero findings; net 496 |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -171,9 +172,6 @@ The correction reuses the existing design system and permanent browser fixture.
 
 ## Exact next eligible action
 
-Stage and commit only the exact seven-path desktop-fold correction. Then begin
-only the separately contracted
-Preview 4 identity/tooling package: preserve closed Preview 3 specs, add closed
-Preview 4 specs, update workflow paths, and reject cross-version combinations.
-Do not freeze, package, publish, deploy, begin Gate 4, or claim stable release
-readiness from this development repair.
+Stage and commit only the exact Preview 4 closed release-tooling allowlist. Then
+contract the spec-aware archive-verifier/Pages package; do not freeze, package,
+publish, deploy, begin Gate 4, or claim release readiness.
