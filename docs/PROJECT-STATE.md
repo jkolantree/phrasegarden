@@ -6,15 +6,15 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-COMMIT-STABLE-CLAIMS` |
-| `state` | `SOURCE_REPAIR_CHECKPOINT_BOUNDARY` |
-| `candidateFingerprint` | the exact twelve-path substantive freeze received independent security/release and product/language/UX PASSes with zero P1/P2/P3; the final state-only closure changes only this cursor, Traceability, and the repair contract and requires a narrow exact-byte rebind before staging |
-| `closedAcceptanceIds` | prior IDs plus `CSC-01`–`CSC-04`; `CSC-05`–`CSC-06` remain open for replacement-source qualification, protected-byte comparison, package review, and handoff |
-| `nextKnownBlocker` | the containing exact twelve-path commit must satisfy the reviewed checkpoint conditions; then one replacement source manifest and qualification must bind it before packaging |
-| `lastCompletedCheck` | substantive repair: 24/24 focused, 312/312 Vitest, both typechecks, zero forbidden-domain matches, diff/cache hygiene, and two independent exact-byte PASSes; 45/45 Python release tests belong to the superseded six-path variant and must rerun during replacement-source qualification |
-| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2; mobile select: two fixture-driven repairs, now development-only; commit-stable claims: temporal root-cause repair 1 and test-typing repair 1 |
-| `frozenManifestHash` | returned manifest `A12CE50BCB511E7AFDFF69909F3A502F6EE553C32D9E10A4889AD879139C6FA4` is regression evidence only; replacement manifest identity must be derived from the containing `S2` checkpoint and recorded by later version-bound package evidence, not inferred from this source row |
-| `exactNextAction` | treat the containing commit as replacement source `S2` only if its sole parent is `9bc73b96a48d2ca96f0b4460da860afe954a3eb8`, its changed paths are the contract's exact twelve-path allowlist, the substantive PASSes remain byte-bound, and the state-only rebind has zero findings; then remove only returned derived evidence and freeze/qualify `S2` once |
+| `activePackage` | `PREVIEW-3-PUBLICATION` local packaging |
+| `state` | `PACKAGING_COMMIT_BOUNDARY` |
+| `candidateFingerprint` | source `58890218721c16e2226d42d6bc6ccd98622ae30c`, tree `802c0952bcaa5855aa47dadb2f423fb34f5150c3`, source manifest `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`, archive `48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`, release manifest `C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F`, appended ledger `E65D2D74EF7374B65E12B7898F54D83164093C267B090D0E4E7EC95B578DEA2A`, and reviewed seven-content fingerprint `16CC7104E4BE9CA7ACBBA09027768280645280E3D98EE2D1D1878E9780C0AE66`; this administrative closure changes only state records and requires a final narrow rebind before staging |
+| `closedAcceptanceIds` | prior IDs plus `CSC-01`–`CSC-06` and local evidence for `P3-01`–`P3-05`, `P3-07`, `P3-08`, and local `P3-12`; `P3-06` has reviewed implementation evidence and `P3-09`–`P3-11` remain public boundaries |
+| `nextKnownBlocker` | zero-finding rebind of this state-only closure, then packaging-commit verification of the containing exact seven-path, sole-parent commit; exact-value publication confirmation remains separate |
+| `lastCompletedCheck` | exact `S2`: 312/312 Vitest, 45/45 Python release tests, dual typechecks, zero domain matches, one byte-identical build, pre/post audits, 12/12 sequential Edge/axe, 9/9 historical checksums, 3/3 staged ZIP binding, source reverify, direct screenshot inspection, two independent source/package PASSes, focused packaging-record regression 24/24, and two independent repaired seven-content PASSes |
+| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2; mobile select: two fixture-driven repairs, now development-only; commit-stable claims: temporal root-cause repair 1 and test-typing repair 1; packaging evidence: remote-preflight boundary repair 1 |
+| `frozenManifestHash` | source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; release manifest 976 bytes, SHA-256 `C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F` |
+| `exactNextAction` | after a zero-finding narrow rebind of this closure, stage and commit only the seven-path allowlist; treat that commit as `P` only if its sole parent is `S2` and the packaging-commit verifier passes, then perform remote preflight and present exact publication values for confirmation |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -52,10 +52,19 @@ deterministic release regression. This repair checkpoint itself establishes no
 replacement source freeze, package, publication, or deployment; later status
 must come from the version-bound evidence that owns that boundary.
 
+Replacement source `58890218721c16e2226d42d6bc6ccd98622ae30c` is locally
+frozen and qualified. Its one build is byte-identical to the returned build,
+and its exact archive, manifest, and append-only ledger are promoted locally
+after two independent source/package PASSes. The containing commit qualifies as
+packaging commit `P` only under the exact review, sole-parent, seven-path, and
+verifier conditions in the cursor above. This source row does not establish
+publication or deployment.
+
 Detailed proof is preserved outside this cursor:
 
 - [Preview 1 release evidence](evidence/releases/0.1.0-preview.1.md)
 - [Preview 2 release evidence](evidence/releases/0.1.0-preview.2.md)
+- [Preview 3 local packaging evidence](evidence/releases/0.1.0-preview.3.md)
 - [Gate 3 Interpreter evidence](evidence/candidates/gate-3-interpreter.md)
 
 ## Durable boundaries
@@ -117,7 +126,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 source-manifest tooling | completed locally | `e421e0a3248d9d7c1730929697920f8b757b8792` core plus `06cc7cb032ec7798accb8757d10a21df75fcefdb` regressions; 16/16 focused, full local gates, and independent A1a/A1b PASSes; no manifest generated |
 | Preview 3 same-byte packager | completed locally | `cc61a60205c04bd34709acb0fa6b071802de0526` core plus `7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` regressions; 25/25 focused within 45/45 Python release tests, independent B1/B2 PASSes, and two B3 content PASSes |
 | Preview 3 frozen source and package | returned | `S=9bc73b96a48d2ca96f0b4460da860afe954a3eb8`; archive `48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`; final product/language review returned P2 on commit-unstable limitations wording, so no `P` was created |
-| Preview 3 commit-stable claims | checkpoint boundary | exact twelve-path contract; substantive security and product/language/UX PASSes; final state-only rebind and exact local commit required before replacement qualification |
+| Preview 3 commit-stable claims | completed locally | checkpoint `58890218721c16e2226d42d6bc6ccd98622ae30c`; exact twelve paths, closed old→stable regression mapping, 312/312, dual typechecks, and two independent final PASSes |
+| Preview 3 replacement source and package | packaging-commit boundary | `S2=58890218721c16e2226d42d6bc6ccd98622ae30c`; source manifest `73629B90…148E2`; one qualified byte-identical build; archive `48C2A6CE…DAFA`; release manifest `C72862B5…3B5F`; ledger `E65D2D74…EA2A`; source/package and repaired seven-content reviews PASS; final state-only rebind then `P` verifier |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -156,9 +166,9 @@ moderated-user, assistive-technology, remote, or public evaluation was added.
 
 ## Exact next eligible action
 
-Treat the containing commit as replacement source `S2` only if its sole parent
-is `9bc73b96a48d2ca96f0b4460da860afe954a3eb8`, its changed paths are the exact
-twelve-path allowlist, the substantive PASSes remain byte-bound, and the final
-state-only rebind has zero findings. Then remove only returned derived evidence
-and freeze/qualify `S2` once. Do not begin Gate 4 or claim stable release
-readiness.
+After a zero-finding narrow rebind of the final state-only closure, stage and
+commit only the exact seven-path allowlist. Treat the containing commit as `P`
+only if its sole parent is source
+`58890218721c16e2226d42d6bc6ccd98622ae30c` and the packaging-commit verifier
+passes. Then perform fresh remote preflight and present the exact publication
+values for confirmation. Do not begin Gate 4 or claim stable release readiness.

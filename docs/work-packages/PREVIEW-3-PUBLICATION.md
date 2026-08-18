@@ -67,7 +67,10 @@ consolidated repair then removed the same temporal-status failure family from
 the other public release-status documents.
 That source and package are development/regression evidence only; no `P` or
 publication was established. `PREVIEW-3-COMMIT-STABLE-CLAIMS` owns the exact
-replacement source repair before a new freeze and package.
+replacement source repair. Replacement source
+`58890218721c16e2226d42d6bc6ccd98622ae30c` (`S2`) has since been locally
+frozen, fully qualified, built once, and packaged under the exact boundaries
+below. That local work is not a publication claim.
 
 Source-freeze phase:
 
@@ -100,6 +103,10 @@ checkpointed. The returned 27,443-byte Preview 3 source manifest binds
 `S=9bc73b96a48d2ca96f0b4460da860afe954a3eb8`, its tree, and 142 files with
 SHA-256 `A12CE50BCB511E7AFDFF69909F3A502F6EE553C32D9E10A4889AD879139C6FA4`.
 It cannot qualify the replacement source and remains regression evidence only.
+The replacement 27,655-byte, 143-file manifest has SHA-256
+`73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`
+and binds `S2` plus tree
+`802c0952bcaa5855aa47dadb2f423fb34f5150c3`.
 
 Packaging phase:
 
@@ -123,7 +130,7 @@ release/phrasegarden-0.1.0-preview.3-pages-manifest.json
 release/phrasegarden-0.1.0-preview.3-pages.zip
 ```
 
-The returned local package candidate has archive SHA-256
+The returned local package candidate had archive SHA-256
 `48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`,
 release-manifest SHA-256
 `A1828D387743903F6DD9ABF18E680E858FC2F6CF1DB194C8065C2F6F277409DC`,
@@ -135,6 +142,37 @@ commit-unstable limitations wording. These hashes are preserved as regression
 evidence; they must not be committed as `P`, and the replacement source must be
 frozen, qualified, built, packaged, and reviewed again. Exact-value publication
 confirmation remains a later boundary.
+
+The replacement package is promoted locally from the exact qualified `S2`
+build. Its 179,217-byte archive intentionally has the same SHA-256,
+`48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`,
+because the distributable bytes are unchanged. Its replacement 976-byte
+release manifest is
+`C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F`;
+its 1,244-byte append-only checksum ledger is
+`E65D2D74EF7374B65E12B7898F54D83164093C267B090D0E4E7EC95B578DEA2A`.
+Exact-source qualification passed 312/312 Vitest, 45/45 Python release tests,
+both typechecks, zero forbidden-domain matches, one 53-module build, pre/post
+audits, 12/12 sequential Edge/axe journeys, 9/9 historical checksums, source
+reverification, direct screenshot inspection, and 3/3 staged ZIP binding. Two
+independent source/package reviews returned PASS with zero open P1/P2/P3.
+
+The first exact seven-path packaging-evidence candidate was returned because it
+made fresh remote preflight a condition of local `P`. The repaired content
+keeps `P` local and moves remote preflight after `P`, before publication
+confirmation. Both independent reviewers returned PASS with zero open P1/P2/P3
+on the repaired seven-content fingerprint
+`16CC7104E4BE9CA7ACBBA09027768280645280E3D98EE2D1D1878E9780C0AE66`,
+defined as SHA-256 over the sorted seven `path|SHA-256` UTF-8/LF lines. The
+final administrative closure changes only Project State, Traceability, release
+evidence, and this contract and requires a narrow zero-finding rebind before
+staging.
+
+The containing commit becomes `P` only if an independent review binds the exact
+seven owned paths with zero findings, its sole parent is `S2`, its changed paths
+equal the allowlist byte-for-byte, and the packaging-commit verifier passes.
+Exact-value publication confirmation remains separate. No push, tag, GitHub
+prerelease, Pages deployment, or public verification is established here.
 
 Publication phase:
 
