@@ -644,3 +644,30 @@ entry and presentation regression. Search and aliases remain later work; no
 custom combobox is implied. Automated completion, axe, and reflow checks do not
 prove the under-two-minute goal or human screen-reader comprehension, which
 still require consented usability and manual assistive-technology evidence.
+
+## ADR-032 — Pages verifies and deploys one immutable main-branch archive
+
+Status: Accepted
+Date: 2026-08-17
+
+**Context:** The preserved Pages draft called a nonexistent verifier option,
+allowed non-main dispatch, over-granted permissions, followed links, rebuilt
+release bytes, and referenced five movable action tags.
+
+**Decision:** Verification and deployment require `refs/heads/main`.
+Verification gets only `contents: read`; deployment alone gets `pages: write`
+and `id-token: write`. Checkout fetches the packaging commit and parent without
+persisting credentials. Actions pin the official refs observed on 2026-08-17;
+pnpm uses the peeled commit, not its annotated tag object.
+
+Pages tests source/archive code, extracts with `--require-packaging-commit`,
+audits the fresh `dist`, browser-tests it, re-audits it, and then uploads it;
+there is no build. The audit uses bounded `lstat`/handle traversal, strict
+manifest JSON and paths, and one exact release-document template with its CSP.
+
+**Rationale:** Main guards, job-local permissions, exact commits, and audit
+before/after browser checks bind upload to extracted rather than rebuilt bytes.
+
+**Consequences:** Action updates require new ref evidence/tests. Docs-only
+descendants neither masquerade as packaging commits nor deploy. This policy
+package does not freeze source, create release bytes, deploy, or publish.

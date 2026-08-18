@@ -294,6 +294,32 @@ passed with zero open P1/P2/P3. The exact twelve-path checkpoint remains.
 | `BJ-11` | Desktop/mobile screenshots, axe, keyboard, overflow, and reflow checks. | named automated and visual evidence | verified / checkpoint |
 | `BJ-12` | Deterministic layers, prompt/provenance snapshots, and historical artifacts stay unchanged. | protected-byte preservation | verified / checkpoint |
 
+### Preview 3 Pages policy
+
+Source: ADR-032 and `PREVIEW-3-PAGES-POLICY.md`. Official major-tag refs were
+read once on 2026-08-17. Checkout, setup-node, upload-pages-artifact, and
+deploy-pages were lightweight refs at the recorded commits. The pnpm `v4` ref
+was annotated; policy pins its peeled commit
+`b906affcce14559ad1aafd4ab0e942779e9f58b1`, not tag object `f40ffcd...`.
+
+An invalid scanner result preceded six review returns: loose JSON/input plus
+CSP, head, and body-tokenizer/resource families; a blank-line counter reported
+665 rather than Git-style net 707. Those bytes are superseded.
+The consolidated boundary binds the exact release tree and canonical HTML bytes,
+including CSP and local assets; bounded UTF-8 reads and suffix case-folding
+preserve all failures. Focused 22/22, archive 20/20, full Vitest 309/309, both
+typechecks, build/audit/scans, and nine checksums pass. Independent final review
+passed with zero open P1/P2/P3 on this exact checkpoint after an adversarial
+canonical-document mutation matrix. No CI or release ran.
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `PP-01`–`PP-03` | Exact official-ref commits, two main guards, least privilege, two-commit-depth checkout, no persisted credential. | static workflow policy | verified / this checkpoint |
+| `PP-04`–`PP-06` | Source/archive checks, exact extraction, audit/browser/audit/upload order, no build, permanent policy scan. | same-byte procedure construction | verified / this checkpoint |
+| `PP-07`–`PP-08` | Bounded `lstat`/handle boundary, strict closed JSON, portable paths, exact tree/document/CSP bytes, and adversarial negatives. | deterministic local audit behavior | verified / this checkpoint |
+| `PP-09` | Focused 22/22, archive 20/20, full 309/309, type/build/audit/checksum/diff gates and independent mutation review pass. | local development verification | verified / this checkpoint |
+| `PP-10` | Product/release bytes and PhraseGarden remote state stay unchanged; source remains unfrozen. | mutation boundary | verified / this checkpoint |
+
 ### Preview 3 acceptance
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |
@@ -303,7 +329,7 @@ passed with zero open P1/P2/P3. The exact twelve-path checkpoint remains.
 | `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | open / source freeze |
 | `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | open / source freeze |
 | `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | verified implementation / package bytes |
-| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | returned / Pages-policy repair |
+| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | implemented / combined source qualification |
 | `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | verified implementation / packaging |
 | `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | open / review |
 | `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | open / exact confirmation |

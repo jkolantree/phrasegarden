@@ -6,15 +6,15 @@ Updated: 2026-08-17
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-BEGINNER-JOURNEY` |
-| `state` | `QUIESCENT_AWAITING_CHECKPOINT` |
-| `candidateFingerprint` | Generic catalog checkpoint `db85ed4a09f2e960ce0f6a31f84844b6e719bdf6`; twelve-path beginner presentation has an independent PASS and awaits its exact checkpoint |
-| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, `GLC-01`–`GLC-10`, and `BJ-01`–`BJ-12` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
-| `nextKnownBlocker` | exact twelve-path beginner-journey checkpoint, then the separately bounded Pages-policy repair |
-| `lastCompletedCheck` | Beginner journey: 3/3 focused UI, 287/287 full Vitest, dual typechecks, Vite build, 12/12 sequential Edge/axe, visual/copy/download/reflow checks, and independent PASS |
-| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: initial-viewport repair 1 and semantic-language review repair 1 |
+| `activePackage` | `PREVIEW-3-PAGES-POLICY` |
+| `state` | `COMPLETED_LOCAL_CHECKPOINT` |
+| `candidateFingerprint` | this nine-path Pages-policy checkpoint; exact bytes received an independent PASS with zero open P1/P2/P3 |
+| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, `GLC-01`–`GLC-10`, `BJ-01`–`BJ-12`, and `PP-01`–`PP-10` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
+| `nextKnownBlocker` | public-claim and accessibility-evidence drift, then deterministic source-manifest and package-generation tooling before one clean combined source qualification |
+| `lastCompletedCheck` | exact nine-path Pages policy: independent PASS after 22/22 focused, 20/20 archive, 309/309 full Vitest, dual typechecks, Vite build, current-dist audit, workflow/boundary scans, nine historical checksums, and an adversarial canonical-document mutation matrix |
+| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2 |
 | `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
-| `exactNextAction` | checkpoint only the twelve beginner-journey paths; then contract and repair Pages policy |
+| `exactNextAction` | correct bounded public claims and accessibility evidence, then define deterministic source-manifest and package generation; do not freeze or build the release candidate yet |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -29,10 +29,12 @@ Interpreter at `c2e6104`, process controls at `e293426`, and progressive
 Advanced settings at `e96f4b5`, and the independently reviewed Preview 3
 source claims at `aa75e60`, returned archive checkpoint `83558bd`, and archive
 repair at `70858f1`. Generic catalog checkpoint `db85ed4` adds five
-identity-only profiles. The working tree adds the bounded beginner-facing
-presentation but has not checkpointed it. The proposed identity remains
-`0.1.0-preview.3`; its source is not frozen, packaged, published, or deployed.
-Current remote/public state has not been freshly read.
+identity-only profiles; beginner-journey checkpoint `3c2a606` clarifies their
+presentation. This checkpoint hardens the exact Pages deployment policy and
+receives an independent PASS. The proposed identity remains
+`0.1.0-preview.3`; its source is not frozen,
+packaged, published, or deployed. PhraseGarden remote/public state has not been
+freshly read.
 
 Detailed proof is preserved outside this cursor:
 
@@ -62,6 +64,9 @@ Detailed proof is preserved outside this cursor:
   memory-only.
 - Home creates from current defaults; Builder adjusts optional settings; Review
   is the informed-use handoff and never sends or runs a prompt.
+- Pages policy derives no release bytes: main-only CI verifies and twice audits
+  one checked-in archive, uses pinned action commits, and grants deployment
+  permissions only to the deploy job.
 - Canonical output and user-modified copies remain distinct artifacts.
 - Review evidence is a separate structural artifact. No validator proves a
   human act, reviewer qualification, linguistic truth, or support tier.
@@ -88,8 +93,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 archive checkpoint | returned | `83558bd`; later adversarial review reproduced exact-byte, parsing, resource, metadata, and retry defects |
 | Preview 3 archive repair | completed locally | checkpoint `70858f1`; 20/20 focused plus full checks and independent PASS |
 | Five-language Generic catalog | completed locally | checkpoint `db85ed4`; `de`, `es`, `fr`, `it`, region-unspecified `pt`; 396 matrix and independent PASS |
-| Beginner-facing language journey | completed locally / awaiting checkpoint | 3/3 focused UI, 287/287 Vitest, 12/12 Edge/axe, dual typechecks/build, desktop/mobile screenshots, copy/download/reflow, independent PASS |
-| Preview 3 Pages policy | deferred after presentation | immutable action refs and main-only deployment remain unresolved |
+| Beginner-facing language journey | completed locally | checkpoint `3c2a606`; 3/3 focused UI, 287/287 Vitest, 12/12 Edge/axe, screenshots, independent PASS |
+| Preview 3 Pages policy | completed locally | this checkpoint; five immutable pins, main-only least privilege, strict bounded audit, full local gates, adversarial mutation matrix, independent PASS |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -119,11 +124,14 @@ Detailed proof is preserved outside this cursor:
 
 No new visual-ideation batch, manual assistive-technology or moderated usability
 session, model evaluation, prospective-fixture use, remote CI, network write,
-release, or deployment has been performed. Existing evidence is reused only
-where its exact bytes remain bound.
+release, or deployment has been performed. Five official action refs were read
+once; no PhraseGarden remote write or public-state claim was made. Existing
+evidence is reused only where its exact bytes remain bound.
 
 ## Exact next eligible action
 
-Checkpoint only the twelve beginner-journey paths. Resolve Pages policy
-afterward. Only the clean combined descendant may enter fresh source
-qualification. Do not begin Gate 4 or claim stable release readiness.
+Correct the bounded Preview 3 public claims and accessibility evidence, including
+a current 320 px closed-Advanced screenshot. Then define deterministic source-
+manifest and package generation before one clean combined source qualification.
+Do not build or freeze that candidate yet, begin Gate 4, or claim stable release
+readiness.

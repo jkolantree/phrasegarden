@@ -14,7 +14,9 @@ The work is split at the accepted review-size boundary:
 Each child requires its own exact checkpoint; their clean combined descendant is the same-byte pipeline checkpoint.
 ## Source and owned paths
 
-Source: `PREVIEW-3-PUBLICATION.md`, `docs/RELEASE-WORKFLOW.md`, the committed Preview 3 source-claims checkpoint, and the preserved checksum-binding P2.
+Source: `PREVIEW-3-PUBLICATION.md`, `docs/RELEASE-WORKFLOW.md`, checkpoints
+`aa75e60`, `70858f1`, `db85ed4`, and `3c2a606`, plus the preserved
+checksum-binding and Pages-policy failures.
 Archive-bindings checkpoint owned paths:
 
 ```text
@@ -40,6 +42,8 @@ full unit/type, domain-scan, diff, line-budget, and independent review checks.
 - Pages performs no Vite build: it verifies checksums/source parent, extracts
   the checked-in ZIP, audits it, runs Playwright directly against it, re-audits
   unchanged bytes, and uploads that directory.
+- Verification and deployment require `refs/heads/main`; permissions are
+  job-scoped and every action is pinned to an official-ref commit.
 - Docs-only receipt commits do not trigger another deployment.
 ## Verification and stop
 
@@ -50,4 +54,6 @@ second build, unbound upload, unexpected path, or child package growth above
 700 net lines.
 ## Handoff
 
-Commit only the exact owned paths; the clean combined descendant may then be the Preview 3 source freeze for the one-build qualification package.
+Commit each child's exact owned paths. The clean combined descendant may then
+enter the Preview 3 source-freeze qualification; no child checkpoint is itself
+the freeze.
