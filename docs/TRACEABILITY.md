@@ -395,6 +395,28 @@ rebind.
 | `CA-07` | Exact seven owned paths change only public/evidence documentation. | protected-byte preservation | verified / this checkpoint |
 | `CA-08` | Focused/full/type/archive/domain/build/audit/browser/diff and independent review checks pass. | local development verification | verified / this checkpoint |
 
+### Preview 3 deterministic source manifest
+
+Source: ADR-033 and `PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER.md`. Core checkpoint
+`e421e0a3248d9d7c1730929697920f8b757b8792` binds the reviewed contract and
+implementation; regression checkpoint
+`06cc7cb032ec7798accb8757d10a21df75fcefdb` binds the exact A1a parent and the
+permanent synthetic development fixtures. Each checkpoint received independent
+semantic and security PASS verdicts on its own exact bytes. The combined local
+run passed 16/16 focused
+tests within 36/36 Python release tests, 311/311 Vitest, both typechecks, Vite
+build, 23/23 release-audit tests, current-dist audit, all nine historical
+checksums, the forbidden-domain scan, and diff/cache hygiene. No real source
+manifest, release package, remote write, or public evidence was created.
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `SM-01` | Exact HEAD/tree and every regular source blob bind one closed canonical manifest. | deterministic local source construction | verified / package staging |
+| `SM-02` | Rehashed Git objects are authority; index/raw checkout are repeated equality gates under closed ambient inputs. | source-identity procedure | verified / package staging |
+| `SM-03` | Dirty state, unsupported modes/paths, indirection, and every fixed budget fail closed. | bounded validator behavior | verified / package staging |
+| `SM-04` | Freeze creates exclusively; verify never rewrites; physical-prefix and file-identity drift checks preserve blocking evidence. | quiescent local file boundary | verified / package staging |
+| `SM-05` | Focused/full/type/build/release/domain/hygiene checks and exact-byte independent reviews pass. | reviewed local tooling | verified / package staging |
+
 ### Preview 3 acceptance
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |

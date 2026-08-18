@@ -671,3 +671,43 @@ before/after browser checks bind upload to extracted rather than rebuilt bytes.
 **Consequences:** Action updates require new ref evidence/tests. Docs-only
 descendants neither masquerade as packaging commits nor deploy. This policy
 package does not freeze source, create release bytes, deploy, or publish.
+
+## ADR-033 — Source identity is a canonical manifest of one complete Git tree
+
+Status: Accepted
+Date: 2026-08-18
+
+**Context:** A hand-maintained source-path union drifted as Preview 3 gained
+reviewed packages. Git status, checkout filters, ignore indirection, alternate
+object storage, and ambient configuration are also inadequate foundations for
+an exact release-source claim.
+
+**Decision:** `scripts/preview3-package.py freeze-source` derives one canonical
+manifest from every regular `100644` blob in one exact 40-lowercase-SHA-1
+`HEAD`. It preflights object type and size before content, rehashes typed
+commit/tree/blob bytes, rejects nonportable or colliding paths and redirected
+object/configuration sources, and enforces fixed file/tree/depth/byte budgets.
+The index and bounded raw worktree are repeated equality gates; they never
+become a second source authority.
+
+The fixed ignored output is
+`artifacts/release/preview3-source-manifest.json`. Its closed, canonical JSON
+binds source commit, source tree, and path-sorted file mode, length, and SHA-256.
+`verify-source` reconstructs those bytes and requires exact equality without
+rewriting them. Both commands are clock-, locale-, randomness-, browser-,
+application-storage-, and network-independent and assume a quiescent local
+filesystem.
+
+**Rationale:** Complete-tree derivation removes a fallible manual inventory and
+makes source identity mechanically reproducible before build or packaging.
+Separating derivation from worktree qualification prevents filters or ambient
+Git policy from silently defining release bytes.
+
+**Consequences:** Linked/common-directory repositories, executable files,
+symlinks, submodules, nonportable names, dirty equality gates, and over-budget
+trees stop this Preview 3 procedure. Checkpoints
+`e421e0a3248d9d7c1730929697920f8b757b8792` and
+`06cc7cb032ec7798accb8757d10a21df75fcefdb` bind the core and regression suite.
+No real source manifest, package, freeze,
+linguistic claim, or publication is created by those checkpoints; same-byte
+staging and promotion remain a separately reviewed package.

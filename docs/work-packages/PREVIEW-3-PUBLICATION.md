@@ -22,7 +22,7 @@ Gate 3 exit, stable readiness, linguistic review, or accessibility conformance.
   `docs/PUBLICATION-MANIFEST.md`
 - `.github/workflows/pages.yml`, `scripts/release-audit.mjs`, and
   `tests/e2e/preview.spec.ts`
-- ADR-028 through ADR-032
+- ADR-028 through ADR-033
 
 ## In scope
 
@@ -36,6 +36,8 @@ The source work is intentionally split at the accepted 700-net-line boundary:
 4. `GENERIC-LANGUAGE-COHORT-1` owns the exact registry/profile migration.
 5. `PREVIEW-3-BEGINNER-JOURNEY` owns plain-language presentation only.
 6. `PREVIEW-3-PAGES-POLICY` owns main-only, immutable same-byte deployment.
+7. `PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER` Child A owns complete-tree source
+   identity; Child B later owns same-byte staging and promotion.
 
 Each package has exact owned paths, acceptance, checks, independent review, and
 a local checkpoint. Only their clean combined descendant after Pages policy
@@ -49,8 +51,12 @@ history. Generic catalog checkpoint
 `db85ed4a09f2e960ce0f6a31f84844b6e719bdf6` advances the registry and profiles.
 Beginner-journey checkpoint
 `3c2a6061c68817fdd1d1718bd00b97ab9dd46f6e` advances presentation only.
-None is a freeze after the authorized expansion. Pages policy remains the
-active separate package. The combined source is not frozen.
+None is a freeze after the authorized expansion. Source-manifest core
+checkpoint `e421e0a3248d9d7c1730929697920f8b757b8792` and regression checkpoint
+`06cc7cb032ec7798accb8757d10a21df75fcefdb` add reviewed construction tooling
+without generating evidence bytes.
+Same-byte package staging/promotion is the next separate package. The combined
+source is not frozen.
 
 Source-freeze phase:
 
@@ -67,47 +73,19 @@ Source-freeze phase:
   rebuild.
 - Update release-facing README, notes, limitations, accessibility, publication
   inventory, traceability, and current-state records.
-- Add a deterministic release-package verifier.
+- Derive one canonical complete-tree source manifest from the exact clean
+  source commit; never restore a manual path union as authority.
+- Add deterministic release-package staging and exact promotion.
 
-Exact source-freeze owned paths:
+Complete source-freeze authority:
 
-```text
-.github/workflows/pages.yml
-README.md
-docs/ACCESSIBILITY.md
-docs/DECISIONS.md
-docs/LIMITATIONS.md
-docs/PRODUCT.md
-docs/PROJECT-STATE.md
-docs/PUBLICATION-MANIFEST.md
-docs/RELEASE-NOTES.md
-docs/RECIPE-SCHEMA.md
-docs/TRACEABILITY.md
-docs/work-packages/GENERIC-LANGUAGE-COHORT-1.md
-docs/work-packages/PREVIEW-3-ARCHIVE-VERIFIER-REPAIR.md
-docs/work-packages/PREVIEW-3-BEGINNER-JOURNEY.md
-docs/work-packages/PREVIEW-3-PAGES-POLICY.md
-docs/work-packages/PREVIEW-3-PUBLICATION.md
-docs/work-packages/PREVIEW-3-SAME-BYTE-PIPELINE.md
-docs/work-packages/PREVIEW-3-SOURCE-CLAIMS.md
-package.json
-scripts/release-audit.mjs
-scripts/verify-release-archive.py
-src/app/App.tsx
-src/packs/canonical-language-registry.data.json
-src/packs/canonical-language-registry.ts
-src/packs/language-profiles.ts
-src/ui/LanguageLabel.tsx
-src/ui/SupportStatus.tsx
-src/ui/language-presentation.ts
-src/ui/styles.css
-tests/app/ui-copy.test.ts
-tests/domain/compiler.test.ts
-tests/domain/language-profile-validation.test.ts
-tests/e2e/preview.spec.ts
-tests/release/release-audit.test.ts
-tests/release/test_verify_release_archive.py
-```
+The reviewed `freeze-source` command enumerates every regular `100644` blob in
+the exact source commit and creates one fixed canonical manifest binding commit,
+tree, portable path, length, and SHA-256. Its `verify-source` companion
+reconstructs and byte-compares that manifest. The former hand-maintained path
+list is retired because it could omit newly added source. Index and raw
+worktree checks are equality gates, not another inventory. The tool is locally
+checkpointed; the actual Preview 3 manifest does not yet exist.
 
 Packaging phase:
 
@@ -171,8 +149,8 @@ Publication phase:
 
 1. Focused accessibility/browser cases and documentation scans.
 2. Full Vitest and both typechecks.
-3. Checkpoint archive repair, Generic catalog, beginner presentation, and Pages
-   policy separately; then qualify their clean combined descendant.
+3. Verify source-manifest and package-staging tooling, then exclusively create
+   the clean descendant's complete-tree manifest and qualify those exact bytes.
 4. Build once, audit, run Playwright directly against that `dist`, and inspect
    screenshots.
 5. Package, hash, extract, compare, and independently review exact bytes.

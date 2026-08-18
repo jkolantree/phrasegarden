@@ -6,15 +6,15 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-CLAIMS-ACCESSIBILITY` |
+| `activePackage` | `PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER` Child A |
 | `state` | `COMPLETED_LOCAL_CHECKPOINT` |
-| `candidateFingerprint` | this seven-path claims/accessibility checkpoint; unchanged substantive documents retain bound semantic and UX/accessibility PASS verdicts, and the final status-only closure received a separate administrative rebind |
-| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, `GLC-01`–`GLC-10`, `BJ-01`–`BJ-12`, `PP-01`–`PP-10`, `AO-01`–`AO-05`, `MSC-01`–`MSC-05`, and `CA-01`–`CA-08` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
-| `nextKnownBlocker` | deterministic source-manifest and package-generation tooling before one clean source qualification |
-| `lastCompletedCheck` | mobile/claims source: 4/4 focused, 311/311 full Vitest, dual typechecks, 23/23 release audit, 20/20 archive tests, one development build, pre/post audit equality, zero domain matches, 12/12 Edge/axe, and direct inspection of the fresh 320 px closed-Advanced capture passed |
+| `candidateFingerprint` | source-manifest core `e421e0a3248d9d7c1730929697920f8b757b8792` plus regressions `06cc7cb032ec7798accb8757d10a21df75fcefdb`; exact implementation and test bytes received separate independent PASS verdicts |
+| `closedAcceptanceIds` | prior IDs plus `SM-01`–`SM-05` verified for deterministic construction tooling; `P3-01` and `P3-03`–`P3-12` still require combined qualification, packaging, or publication as named |
+| `nextKnownBlocker` | separately reviewed same-byte package staging and promotion tooling before one clean source qualification |
+| `lastCompletedCheck` | source tooling: 16/16 focused within 36/36 Python release tests, 311/311 Vitest, dual typechecks, Vite build, 23/23 release audit, current-dist audit, 9/9 historical checksums, zero domain matches, diff/cache hygiene, and independent semantic/security PASSes for both A1a and A1b |
 | `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2; mobile select: two fixture-driven repairs, now development-only |
-| `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
-| `exactNextAction` | implement separately reviewed deterministic source-manifest construction, then package staging/promotion; do not freeze the release candidate yet |
+| `frozenManifestHash` | not frozen; tooling exists, but no Preview 3 source or distributable manifest has been generated |
+| `exactNextAction` | implement Child B same-byte package staging and exact promotion; then exclusively create one manifest from the clean source commit and qualify that exact commit/manifest once |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -34,7 +34,10 @@ presentation. Pages checkpoint `4d9002f` hardens deployment policy; validator
 checkpoint `d6cb448` removes an asset-order assumption; mobile checkpoint
 `7fb32c7` makes complete default choices visible at 320 px. The proposed
 identity remains `0.1.0-preview.3`. This checkpoint aligns its bounded public
-claims and accessibility evidence. The source is not frozen, packaged,
+claims and accessibility evidence. Source-manifest core checkpoint
+`e421e0a3248d9d7c1730929697920f8b757b8792` and regression checkpoint
+`06cc7cb032ec7798accb8757d10a21df75fcefdb` add complete-tree identity tooling
+without creating evidence bytes. The source is not frozen, packaged,
 published, or deployed. PhraseGarden remote/public state has not been freshly
 read.
 
@@ -99,7 +102,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 Pages policy | completed locally | checkpoint `4d9002f`; five immutable pins, main-only least privilege, strict bounded audit, full local gates, adversarial mutation matrix, independent PASS |
 | Release-audit asset order | completed locally | checkpoint `d6cb448`; exact CSS/JavaScript path-shape binding, JS-first regression, 23/23 focused, independent PASS |
 | Mobile select clarity | completed locally | checkpoint `7fb32c7`; two complete default labels at 320 px, 4/4 focused, 311/311 full, 12/12 Edge/axe, independent visual PASS |
-| Preview 3 claims and accessibility | completed locally | this seven-path checkpoint; four substantive documents retain semantic/UX PASSes; final PROJECT/TRACE/contract status closure separately rebound |
+| Preview 3 claims and accessibility | completed locally | checkpoint `fde72854c7c0d0439f0ac71e1c69a6b23a2052b9`; four substantive documents retain semantic/UX PASSes; final PROJECT/TRACE/contract status closure separately rebound |
+| Preview 3 source-manifest tooling | completed locally | `e421e0a3248d9d7c1730929697920f8b757b8792` core plus `06cc7cb032ec7798accb8757d10a21df75fcefdb` regressions; 16/16 focused, full local gates, and independent A1a/A1b PASSes; no manifest generated |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -131,11 +135,12 @@ No new visual-ideation batch, manual assistive-technology or moderated usability
 session, model evaluation, prospective-fixture use, remote CI, network write,
 release, or deployment has been performed. Five official action refs were read
 once; no PhraseGarden remote write or public-state claim was made. Existing
-evidence is reused only where its exact bytes remain bound.
+evidence is reused only where its exact bytes remain bound. No real source
+manifest or release package was generated during tooling development.
 
 ## Exact next eligible action
 
-Implement and independently review deterministic source-manifest construction,
-then deterministic package staging/promotion, before one clean combined source
-qualification. Do not freeze that candidate yet, begin Gate 4, or claim stable
+Implement and independently review Child B same-byte package staging and exact
+promotion. Then exclusively create one manifest from the clean source commit
+and qualify that exact commit/manifest once. Do not begin Gate 4 or claim stable
 release readiness.

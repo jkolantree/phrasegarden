@@ -1,7 +1,7 @@
 # PhraseGarden release workflow
 
 Status: accepted working procedure
-Updated: 2026-07-24
+Updated: 2026-08-18
 
 ## Goal and authority boundary
 
@@ -112,10 +112,36 @@ increased are not progress by themselves.
 
 ## Freeze, build, and same-byte promotion
 
+Preview 3 first derives complete committed-source identity with the reviewed
+ADR-033 tool:
+
+```text
+python -B scripts/preview3-package.py freeze-source --source-commit <S>
+python -B scripts/preview3-package.py verify-source --source-commit <S>
+```
+
+`S` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
+The first command exclusively creates the fixed ignored
+`artifacts/release/preview3-source-manifest.json`; the second reconstructs and
+byte-compares it without rewriting. The canonical closed JSON binds `S`, its
+tree, and every regular `100644` blob by portable path, mode, length, and
+SHA-256. It is derived from size/type-preflighted and typed-rehashed Git
+objects. Exact index and bounded raw-worktree checks are equality gates only.
+
+The source tool rejects non-HEAD or abbreviated identity, dirty gates,
+nonignored untracked paths, alternate/partial/common object storage, local
+configuration indirection, unsupported modes or paths, and every fixed budget:
+512 files, 512 trees, depth 32, 8 MiB per blob, 32 MiB total blobs, 1 MiB
+manifest, and 1 MiB Git response/configuration. It makes no release,
+linguistic-review, or public-byte claim. A source manifest becomes candidate
+evidence only after its exact bytes and source commit pass the named source
+qualification; any source mutation requires a new manifest and qualification.
+
 Before release-candidate qualification, freeze and hash source, compiler,
 profiles, packs, recipes, authored surfaces, catalogs, builder, validators,
 tests, fixtures and ledger snapshot, rubric/configuration, and model settings
-if any. Qualification records reference that candidate-manifest hash. A
+if any. The complete-tree source manifest is that source inventory;
+hand-maintained path lists are not. Qualification records reference its hash. A
 release manifest then hashes distributable bytes and qualification records
 while explicitly excluding itself.
 
