@@ -1,9 +1,10 @@
 # Publication manifest
 
-This manifest defines the authorized public repository contents for the
-current PhraseGarden Preview channel and the proposed
-`0.1.0-preview.3` publication. Preview 1 and Preview 2 repository, release,
-license, and Pages evidence remains immutable.
+This manifest defines the authorized public repository contents and target
+identity for PhraseGarden `0.1.0-preview.3`. Preview 1 and Preview 2 repository,
+release, license, and Pages evidence remains immutable. Actual package,
+publication, and deployment status is established only by version-bound
+release evidence and corresponding public state.
 
 ## Authorized repository
 
@@ -11,8 +12,8 @@ license, and Pages evidence remains immutable.
 - Visibility: public
 - Default branch: `main`
 - Repository: <https://github.com/jkolantree/phrasegarden>
-- Current public release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
-- Proposed prerelease tag: `v0.1.0-preview.3`
+- Preview 2 rollback release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
+- Preview 3 target tag: `v0.1.0-preview.3`
 - Previous release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place

@@ -5,7 +5,7 @@ PhraseGarden application server.
 
 ## What the application does not collect
 
-This candidate has no backend, database, authentication, advertising,
+PhraseGarden `0.1.0-preview.3` has no backend, database, authentication, advertising,
 behavioral analytics, telemetry, runtime AI provider, feedback form, or public
 free-text submission. It does not request microphone, camera, location, or
 notification permissions.

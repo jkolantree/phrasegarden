@@ -8,6 +8,14 @@ import { afterEach, describe, expect, it } from "vitest";
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const auditScript = join(repository, "scripts/release-audit.mjs");
 const workflowPath = join(repository, ".github/workflows/pages.yml");
+const accessibilityPath = join(repository, "docs/ACCESSIBILITY.md");
+const limitationsPath = join(repository, "docs/LIMITATIONS.md");
+const privacyPath = join(repository, "docs/PRIVACY.md");
+const readmePath = join(repository, "README.md");
+const productPath = join(repository, "docs/PRODUCT.md");
+const projectStatePath = join(repository, "docs/PROJECT-STATE.md");
+const publicationManifestPath = join(repository, "docs/PUBLICATION-MANIFEST.md");
+const releaseNotesPath = join(repository, "docs/RELEASE-NOTES.md");
 const workspaces: string[] = [];
 const csp = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'";
 const canonicalHtml = [
@@ -48,6 +56,151 @@ function runAudit(root: string, ...arguments_: string[]) { return spawnSync(proc
 function expectAuditFailure(root: string, message: string, ...arguments_: string[]): void { const result = runAudit(root, ...arguments_); expect(result.status).toBe(1); expect(result.stderr).toContain(message); }
 afterEach(() => { for (const path of workspaces.splice(0)) rmSync(path, { recursive: true, force: true }); });
 describe("release filesystem audit", () => {
+  it("keeps public release claims stable across packaging and publication", () => {
+    const publicClaimSources = [
+      ["README.md", readmePath],
+      ["docs/ACCESSIBILITY.md", accessibilityPath],
+      ["docs/LIMITATIONS.md", limitationsPath],
+      ["docs/PRIVACY.md", privacyPath],
+      ["docs/PRODUCT.md", productPath],
+      ["docs/PROJECT-STATE.md", projectStatePath],
+      ["docs/PUBLICATION-MANIFEST.md", publicationManifestPath],
+      ["docs/RELEASE-NOTES.md", releaseNotesPath],
+    ] as const;
+    const publicClaims = new Map(publicClaimSources.map(
+      ([name, path]) => [name, readFileSync(path, "utf8").replace(/\r\n/g, "\n")] as const,
+    ));
+    const claimTransitions = [
+      {
+        name: "README.md",
+        returned: [
+          "current `0.1.0-preview.3` source candidate",
+          "It is not\npublished until its exact package and public bytes pass the release protocol.",
+          "What this candidate includes",
+          "English-only in this\ncandidate",
+          "This candidate cannot assign them",
+          "Exact current\nInterpreter prompt hashes",
+        ],
+        stable: [
+          "Versioned release status, evidence, and downloadable assets",
+          "Source presence does not\nestablish packaging, publication, or deployment",
+          "## What Preview 3 includes",
+          "The Preview 3 interface and generated instruction surface are English-only.",
+          "Preview 3 cannot assign them",
+          "Exact Preview 3\nInterpreter prompt hashes",
+        ],
+      },
+      {
+        name: "docs/ACCESSIBILITY.md",
+        returned: [
+          "Checks run for this candidate",
+          "candidate has not completed an independent screen-reader matrix",
+          "local candidate because that surface",
+        ],
+        stable: [
+          "Checks recorded for Preview 3",
+          "Preview 3\nevidence does not include an independent screen-reader matrix",
+          "local Preview 3 build because that surface",
+        ],
+      },
+      {
+        name: "docs/LIMITATIONS.md",
+        returned: [
+          "The deployed public release is PhraseGarden `0.1.0-preview.2`",
+          "current\nworkspace contains",
+          "proposed\n`0.1.0-preview.3` prerelease",
+          "it is not yet packaged or published",
+          "not supported identities in this candidate",
+          "The current local candidate has",
+          "has not yet been packaged",
+        ],
+        stable: [
+          "This source tree targets PhraseGarden `0.1.0-preview.3`",
+          "Source presence does not establish packaging,\npublication, or deployment.",
+          "not supported by the `0.1.0-preview.3` source",
+          "Recorded local development evidence includes synthetic IME coverage",
+          "code review does not itself establish package, publication, deployment, or",
+          "version-bound release\n  evidence for those separate claims",
+        ],
+      },
+      {
+        name: "docs/PRIVACY.md",
+        returned: ["This candidate has no backend"],
+        stable: ["PhraseGarden `0.1.0-preview.3` has no backend"],
+      },
+      {
+        name: "docs/PRODUCT.md",
+        returned: [
+          "The current local candidate contains",
+          "The published `0.1.0-preview.2` site still contains Written",
+          "The proposed `0.1.0-preview.3`\nprerelease",
+          "The proposed Preview 3 also adds",
+          "The candidate is memory-only",
+        ],
+        stable: [
+          "The `0.1.0-preview.3` source contains",
+          "Source presence does not establish package, publication, or\ndeployment status",
+          "Preview 3 adds the reviewed one-way Interpreter",
+          "Preview 3 also adds identity-only profiles",
+          "PhraseGarden `0.1.0-preview.3` is memory-only",
+        ],
+      },
+      {
+        name: "docs/PROJECT-STATE.md",
+        returned: [
+          "PhraseGarden `0.1.0-preview.2` is the last byte-qualified public pre-release at",
+          "The proposed\nidentity remains `0.1.0-preview.3`",
+          "The source is not frozen, packaged,\npublished, or deployed.",
+          "no push, tag, release, Pages, or CI write for the local candidate",
+          "PhraseGarden remote/public state has not been freshly\nread.",
+        ],
+        stable: [
+          "The last public state qualified by repository evidence before Preview 3\npublication work",
+          "Current public status requires\nfresh remote evidence",
+          "The target\nidentity is `0.1.0-preview.3`",
+          "This repair checkpoint itself establishes no\nreplacement source freeze, package, publication, or deployment",
+          "push, tag, release, Pages, and CI-write state must be established from version-bound public evidence",
+        ],
+      },
+      {
+        name: "docs/PUBLICATION-MANIFEST.md",
+        returned: [
+          "current PhraseGarden Preview channel and the proposed",
+          "- Current public release:",
+          "- Proposed prerelease tag:",
+        ],
+        stable: [
+          "Actual package,\npublication, and deployment status is established only by version-bound\nrelease evidence",
+          "- Preview 2 rollback release:",
+          "- Preview 3 target tag:",
+        ],
+      },
+      {
+        name: "docs/RELEASE-NOTES.md",
+        returned: [
+          "Status: proposed public prerelease",
+          "exact current Interpreter",
+          "claims remain pending until",
+          "captures a current 320 px",
+        ],
+        stable: [
+          "Status: prerelease record; publication status is version-bound",
+          "exact Preview 3 Interpreter",
+          "each is recorded only when its named\n  qualification stage and version-bound evidence pass",
+          "captures a 2026-08-18 320 px",
+        ],
+      },
+    ] as const;
+
+    expect([...publicClaims.keys()]).toEqual(claimTransitions.map(({ name }) => name));
+    for (const { name, returned, stable } of claimTransitions) {
+      const document = publicClaims.get(name);
+      expect(document).toBeDefined();
+      for (const claim of returned) expect(document).not.toContain(claim);
+      for (const claim of stable) expect(document).toContain(claim);
+    }
+  });
+
   it("accepts a regular dist tree bound to one exact manifest", () => {
     const root = workspace(); createDist(root);
     const manifest = writeManifest(root, manifestFixture(root)); const result = runAudit(root, manifest);

@@ -18,7 +18,7 @@ evidence for this Preview honestly.
 - IME-aware editing that does not commit changes during composition
 - Restrained live announcements for committed actions
 
-## Checks run for this candidate
+## Checks recorded for Preview 3
 
 - Twelve sequential Playwright journeys in Microsoft Edge
 - axe scans on Written, Voice, and Interpreter home, builder, and
@@ -34,12 +34,12 @@ evidence for this Preview honestly.
 
 ## Known gaps
 
-Automated checks do not replace human assistive-technology testing. This
-candidate has not completed an independent screen-reader matrix, a real-device
+Automated checks do not replace human assistive-technology testing. Preview 3
+evidence does not include an independent screen-reader matrix, a real-device
 IME matrix, forced-colors manual inspection, or broad browser/OS coverage. The
 interface is not yet localized into Japanese.
 
-The in-app browser could not open the local candidate because that surface
+The in-app browser could not open the local Preview 3 build because that surface
 blocked localhost navigation. This is recorded as a test-transport limitation,
 not as a product accessibility pass or failure.
 

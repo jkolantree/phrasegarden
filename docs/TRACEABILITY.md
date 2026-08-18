@@ -411,11 +411,11 @@ manifest, release package, remote write, or public evidence was created.
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
-| `SM-01` | Exact HEAD/tree and every regular source blob bind one closed canonical manifest. | deterministic local source construction | verified / source qualification |
-| `SM-02` | Rehashed Git objects are authority; index/raw checkout are repeated equality gates under closed ambient inputs. | source-identity procedure | verified / source qualification |
-| `SM-03` | Dirty state, unsupported modes/paths, indirection, and every fixed budget fail closed. | bounded validator behavior | verified / source qualification |
-| `SM-04` | Freeze creates exclusively; verify never rewrites; physical-prefix and file-identity drift checks preserve blocking evidence. | quiescent local file boundary | verified / source qualification |
-| `SM-05` | Focused/full/type/build/release/domain/hygiene checks and exact-byte independent reviews pass. | reviewed local tooling | verified / source qualification |
+| `SM-01` | Exact HEAD/tree and every regular source blob bind one closed canonical manifest. | deterministic local source construction | verified / `S` |
+| `SM-02` | Rehashed Git objects are authority; index/raw checkout are repeated equality gates under closed ambient inputs. | source-identity procedure | verified / `S` |
+| `SM-03` | Dirty state, unsupported modes/paths, indirection, and every fixed budget fail closed. | bounded validator behavior | verified / `S` |
+| `SM-04` | Freeze creates exclusively; verify never rewrites; physical-prefix and file-identity drift checks preserve blocking evidence. | quiescent local file boundary | verified / `S` |
+| `SM-05` | Focused/full/type/build/release/domain/hygiene checks and exact-byte independent reviews pass. | reviewed local tooling | verified / `S` |
 
 ### Preview 3 same-byte package tooling
 
@@ -441,23 +441,82 @@ evidence.
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
-| `PB-01`–`PB-03` | Exact source evidence, committed ignores, three-file dist, canonical manifest/ZIP, and fixed budgets bind one candidate. | deterministic package construction | verified / source qualification |
-| `PB-04`–`PB-05` | Exclusive stage/finals, single-link one-write ledger append, and pre/post drift barriers retain partial failure evidence. | bounded same-byte promotion | verified / source qualification |
-| `PB-06` | Synthetic seven-path commit passes the existing archive/package verifier; returned attacks remain regression fixtures. | development compatibility evidence | verified / source qualification |
-| `PB-07` | Focused/full/release/product/hygiene checks and independent B1/B2 reviews pass. | reviewed local tooling | verified / source qualification |
+| `PB-01`–`PB-03` | Exact source evidence, committed ignores, three-file dist, canonical manifest/ZIP, and fixed budgets bind one candidate. | deterministic package construction | verified / exact package |
+| `PB-04`–`PB-05` | Exclusive stage/finals, single-link one-write ledger append, and pre/post drift barriers retain partial failure evidence. | bounded same-byte promotion | verified / exact package |
+| `PB-06` | Synthetic seven-path commit passes the existing archive/package verifier; returned attacks remain regression fixtures. | development compatibility evidence | verified development / actual `P` verifier |
+| `PB-07` | Focused/full/release/product/hygiene checks and independent B1/B2 reviews pass. | reviewed local tooling | verified / exact package |
+
+### Preview 3 returned local package
+
+Source `9bc73b96a48d2ca96f0b4460da860afe954a3eb8`, tree
+`e6822feef6ef99097e979b6ad2a6da9259e157bd`, and the 27,443-byte source
+manifest `A12CE50BCB511E7AFDFF69909F3A502F6EE553C32D9E10A4889AD879139C6FA4`
+bind the one qualified build. Its exact archive is 179,217 bytes /
+`48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`;
+its release manifest is 976 bytes /
+`A1828D387743903F6DD9ABF18E680E858FC2F6CF1DB194C8065C2F6F277409DC`;
+the 1,244-byte appended ledger is
+`6623FD24D1DAD70A147B307E64A1807BC5C77C9348FAE28B0CDBD772A0B2C08D`.
+The returned release-evidence draft was not committed and must be regenerated
+from the replacement source and package.
+
+Qualification passed 311/311 Vitest, 45/45 Python release tests, both
+typechecks, zero forbidden-domain matches, one build, byte-identical pre/post
+audits, 12/12 sequential Edge/axe journeys, 9/9 historical checksums, direct
+desktop/320 px closed/open inspection, exact source reverification, and a 3/3
+fresh extraction. Independent security and product/language/UX reviews of the
+exact source and staged package returned zero open P1/P2/P3. A later exact
+seven-path product/language review returned P2: `docs/LIMITATIONS.md` said the
+version was “not yet packaged,” which would become false when that candidate
+became `P`. The candidate is retained as development/regression evidence only;
+it was not committed, published, or deployed. A consolidated audit found the
+same temporal-status failure family in README, Product, Publication Manifest,
+Release Notes, Accessibility, Privacy, and Project State. The exact twelve-path
+`PREVIEW-3-COMMIT-STABLE-CLAIMS` repair owns version-bound wording and permanent
+negatives before a new source manifest, qualification, build, and package.
+
+The exact repair candidate changes only the twelve paths named by its contract.
+Its deterministic checks pass 24/24 focused release-audit tests, 312/312 full
+Vitest tests, both TypeScript configurations, zero forbidden-domain matches,
+and diff/cache hygiene. The first focused wrapper
+attempt resolved no `vitest` executable and ran zero tests; the direct bundled
+Node runner produced the counted 24/24 result. The expanded fixture first
+failed TypeScript tuple inference and passed after the test-layer tuple was
+closed explicitly. The earlier 45/45 Python result belongs to the superseded
+six-path variant; Python, build, and browser checks remain reserved for the
+replacement committed source and its one release build.
+
+Independent security/release and product/language/UX reviews of the exact
+twelve-path substantive freeze returned PASS with zero open P1/P2/P3. The
+public documents, release regression, and publication contract remain
+byte-identical after that review. The final administrative closure changes only
+`docs/PROJECT-STATE.md`, this file, and the repair contract; those state-only
+bytes require a narrow exact-byte rebind before the containing commit can become
+replacement source `S2`.
+
+### Commit-stable claims acceptance
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `CSC-01` | Public wording owner: `README.md`, `docs/ACCESSIBILITY.md`, `docs/LIMITATIONS.md`, `docs/PRIVACY.md`, `docs/PRODUCT.md`, `docs/PROJECT-STATE.md`, `docs/PUBLICATION-MANIFEST.md`, and `docs/RELEASE-NOTES.md` remove the captured timing-dependent release claims. | commit- and publication-stable documentation | verified substantive / closure valid only with zero-finding state-only rebind |
+| `CSC-02` | Release-state owner: the same public documents delegate package, publication, and deployment status to version-bound evidence and corresponding public state. | claim-authority separation | verified substantive / closure valid only with zero-finding state-only rebind |
+| `CSC-03` | Interpreter owner: `docs/LIMITATIONS.md` and `docs/RELEASE-NOTES.md` separate product-code review from package, publication, deployment, and linguistic-review evidence. | bounded Interpreter claim | verified / substantive PASSes; unchanged in closure |
+| `CSC-04` | Regression owner: `tests/release/release-audit.test.ts` preserves every exact returned phrase and requires the positive version-bound replacements. | deterministic documentation regression | verified / 24/24 focused and 312/312 full |
+| `CSC-05` | Protected-byte owner: the replacement source manifest and one build must show no product, prompt, language, support, runtime, or distributable-byte change. | exact nonbehavior-change evidence | open / replacement freeze and build |
+| `CSC-06` | Qualification owner: the contract requires full deterministic, type, Python, audit, browser, source-reverify, package, and independent-review evidence on the replacement source. | reviewed replacement source/package | open / source checkpoint and qualification |
 
 ### Preview 3 acceptance
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
-| `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; authored artifact versions remain unchanged while registry version/hash/provenance advances. | prerelease identity only | implemented / combined source qualification |
-| `P3-02` | `preview.spec.ts` adds Written/Voice Advanced-open axe, Voice Review axe, and 320 px Voice-open overflow coverage. | named automated accessibility evidence | verified / full source run |
-| `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | open / source freeze |
-| `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | open / source freeze |
-| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | verified implementation / package bytes |
-| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | implemented / combined source qualification |
-| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | verified implementation / packaging |
-| `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | open / review |
+| `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; authored artifact versions remain unchanged while registry version/hash/provenance advances. | prerelease identity only | returned / commit-stable claim repair |
+| `P3-02` | `preview.spec.ts` adds Written/Voice Advanced-open axe, Voice Review axe, and 320 px Voice-open overflow coverage. | named automated accessibility evidence | regression evidence / replacement source run |
+| `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | returned source evidence / replacement freeze |
+| `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | regression evidence / replacement source run |
+| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | returned package evidence / regenerate |
+| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | implemented / replacement `P` verifier |
+| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | returned ledger evidence / regenerate |
+| `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | returned / `docs/LIMITATIONS.md` temporal claim |
 | `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | open / exact confirmation |
 | `P3-10` | Unauthenticated asset and Pages downloads match every local length/hash. | captured public-byte identity | open / publication |
 | `P3-11` | Named production product, accessibility, privacy, CSP, and runtime-request smoke journeys pass. | production checks on named matrix | open / publication |

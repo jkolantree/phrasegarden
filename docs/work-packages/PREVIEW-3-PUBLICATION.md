@@ -59,8 +59,15 @@ without generating evidence bytes. Same-byte package core checkpoint
 `cc61a60205c04bd34709acb0fa6b071802de0526` and regression checkpoint
 `7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` add reviewed staging/promotion
 tooling and permanent returned-failure coverage. Child B3 governing-claim
-alignment received independent exact-byte administrative PASSes. No real source manifest,
-release package, source freeze, or publication exists for Preview 3.
+alignment received independent exact-byte administrative PASSes. Source
+`9bc73b96a48d2ca96f0b4460da860afe954a3eb8` was locally frozen and
+qualified, but its derived seven-path package was returned after final review
+found two public limitations claims that would become false at commit time. A
+consolidated repair then removed the same temporal-status failure family from
+the other public release-status documents.
+That source and package are development/regression evidence only; no `P` or
+publication was established. `PREVIEW-3-COMMIT-STABLE-CLAIMS` owns the exact
+replacement source repair before a new freeze and package.
 
 Source-freeze phase:
 
@@ -89,7 +96,10 @@ tree, portable path, length, and SHA-256. Its `verify-source` companion
 reconstructs and byte-compares that manifest. The former hand-maintained path
 list is retired because it could omit newly added source. Index and raw
 worktree checks are equality gates, not another inventory. The tool is locally
-checkpointed; the actual Preview 3 manifest does not yet exist.
+checkpointed. The returned 27,443-byte Preview 3 source manifest binds
+`S=9bc73b96a48d2ca96f0b4460da860afe954a3eb8`, its tree, and 142 files with
+SHA-256 `A12CE50BCB511E7AFDFF69909F3A502F6EE553C32D9E10A4889AD879139C6FA4`.
+It cannot qualify the replacement source and remains regression evidence only.
 
 Packaging phase:
 
@@ -112,6 +122,19 @@ docs/work-packages/PREVIEW-3-PUBLICATION.md
 release/phrasegarden-0.1.0-preview.3-pages-manifest.json
 release/phrasegarden-0.1.0-preview.3-pages.zip
 ```
+
+The returned local package candidate has archive SHA-256
+`48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`,
+release-manifest SHA-256
+`A1828D387743903F6DD9ABF18E680E858FC2F6CF1DB194C8065C2F6F277409DC`,
+and appended-ledger SHA-256
+`6623FD24D1DAD70A147B307E64A1807BC5C77C9348FAE28B0CDBD772A0B2C08D`. It passed
+the complete local source run, 3/3 extraction comparison, and two independent
+frozen source/package reviews. Final exact-candidate review then returned the
+commit-unstable limitations wording. These hashes are preserved as regression
+evidence; they must not be committed as `P`, and the replacement source must be
+frozen, qualified, built, packaged, and reviewed again. Exact-value publication
+confirmation remains a later boundary.
 
 Publication phase:
 

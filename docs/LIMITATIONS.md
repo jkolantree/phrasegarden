@@ -1,9 +1,10 @@
 # Product limitations
 
-The deployed public release is PhraseGarden `0.1.0-preview.2`. The current
-workspace contains the committed Interpreter, Advanced-settings, five-language
-Generic catalog, and beginner-facing presentation for the proposed
-`0.1.0-preview.3` prerelease; it is not yet packaged or published.
+This source tree targets PhraseGarden `0.1.0-preview.3` and contains the
+Interpreter, Advanced settings, five-language Generic catalog, and
+beginner-facing presentation. Source presence does not establish packaging,
+publication, or deployment. Those states are established only by the
+version-bound release evidence and the corresponding public repository state.
 
 ## Language and support
 
@@ -15,7 +16,7 @@ Generic catalog, and beginner-facing presentation for the proposed
 - French, German, Italian, Spanish, and region-unspecified Portuguese are
   bundled as identity-only Generic profiles. `pt` does not mean Brazilian,
   European, neutral, or dialect-reviewed Portuguese; `pt-BR` and `pt-PT` are
-  not supported identities in this candidate.
+  not supported by the `0.1.0-preview.3` source.
 - The bundled canonical registry is a small supported set, not a claim of
   universal language coverage. A valid BCP 47 tag that is not in the exact
   registry is unsupported.
@@ -59,12 +60,14 @@ Generic catalog, and beginner-facing presentation for the proposed
 - Compiler fixtures and browser journeys are development/regression evidence,
   not untouched prospective semantic evaluation.
 - Automated axe checks do not prove complete accessibility.
-- The current local candidate has synthetic IME coverage and rendered visual
-  inspection. A full assistive-technology matrix, real-device IME pass, forced
-  colors pass, and independent screen-reader completion remain outstanding.
+- Recorded local development evidence includes synthetic IME coverage and
+  rendered visual inspection. A full assistive-technology matrix, real-device
+  IME pass, forced-colors pass, and independent screen-reader completion remain
+  outstanding.
 - The in-app manual localhost inspection was blocked by that browser surface's
   local-URL policy. Sequential Edge journeys, explicit focus assertions, and
   captured screenshots passed; no stronger manual-browser claim is made.
-- Interpreter is committed and independently reviewed as product code. It has
-  not yet been packaged, published, deployed, or independently linguistically
-  reviewed.
+- Interpreter is committed and independently reviewed as product code. That
+  code review does not itself establish package, publication, deployment, or
+  independent linguistic-review status; consult the version-bound release
+  evidence for those separate claims.

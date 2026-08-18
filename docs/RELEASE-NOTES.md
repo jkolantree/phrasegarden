@@ -2,7 +2,7 @@
 
 ## 0.1.0-preview.3 — Interpreter, more language choices, and simpler setup
 
-Status: proposed public prerelease
+Status: prerelease record; publication status is version-bound
 
 ### Product behavior
 
@@ -37,7 +37,7 @@ Status: proposed public prerelease
   `498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5`.
   Provenance records that exact registry identity, and all new directions
   deterministically resolve to Generic.
-- Preserves the published sample files and locks exact current Interpreter
+- Preserves the published sample files and locks exact Preview 3 Interpreter
   prompt hashes for both Preview directions and a Generic direction.
 - Makes pair-specific name and honorific guidance defer to the active name and
   clarification rules, so mark-uncertainty contains no ask-capable instruction.
@@ -45,14 +45,15 @@ Status: proposed public prerelease
 ### Publication state
 
 - Interpreter and Advanced settings are committed and independently reviewed as
-  product code. Exact package, remote, release, deployment, and production
-  claims remain pending until their named qualification stages pass.
+  product code. That review establishes no package, remote, release,
+  deployment, or production claim; each is recorded only when its named
+  qualification stage and version-bound evidence pass.
 
 ### Tests and QA
 
 - Adds axe checks for Advanced-open Written and Voice Builder states and Voice
   Review, plus a 320 px Voice-open overflow regression.
-- Runs twelve sequential Microsoft Edge journeys and captures a current 320 px
+- Runs twelve sequential Microsoft Edge journeys and captures a 2026-08-18 320 px
   Written Builder with Advanced settings closed alongside the open-state
   coverage.
 - Pages extracts, verifies, tests, and deploys the exact checked-in qualified
