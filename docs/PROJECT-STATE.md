@@ -6,15 +6,15 @@ Updated: 2026-08-17
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-ARCHIVE-VERIFIER-REPAIR` |
+| `activePackage` | `GENERIC-LANGUAGE-COHORT-1` |
 | `state` | `QUIESCENT_AWAITING_CHECKPOINT` |
-| `candidateFingerprint` | checkpoint `83558bdc373a7e8ec8d1f18d6713f526c2aad505` is returned development history; its six-path forward repair has an independent core PASS and awaits its exact checkpoint |
-| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-01`–`P3-02`, and `P3-AR-01`–`P3-AR-08` verified; `P3-03`–`P3-12` remain active |
-| `nextKnownBlocker` | exact six-path archive-repair checkpoint, then the authorized five-language Generic catalog package |
-| `lastCompletedCheck` | archive repair: 20/20 focused, 277/277 Vitest, dual typechecks, Vite build, 9/9 historical checksums, zero forbidden-domain matches, and independent zero-P1/P2/P3 core PASS |
-| `retryCounters` | process package: review repair 2; `G3.5`: review repair 1; Preview 3: process split 2, archive repair returns 2, consolidated resource-bound redesign 1 |
+| `candidateFingerprint` | archive repair checkpoint `70858f1c4157af3340cea6c95f50cf9fd387ffbf`; twelve-path Generic language cohort has an independent core PASS and awaits its exact checkpoint |
+| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, and `GLC-01`–`GLC-10` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
+| `nextKnownBlocker` | exact twelve-path Generic catalog checkpoint, then the separately bounded beginner-facing presentation package |
+| `lastCompletedCheck` | Generic cohort: 31/31 profile, 26/26 compiler, 285/285 full tests, 396 exact compilations (6 Preview/390 Generic), dual typechecks, Vite build, 9/9 checksums, zero forbidden matches, and independent PASS |
+| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1, review repair 0 |
 | `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
-| `exactNextAction` | checkpoint only the six archive-repair paths; then implement and review the separately bounded five-language Generic catalog before Pages policy and a new combined source qualification |
+| `exactNextAction` | checkpoint only the twelve Generic-catalog paths; then contract, implement, and review the beginner-facing language journey before Pages policy |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -27,10 +27,11 @@ It includes Written Translator and Live Voice Coach.
 The local `release/next` branch adds the independently reviewed Gate 3
 Interpreter at `c2e6104`, process controls at `e293426`, and progressive
 Advanced settings at `e96f4b5`, and the independently reviewed Preview 3
-source claims at `aa75e60`, and the returned archive checkpoint at `83558bd`.
-The archive repair is independently reviewed but not checkpointed. The proposed
-package identity remains `0.1.0-preview.3`; its source is not frozen, packaged,
-published, or deployed. Current remote/public state has not been freshly read.
+source claims at `aa75e60`, returned archive checkpoint `83558bd`, and archive
+repair at `70858f1`. The independently reviewed Generic catalog adds five
+identity-only profiles but is not checkpointed yet. The proposed identity
+remains `0.1.0-preview.3`; its source is not frozen, packaged, published, or
+deployed. Current remote/public state has not been freshly read.
 
 Detailed proof is preserved outside this cursor:
 
@@ -43,8 +44,10 @@ Detailed proof is preserved outside this cursor:
 - Woven Conversation is the sole implemented visual direction.
 - English→Japanese and Japanese→English derive Preview from one exact versioned
   directed pack. External linguistic review remains incomplete.
-- Every other bundled direction derives Generic and receives no endpoint- or
-  pair-specific linguistic clause.
+- Twelve exact profiles are bundled. Every non-English↔Japanese direction
+  derives Generic and receives no endpoint- or pair-specific linguistic clause.
+- `pt` is region-unspecified Portuguese; regional Portuguese identities and
+  adequacy claims remain unsupported.
 - The compiler remains pure, deterministic, and independent of Preact,
   browser, network, storage, clock, randomness, ambient `Intl`, telemetry,
   backend, or runtime model calls.
@@ -72,15 +75,15 @@ Detailed proof is preserved outside this cursor:
 |---|---|---|
 | Gate 0 contracts | completed | product, architecture, recipe, evaluation, decisions, and fixture contracts |
 | Gate 1 visual target | completed | Woven Conversation design contract |
-| Gate 2 deterministic foundation | completed | pure validators/compiler, seven profiles, Preview pack, Written and Voice |
+| Gate 2 deterministic foundation | completed | pure validators/compiler, twelve profiles, Preview pack, Written and Voice |
 | Published Preview 2 | completed | immutable release ledger and public-byte qualification |
 | Gate 3 Interpreter | completed locally | `c2e6104`; 277/277 Vitest, 10/10 Edge/axe, dual typechecks, build/audit, independent PASS |
 | Next-release process controls | completed | `PC-01`–`PC-10`, reviewed `PC-CORE-1`, normalized `PC-CORE-2`, and staged-byte transport PASS |
 | Gate 3 Advanced Controls | completed locally | `G3-ADV-CORE-2`; 277/277 Vitest, 11/11 Edge/axe, dual typechecks, build/audit, protected paths unchanged, desktop/320 px closed/open screenshots, independent PASS |
 | Preview 3 source claims and accessibility | completed locally | exact 13-path checkpoint `aa75e60`; focused checks and independent PASS |
 | Preview 3 archive checkpoint | returned | `83558bd`; later adversarial review reproduced exact-byte, parsing, resource, metadata, and retry defects |
-| Preview 3 archive repair | completed locally / awaiting checkpoint | 20/20 focused plus full deterministic/type/build checks and independent core PASS |
-| Five-language Generic catalog | authorized next | `de`, `es`, `fr`, `it`, and region-unspecified `pt`; no pair pack or review-tier claim |
+| Preview 3 archive repair | completed locally | checkpoint `70858f1`; 20/20 focused plus full checks and independent PASS |
+| Five-language Generic catalog | completed locally / awaiting checkpoint | `de`, `es`, `fr`, `it`, region-unspecified `pt`; 396 matrix and independent PASS |
 | Preview 3 Pages policy | deferred after catalog | immutable action refs and main-only deployment remain unresolved |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
@@ -116,8 +119,7 @@ exact bytes remain bound.
 
 ## Exact next eligible action
 
-Checkpoint only the six archive-repair paths. Then implement and review the
-bounded five-language Generic catalog and beginner-facing clarification
-package. Resolve Pages policy afterward. Only the clean combined descendant
-may enter fresh source qualification. Do not begin Gate 4 or claim stable
-release readiness.
+Checkpoint only the twelve Generic-catalog paths. Then implement and review the
+bounded beginner-facing language journey. Resolve Pages policy afterward. Only
+the clean combined descendant may enter fresh source qualification. Do not
+begin Gate 4 or claim stable release readiness.

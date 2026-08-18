@@ -2,7 +2,7 @@ import registryData from "./canonical-language-registry.data.json";
 import type { CanonicalLanguageRegistry } from "../domain/language-identity";
 
 export const CANONICAL_LANGUAGE_REGISTRY_CONTENT_SHA256 =
-  "37EEF56CD6238F87ADA21F22BCA7CC947D3A4FAE224DEFE67141C10DE4DEED91";
+  "498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5";
 
 function exactRegistryId(
   value: string,

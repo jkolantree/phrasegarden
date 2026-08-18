@@ -3,13 +3,15 @@
 ## Objective
 
 Publish one byte-qualified public prerelease, `0.1.0-preview.3`, containing the
-reviewed one-way Interpreter and progressive Advanced settings without
-claiming Gate 3 exit, stable readiness, linguistic review, or accessibility
-conformance.
+reviewed one-way Interpreter, progressive Advanced settings, five additional
+Generic language identities, and a clearer beginner handoff without claiming
+Gate 3 exit, stable readiness, linguistic review, or accessibility conformance.
 
 ## Source of truth
 
 - User authorization on 2026-07-24 to finish and push a release
+- User authorization on 2026-08-17 for the five-language expansion and public
+  result
 - Gate 3 Interpreter checkpoint
   `c2e6104e3b47ef180d5e27da5147d31b59ee4ebf`
 - Gate 3.5 checkpoint
@@ -20,7 +22,7 @@ conformance.
   `docs/PUBLICATION-MANIFEST.md`
 - `.github/workflows/pages.yml`, `scripts/release-audit.mjs`, and
   `tests/e2e/preview.spec.ts`
-- ADR-028
+- ADR-028, ADR-029, and ADR-030
 
 ## In scope
 
@@ -30,24 +32,32 @@ The source work is intentionally split at the accepted 700-net-line boundary:
    missing browser/axe coverage.
 2. `PREVIEW-3-SAME-BYTE-PIPELINE` owns release-byte validation, archive safety,
    and Pages mechanics.
+3. `PREVIEW-3-ARCHIVE-VERIFIER-REPAIR` repairs the returned archive checkpoint.
+4. `GENERIC-LANGUAGE-COHORT-1` owns the exact registry/profile migration.
+5. A separately contracted beginner-facing package owns presentation only.
 
-Each subpackage has its own exact owned paths, acceptance, checks, independent
-review, and local checkpoint. Their clean combined descendant becomes the
-source freeze; neither subpackage alone is a publication candidate.
+Each package has exact owned paths, acceptance, checks, independent review, and
+a local checkpoint. Only their clean combined descendant after Pages policy
+and a fresh complete qualification may become the source freeze.
 
 The source-claims subpackage is checkpointed at
-`aa75e60040ad2eeb5b55223fa83ff87b71031eaf`. The same-byte pipeline is the
-current bounded package and is itself split into archive-bindings and
-Pages-policy checkpoints at the review-size limit. The combined source is not
-frozen until both pass.
+`aa75e60040ad2eeb5b55223fa83ff87b71031eaf`; returned archive checkpoint
+`83558bdc373a7e8ec8d1f18d6713f526c2aad505` is repaired by
+`70858f1c4157af3340cea6c95f50cf9fd387ffbf`. Those checkpoints remain useful
+history but are not a freeze after the authorized catalog expansion. Pages
+policy remains separate. The combined source is not frozen.
 
 Source-freeze phase:
 
 - Add missing axe coverage for Advanced-open Written and Voice, Voice Review,
   and 320 px Voice-open overflow.
 - Correct stale journey-count and Interpreter publication-state claims.
-- Advance only the package/public prerelease identity to
-  `0.1.0-preview.3`; compiler and artifact versions remain unchanged.
+- Keep the package/public prerelease identity at `0.1.0-preview.3`; compiler,
+  policy, recipe, profile, pair-pack, and prompt-surface versions remain
+  unchanged while the exact registry version/hash and prompt provenance
+  advance under ADR-030.
+- Add five identity-only profiles and clearer beginner-facing presentation;
+  do not add pair guidance or a review-tier claim.
 - Make Pages deploy the exact checked-in qualified archive instead of a CI
   rebuild.
 - Update release-facing README, notes, limitations, accessibility, publication
@@ -66,13 +76,21 @@ docs/PRODUCT.md
 docs/PROJECT-STATE.md
 docs/PUBLICATION-MANIFEST.md
 docs/RELEASE-NOTES.md
+docs/RECIPE-SCHEMA.md
 docs/TRACEABILITY.md
+docs/work-packages/GENERIC-LANGUAGE-COHORT-1.md
+docs/work-packages/PREVIEW-3-ARCHIVE-VERIFIER-REPAIR.md
 docs/work-packages/PREVIEW-3-PUBLICATION.md
 docs/work-packages/PREVIEW-3-SAME-BYTE-PIPELINE.md
 docs/work-packages/PREVIEW-3-SOURCE-CLAIMS.md
 package.json
 scripts/release-audit.mjs
 scripts/verify-release-archive.py
+src/packs/canonical-language-registry.data.json
+src/packs/canonical-language-registry.ts
+src/packs/language-profiles.ts
+tests/domain/compiler.test.ts
+tests/domain/language-profile-validation.test.ts
 tests/e2e/preview.spec.ts
 tests/release/release-audit.test.ts
 tests/release/test_verify_release_archive.py
@@ -123,7 +141,7 @@ Publication phase:
 
 | ID | Observable evidence |
 |---|---|
-| `P3-01` | `0.1.0-preview.3` is consistently identified as a prerelease; compiler/artifact provenance is unchanged. |
+| `P3-01` | `0.1.0-preview.3` is consistently identified as a prerelease; authored artifact versions remain unchanged while the explicit registry migration advances its own version/hash and prompt provenance. |
 | `P3-02` | Written and Voice Advanced-open states plus Voice Review receive zero-violation axe checks; Voice-open has a 320 px no-overflow assertion. |
 | `P3-03` | Full Vitest, both typechecks, forbidden-domain scan, one build, release audit, and all sequential Playwright/axe journeys pass on one clean source commit. |
 | `P3-04` | Manual screenshot inspection covers desktop and 320 px closed/open states with no visible clipping, overlap, or page overflow. |
@@ -140,8 +158,8 @@ Publication phase:
 
 1. Focused accessibility/browser cases and documentation scans.
 2. Full Vitest and both typechecks.
-3. Checkpoint archive bindings and Pages policy; their clean combined
-   descendant is the same-byte pipeline checkpoint and source freeze.
+3. Checkpoint archive repair, Generic catalog, beginner presentation, and Pages
+   policy separately; then qualify their clean combined descendant.
 4. Build once, audit, run Playwright directly against that `dist`, and inspect
    screenshots.
 5. Package, hash, extract, compare, and independently review exact bytes.

@@ -2,7 +2,7 @@
 
 Status: Gate 0 normative schema  
 Schema version: 1  
-Updated: 2026-07-23
+Updated: 2026-08-17
 
 This document defines data semantics, not production TypeScript. Gate 2 must encode these closed shapes without weakening them.
 
@@ -72,7 +72,7 @@ type RecipeConfiguration = {
 
 `home`, `target`, the UI's `interfaceLocale`, and the authored `promptSurface` are distinct. `interfaceLocale` is presentation state, not semantic recipe configuration. The compiler receives one exact prompt-surface object; it never chooses a surface from interface or language settings. V1 materialization always pins the sole bundled reviewed English surface, `instructions-en`; additional authored surfaces require later explicit product scope and independent review.
 
-The initial registry's sole content artifact is `src/packs/canonical-language-registry.data.json`: exact UTF-8 bytes, no BOM, LF line endings, and one terminal LF. `contentSha256` is the SHA-256 of that whole file; the digest is stored outside the hashed bytes in `canonical-language-registry.ts`. Version `2026-07-23.1` has digest `37EEF56CD6238F87ADA21F22BCA7CC947D3A4FAE224DEFE67141C10DE4DEED91`. Its canonical tags are exact, unique, and code-unit sorted: `en`, `he`, `id`, `ja`, `tlh`, `yi`, `zh-Hant-TW`. Deprecated-form and grandfathered-tag entries are also exact, unique, and code-unit sorted. Registry order is normative source order; runtime code neither sorts nor rewrites it.
+The registry's sole content artifact is `src/packs/canonical-language-registry.data.json`: exact UTF-8 bytes, no BOM, LF line endings, and one terminal LF. `contentSha256` is the SHA-256 of that whole file; the digest is stored outside the hashed bytes in `canonical-language-registry.ts`. Version `2026-08-17.1` has digest `498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5`. Its canonical tags are exact, unique, and code-unit sorted: `de`, `en`, `es`, `fr`, `he`, `id`, `it`, `ja`, `pt`, `tlh`, `yi`, `zh-Hant-TW`. Deprecated-form and grandfathered-tag entries are also exact, unique, and code-unit sorted. Registry order is normative source order; runtime code neither sorts nor rewrites it. `pt` is region-unspecified Portuguese; `pt-BR` and `pt-PT` remain unsupported. Discovery strings such as `Francais`, `Espanol`, and `Portugues` are profile metadata, not accepted identities or aliases.
 
 ### Closed enums and defaults
 
@@ -683,8 +683,8 @@ Flagship Written Translator:
 {
   "schemaVersion": 1,
   "languageRegistry": {
-    "version": "2026-07-23.1",
-    "contentSha256": "37EEF56CD6238F87ADA21F22BCA7CC947D3A4FAE224DEFE67141C10DE4DEED91"
+    "version": "2026-08-17.1",
+    "contentSha256": "498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5"
   },
   "recipe": {"id": "written-translator", "version": "1.0.0"},
   "promptSurface": {"id": "instructions-en", "version": "1.0.0"},

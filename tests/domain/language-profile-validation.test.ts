@@ -90,10 +90,10 @@ describe("bundled canonical language registry", () => {
     const digest = createHash("sha256").update(bytes).digest("hex").toUpperCase();
     expect(digest).toBe(CANONICAL_LANGUAGE_REGISTRY_CONTENT_SHA256);
     expect(canonicalLanguageRegistry.contentSha256).toBe(digest);
-    expect(canonicalLanguageRegistry.version).toBe("2026-07-23.1");
+    expect(canonicalLanguageRegistry.version).toBe("2026-08-17.1");
     expect(canonicalLanguageRegistry.source).toEqual({
       name: "IANA Language Subtag Registry",
-      registryFileDate: "2026-06-15",
+      registryFileDate: "2026-08-08",
       uri: "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry",
     });
     expect(canonicalLanguageRegistry.policy).toEqual({
@@ -107,10 +107,15 @@ describe("bundled canonical language registry", () => {
   it("is deeply frozen, unique, and exact-order stable", () => {
     expect(recursivelyFrozen(canonicalLanguageRegistry)).toBe(true);
     expect(canonicalLanguageRegistry.canonicalTags).toEqual([
+      "de",
       "en",
+      "es",
+      "fr",
       "he",
       "id",
+      "it",
       "ja",
+      "pt",
       "tlh",
       "yi",
       "zh-Hant-TW",
@@ -133,7 +138,7 @@ describe("bundled canonical language registry", () => {
 });
 
 describe("canonical language identity", () => {
-  it.each(["en", "ja", "zh-Hant-TW"] as const)(
+  it.each(["de", "en", "es", "fr", "it", "ja", "pt", "zh-Hant-TW"] as const)(
     "accepts exact registry member %s",
     (tag) => {
       expect(
@@ -150,7 +155,9 @@ describe("canonical language identity", () => {
     ["x-phrasegarden", "E-LANGUAGE-TAG-PRIVATE-USE"],
     ["en-x-private", "E-LANGUAGE-TAG-PRIVATE-USE"],
     ["en-u-ca-japanese", "E-LANGUAGE-TAG-EXTENSION"],
-    ["fr", "E-LANGUAGE-TAG-UNSUPPORTED"],
+    ["pt-BR", "E-LANGUAGE-TAG-UNSUPPORTED"],
+    ["pt-PT", "E-LANGUAGE-TAG-UNSUPPORTED"],
+    ["und", "E-LANGUAGE-TAG-UNSUPPORTED"],
   ] as const)("rejects %s as %s without normalization", (tag, code) => {
     const result = validateCanonicalLanguageId(
       tag,

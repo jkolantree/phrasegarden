@@ -1,7 +1,7 @@
 # PhraseGarden release traceability
 
 Status: active matrix
-Updated: 2026-07-24
+Updated: 2026-08-17
 
 No acceptance requirement may exist only in narrative prose. Each active
 package gives every observable requirement one stable ID and one responsible
@@ -233,18 +233,46 @@ members, binds all seven worktree files to exact `100644` HEAD blobs, and
 extracts only after full validation. Its core received an independent PASS
 with zero open P1/P2/P3: 20/20 focused tests, 277/277 Vitest, dual typechecks,
 Vite build, nine historical checksums, and zero forbidden-domain matches.
-This is development verification pending the exact six-path checkpoint, not a
-source freeze or publication qualification.
+Checkpoint `70858f1c4157af3340cea6c95f50cf9fd387ffbf` preserves the exact
+six-path repair after that independent PASS. It is not a source freeze or
+publication qualification.
+
+### Generic language cohort 1
+
+Source: ADR-030 and `GENERIC-LANGUAGE-COHORT-1.md`. Registry
+`2026-08-17.1` is 1,203 UTF-8/LF bytes with SHA-256
+`498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5`.
+The five new profiles are identity-only development artifacts. Independent
+review passed with zero open P1/P2/P3 after 31/31 profile tests, 26/26 compiler
+tests, 285/285 full Vitest, both typechecks, Vite build, protected-path and
+checksum checks, and all 396 direction/recipe compilations. This proves
+deterministic structure and Generic isolation, not linguistic review or
+regional adequacy. The exact twelve-path checkpoint is still required.
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
-| `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; compiler/artifact versions remain unchanged. | prerelease identity only | verified / full source freeze |
+| `GLC-01` | Registry bytes/version/source/hash agree. | deterministic registry identity | verified / checkpoint |
+| `GLC-02` | Twelve profiles share exact canonical identity and registry binding. | structural profile validity | verified / checkpoint |
+| `GLC-03` | Five new NFC autonyms and identity-only `Latn`/`ltr` profiles. | endpoint identity metadata only | verified / checkpoint |
+| `GLC-04` | Regional, alias, casing, private, extension, and unlisted forms reject. | fail-closed accepted-ID boundary | verified / checkpoint |
+| `GLC-05` | 396 compilations partition into 6 Preview and 390 Generic. | deterministic tier resolution only | verified / checkpoint |
+| `GLC-06` | Generic has no pack, review claim, section 6, or endpoint clause. | conservative Generic isolation | verified / checkpoint |
+| `GLC-07` | Authored versions stay separate; registry provenance advances. | explicit version transition | verified / checkpoint |
+| `GLC-08` | Domain, samples, releases, checksums, and review evidence stay unchanged. | protected-byte preservation | verified / checkpoint |
+| `GLC-09` | Old registry refs fail; no alias or silent migration exists. | exact current-registry acceptance | verified / checkpoint |
+| `GLC-10` | Focused/full/type/build/scan/review gates pass. | local development verification | verified / checkpoint |
+
+### Preview 3 acceptance
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; authored artifact versions remain unchanged while registry version/hash/provenance advances. | prerelease identity only | implemented / combined source qualification |
 | `P3-02` | `preview.spec.ts` adds Written/Voice Advanced-open axe, Voice Review axe, and 320 px Voice-open overflow coverage. | named automated accessibility evidence | verified / full source run |
 | `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | open / source freeze |
 | `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | open / source freeze |
-| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | verified implementation / repair checkpoint |
+| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | verified implementation / package bytes |
 | `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | returned / Pages-policy repair |
-| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | verified implementation / repair checkpoint |
+| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | verified implementation / packaging |
 | `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | open / review |
 | `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | open / exact confirmation |
 | `P3-10` | Unauthenticated asset and Pages downloads match every local length/hash. | captured public-byte identity | open / publication |

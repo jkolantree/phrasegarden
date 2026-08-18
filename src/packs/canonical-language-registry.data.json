@@ -1,9 +1,9 @@
 {
   "registryId": "phrasegarden-canonical-language-tags",
-  "version": "2026-07-23.1",
+  "version": "2026-08-17.1",
   "source": {
     "name": "IANA Language Subtag Registry",
-    "registryFileDate": "2026-06-15",
+    "registryFileDate": "2026-08-08",
     "uri": "https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry"
   },
   "policy": {
@@ -13,10 +13,15 @@
     "extensions": "reject"
   },
   "canonicalTags": [
+    "de",
     "en",
+    "es",
+    "fr",
     "he",
     "id",
+    "it",
     "ja",
+    "pt",
     "tlh",
     "yi",
     "zh-Hant-TW"

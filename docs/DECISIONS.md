@@ -555,3 +555,55 @@ failures. Permanent synthetic regressions must cover clean and dirty real-Git
 packaging commits, strict JSON, input budgets, ZIP prefix and metadata, and a
 same-path retry after a late member failure. Pages policy, action pins, actual
 artifact bytes, remote state, and publication remain separate packages.
+
+## ADR-030 — The first Generic language cohort is an explicit registry migration
+
+Status: Accepted
+Date: 2026-08-17
+Supersedes: Preview 3's assumption that the language-registry provenance stays
+unchanged after source-claims checkpoint `aa75e60`
+
+**Context:** The public catalog has seven canonical identities, while users
+reasonably expect French, German, Italian, Spanish, and Portuguese. Adding only
+display labels would violate ADR-020: selection, profiles, configuration,
+pair references, compiler inputs, and provenance must use one exact bundled
+identity. No qualified-speaker or direction-review evidence exists for the new
+languages, and Portuguese has material regional varieties.
+
+**Decision:** Advance the immutable registry to `2026-08-17.1`, content SHA-256
+`498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5`,
+reviewed against the IANA registry observed at `File-Date: 2026-08-08`. Add
+exact primary tags `de`, `es`, `fr`, `it`, and `pt` in code-unit order. Each
+gets one version `1.0.0` identity-only profile with its autonym, deterministic
+search names, `Latn`, `ltr`, and no monolingual clause.
+
+`pt` is Portuguese with region unspecified. It is not “neutral Portuguese” and
+does not stand for Brazilian, European, African, or another regional variety.
+`pt-BR` and `pt-PT` remain unsupported canonical identities. The ASCII forms
+`Francais`, `Espanol`, and `Portugues` are search strings only; they are never
+stored IDs or accepted aliases.
+
+Existing profile, pair-pack, recipe, compiler-policy, and prompt-surface
+versions do not advance because their own authored content is unchanged. Their
+complete identity nevertheless changes through the mandatory registry
+version/hash reference. Generated prompt provenance and therefore prompt bytes
+advance explicitly. Old registry-bound configurations fail with the existing
+version/hash errors; no silent migration or alias normalization is introduced.
+
+Every one of the 132 distinct directions across three recipes is exercised.
+Only the six English↔Japanese direction/recipe results remain Preview; the
+other 390 are Generic with no pair pack, review claim, section 6, or endpoint
+linguistic clause.
+
+**Rationale:** A small exact cohort gives people useful selection without
+turning a language list into a quality claim. Region-unspecified `pt` is an
+honest language identity so long as no regional adequacy is implied. Composite
+artifact identity lets unchanged authored profile content retain its version
+while still making the registry transition visible and fail-closed.
+
+**Consequences:** The earlier Preview 3 source-claims checkpoint remains valid
+history but cannot be the final source freeze. Preview 3 must re-run source and
+browser qualification on the clean descendant that contains this migration
+and the separately reviewed beginner-facing presentation. No Flagship,
+Reviewed, or Community tier is created; English↔Japanese remains Preview
+pending real external linguistic evidence.

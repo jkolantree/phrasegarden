@@ -21,6 +21,7 @@ import {
   PHRASEGARDEN_CATALOG,
 } from "../../src/app/runtime-catalog";
 import {
+  CANONICAL_LANGUAGE_REGISTRY_REF,
   EN_JA_PREVIEW_PACK,
   LANGUAGE_PROFILES,
   canonicalLanguageRegistry,
@@ -88,6 +89,11 @@ function replaceExactOnce(
 
 function currentPromptFromPublishedSample(value: string): string {
   let current = replaceExactOnce(value, "policy `1.0.0`", "policy `1.1.0`");
+  current = replaceExactOnce(
+    current,
+    "registry `2026-07-23.1` / `37EEF56CD6238F87ADA21F22BCA7CC947D3A4FAE224DEFE67141C10DE4DEED91`",
+    `registry \`${CANONICAL_LANGUAGE_REGISTRY_REF.version}\` / \`${CANONICAL_LANGUAGE_REGISTRY_REF.contentSha256}\``,
+  );
   current = replaceExactOnce(
     current,
     "prompt surface `instructions-en`@`1.0.0`",
@@ -184,6 +190,77 @@ describe("bundled authored artifacts", () => {
     expect(searchLanguageProfiles("日本語").map((item) => item.ref.id)).toEqual([
       "ja",
     ]);
+    expect(
+      LANGUAGE_PROFILES.filter((profile) =>
+        ["de", "es", "fr", "it", "pt"].includes(profile.id),
+      ).map((profile) => ({
+        id: profile.id,
+        bcp47: profile.bcp47,
+        version: profile.version,
+        autonym: profile.autonym,
+        names: profile.searchableNames,
+        direction: profile.direction,
+        scripts: profile.scripts,
+        clauses: profile.monolingualClauses,
+      })),
+    ).toEqual([
+      {
+        id: "de",
+        bcp47: "de",
+        version: "1.0.0",
+        autonym: "Deutsch",
+        names: ["German", "Deutsch"],
+        direction: "ltr",
+        scripts: ["Latn"],
+        clauses: [],
+      },
+      {
+        id: "es",
+        bcp47: "es",
+        version: "1.0.0",
+        autonym: "español",
+        names: ["Spanish", "Español", "Espanol"],
+        direction: "ltr",
+        scripts: ["Latn"],
+        clauses: [],
+      },
+      {
+        id: "fr",
+        bcp47: "fr",
+        version: "1.0.0",
+        autonym: "français",
+        names: ["French", "Français", "Francais"],
+        direction: "ltr",
+        scripts: ["Latn"],
+        clauses: [],
+      },
+      {
+        id: "it",
+        bcp47: "it",
+        version: "1.0.0",
+        autonym: "italiano",
+        names: ["Italian", "Italiano"],
+        direction: "ltr",
+        scripts: ["Latn"],
+        clauses: [],
+      },
+      {
+        id: "pt",
+        bcp47: "pt",
+        version: "1.0.0",
+        autonym: "português",
+        names: ["Portuguese", "Português", "Portugues"],
+        direction: "ltr",
+        scripts: ["Latn"],
+        clauses: [],
+      },
+    ]);
+    expect(searchLanguageProfiles("francais").map((item) => item.ref.id)).toEqual([
+      "fr",
+    ]);
+    expect(searchLanguageProfiles("portugues").map((item) => item.ref.id)).toEqual([
+      "pt",
+    ]);
   });
 });
 
@@ -218,6 +295,61 @@ describe("deterministic compiler", () => {
     expect(output.limitationCodes).toContain(
       "L-GENERIC-NO-PAIR-GUIDANCE",
     );
+  });
+
+  it("keeps the complete 12-language, three-recipe matrix honest", () => {
+    const recipeIds = [
+      "written-translator",
+      "live-voice-coach",
+      "interpreter",
+    ] as const;
+    let preview = 0;
+    let generic = 0;
+
+    for (const home of LANGUAGE_PROFILES) {
+      for (const target of LANGUAGE_PROFILES) {
+        if (home.id === target.id) {
+          continue;
+        }
+        for (const recipeId of recipeIds) {
+          const output = expectCompiled(
+            materialize(home.id, target.id, recipeId),
+          );
+          const isPreview =
+            (home.id === "en" && target.id === "ja") ||
+            (home.id === "ja" && target.id === "en");
+          if (isPreview) {
+            preview += 1;
+            expect(output.provenance.supportTier).toBe("preview");
+            expect(output.provenance.pairPack).not.toBe("none");
+            continue;
+          }
+
+          generic += 1;
+          expect(output.provenance.supportTier).toBe("generic");
+          expect(output.provenance.pairPack).toBe("none");
+          expect(output.provenance.supportReviewStatus).toBe("not-applicable");
+          expect(output.provenance.supportReviewDate).toBe("not-applicable");
+          expect(output.limitationCodes).toContain(
+            "L-GENERIC-NO-PAIR-GUIDANCE",
+          );
+          expect(output.canonicalPrompt).not.toContain("## 6.");
+          expect(output.canonicalPrompt).not.toContain(
+            "ordinary Japanese omission",
+          );
+          expect(output.canonicalPrompt).not.toContain(
+            "natural contextual Japanese",
+          );
+          expect(output.canonicalPrompt).not.toContain(
+            "natural contemporary English",
+          );
+        }
+      }
+    }
+
+    expect(preview).toBe(6);
+    expect(generic).toBe(390);
+    expect(preview + generic).toBe(396);
   });
 
   it("keeps Generic composition free of endpoint and pair linguistic clauses", () => {
@@ -726,17 +858,17 @@ describe("versioned prompt snapshots", () => {
       {
         name: "en-ja-interpreter",
         sha256:
-          "C28BDC4269D12A8E2074E4A7A4FD12F7FE40E3E100AD2CCF1605B0C7F9096A22",
+          "F59A848D0B64DD54A5A2ADEF03BB3241A77D0616B846A97E9BADD38610D78E46",
       },
       {
         name: "ja-en-interpreter-marked-short-relay",
         sha256:
-          "5A68717E877B4A9C8A52200CA55EADF7F2AF24570C47EC6CC81150E931491896",
+          "32697C560A080C75B45A37773B94CF2D712398ABE099D61D3A30BAF881B63121",
       },
       {
         name: "en-id-interpreter-generic",
         sha256:
-          "083ED45DDFB3FCA34A06D60938D82ECF6CA85AD1AFBC658166F520FCE902BCDC",
+          "23256EDEE75CFD72927EC41F16738B2B1B0ED3BA957A66FE838C5777F44A872B",
       },
     ]);
   });

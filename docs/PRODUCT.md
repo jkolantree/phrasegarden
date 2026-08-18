@@ -1,13 +1,19 @@
 # PhraseGarden product contract
 
 Status: Gate 0 source of truth  
-Updated: 2026-07-23
+Updated: 2026-08-17
 
 ## Thesis
 
 PhraseGarden is a public, static Prompt Studio that turns understandable language and interaction choices into portable prompts. It does not translate, coach, record, or call a model itself. Its advantage is an inspectable, deterministic behavioral contract: preserve intended meaning, interpersonal force, register, ambiguity, and the user's voice before optimizing literal wording.
 
 English↔Japanese is the default Preview pair: its exact guidance is built in and versioned, but external linguistic review has not been completed. Generic pairs use conservative universal instructions plus bundled language identity metadata, without endpoint-specific linguistic guidance. A long language list is not a quality claim.
+
+The first expanded identity catalog contains German, English, Spanish, French,
+Hebrew, Indonesian, Italian, Japanese, region-unspecified Portuguese, Klingon,
+Yiddish, and Traditional Chinese (Taiwan). Only exact English↔Japanese
+directions have a pair pack; every other direction is Generic. Endpoint
+availability never implies regional adequacy or linguistic review.
 
 ## People and jobs
 
@@ -66,6 +72,11 @@ download. The published `0.1.0-preview.2` site still contains Written
 Translator and Live Voice Coach only. The proposed `0.1.0-preview.3`
 prerelease adds the reviewed one-way Interpreter and progressive disclosure
 without claiming Gate 3 exit or stable readiness.
+
+The proposed Preview 3 also adds identity-only profiles for French, German,
+Italian, Spanish, and region-unspecified Portuguese. These profiles add no
+language-specific prompt clause, pair pack, pronunciation claim, dialect
+claim, or review tier.
 
 Home compiles the selected defaults directly. Optional settings are a
 secondary path, not a required intermediate screen. Compilation is local and

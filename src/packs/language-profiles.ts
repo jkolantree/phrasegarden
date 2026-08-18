@@ -66,6 +66,66 @@ const japaneseProfile: LanguageProfile = {
   ],
 };
 
+const germanProfile: LanguageProfile = {
+  languageRegistry: CANONICAL_LANGUAGE_REGISTRY_REF,
+  id: "de",
+  version: LANGUAGE_PROFILE_VERSION,
+  bcp47: "de",
+  autonym: "Deutsch",
+  searchableNames: ["German", "Deutsch"],
+  direction: "ltr",
+  scripts: ["Latn"],
+  monolingualClauses: [],
+};
+
+const spanishProfile: LanguageProfile = {
+  languageRegistry: CANONICAL_LANGUAGE_REGISTRY_REF,
+  id: "es",
+  version: LANGUAGE_PROFILE_VERSION,
+  bcp47: "es",
+  autonym: "español",
+  searchableNames: ["Spanish", "Español", "Espanol"],
+  direction: "ltr",
+  scripts: ["Latn"],
+  monolingualClauses: [],
+};
+
+const frenchProfile: LanguageProfile = {
+  languageRegistry: CANONICAL_LANGUAGE_REGISTRY_REF,
+  id: "fr",
+  version: LANGUAGE_PROFILE_VERSION,
+  bcp47: "fr",
+  autonym: "français",
+  searchableNames: ["French", "Français", "Francais"],
+  direction: "ltr",
+  scripts: ["Latn"],
+  monolingualClauses: [],
+};
+
+const italianProfile: LanguageProfile = {
+  languageRegistry: CANONICAL_LANGUAGE_REGISTRY_REF,
+  id: "it",
+  version: LANGUAGE_PROFILE_VERSION,
+  bcp47: "it",
+  autonym: "italiano",
+  searchableNames: ["Italian", "Italiano"],
+  direction: "ltr",
+  scripts: ["Latn"],
+  monolingualClauses: [],
+};
+
+const portugueseProfile: LanguageProfile = {
+  languageRegistry: CANONICAL_LANGUAGE_REGISTRY_REF,
+  id: "pt",
+  version: LANGUAGE_PROFILE_VERSION,
+  bcp47: "pt",
+  autonym: "português",
+  searchableNames: ["Portuguese", "Português", "Portugues"],
+  direction: "ltr",
+  scripts: ["Latn"],
+  monolingualClauses: [],
+};
+
 const identityOnlyProfiles: readonly LanguageProfile[] = [
   {
     languageRegistry: CANONICAL_LANGUAGE_REGISTRY_REF,
@@ -130,10 +190,15 @@ const identityOnlyProfiles: readonly LanguageProfile[] = [
 ];
 
 export const LANGUAGE_PROFILES: readonly LanguageProfile[] = Object.freeze([
+  germanProfile,
   englishProfile,
+  spanishProfile,
+  frenchProfile,
   identityOnlyProfiles[0]!,
   identityOnlyProfiles[1]!,
+  italianProfile,
   japaneseProfile,
+  portugueseProfile,
   ...identityOnlyProfiles.slice(2),
 ]);
 
