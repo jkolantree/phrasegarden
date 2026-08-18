@@ -56,6 +56,11 @@ describe("plain-language UI copy", () => {
     expect(missing).toEqual([]);
   });
 
+  it("keeps the default tone and detail labels concise for native mobile selects", () => {
+    expect(OPTION_LABELS_EN.preserve).toBe("Keep original tone");
+    expect(OPTION_LABELS_EN.concise).toBe("Translation + few notes");
+  });
+
   it("presents the exact language catalog in authored English-name order", () => {
     expect(
       PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => [

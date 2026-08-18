@@ -1055,6 +1055,17 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
       name: "Adjust how the prompt should work",
     }),
   ).toBeFocused();
+  const closedBuilderDimensions = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(closedBuilderDimensions.scroll).toBeLessThanOrEqual(
+    closedBuilderDimensions.client + 1,
+  );
+  await page.screenshot({
+    path: "artifacts/screenshots/builder-written-mobile-320-closed.png",
+    fullPage: true,
+  });
 
   await page.keyboard.press("Tab");
   await expect(page.getByLabel("Home language")).toBeFocused();
