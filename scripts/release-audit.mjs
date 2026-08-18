@@ -221,7 +221,11 @@ for (const path of files) {
 manifest.sort((left, right) => left.path < right.path ? -1 : left.path > right.path ? 1 : 0);
 if (new Set(manifest.map((item) => item.path.toLowerCase())).size !== manifest.length) issues.push("dist: paths must be case-insensitively unique");
 const releasePaths = manifest.map((item) => item.path);
-if (entryCount !== 4 || releasePaths.length !== 3 || !/^assets\/index-[A-Za-z0-9_-]+\.css$/.test(releasePaths[0] ?? "") || !/^assets\/index-[A-Za-z0-9_-]+\.js$/.test(releasePaths[1] ?? "") || releasePaths[2] !== "index.html") issues.push("dist: unexpected release output shape");
+const stylesheetPaths = releasePaths.filter((path) => /^assets\/index-[A-Za-z0-9_-]+\.css$/.test(path));
+const scriptPaths = releasePaths.filter((path) => /^assets\/index-[A-Za-z0-9_-]+\.js$/.test(path));
+if (entryCount !== 4 || releasePaths.length !== 3 || stylesheetPaths.length !== 1 || scriptPaths.length !== 1 || !releasePaths.includes("index.html")) issues.push("dist: unexpected release output shape");
+const stylesheetPath = stylesheetPaths[0] ?? "";
+const scriptPath = scriptPaths[0] ?? "";
 
 if (manifestPath !== undefined) {
   let expected;
@@ -284,8 +288,8 @@ else {
     '      content="Build readable, portable language-learning and translation prompts locally with PhraseGarden."',
     "    />",
     "    <title>PhraseGarden · Portable language prompts</title>",
-    `    <script type="module" crossorigin src="./${releasePaths[1]}"></script>`,
-    `    <link rel="stylesheet" crossorigin href="./${releasePaths[0]}">`,
+    `    <script type="module" crossorigin src="./${scriptPath}"></script>`,
+    `    <link rel="stylesheet" crossorigin href="./${stylesheetPath}">`,
     "  </head>",
     "  <body>",
     '    <div id="app"></div>',

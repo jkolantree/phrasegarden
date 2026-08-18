@@ -23,14 +23,16 @@ const canonicalHtml = [
 ].join("\n");
 function workspace(): string { const path = mkdtempSync(join(tmpdir(), "phrasegarden-release-audit-")); workspaces.push(path); return path; }
 function sha256(bytes: Buffer): string { return createHash("sha256").update(bytes).digest("hex").toUpperCase(); }
-function createDist(root: string): void {
+function createDist(root: string, stylesheet = "index-test.css", script = "index-test.js"): void {
   const dist = join(root, "dist"); mkdirSync(join(dist, "assets"), { recursive: true });
-  writeFileSync(join(dist, "index.html"), canonicalHtml);
-  writeFileSync(join(dist, "assets/index-test.css"), "body { color: #123; }\n");
-  writeFileSync(join(dist, "assets/index-test.js"), "console.log('PhraseGarden');\n");
+  writeFileSync(join(dist, "index.html"), canonicalHtml
+    .replace("index-test.css", stylesheet)
+    .replace("index-test.js", script));
+  writeFileSync(join(dist, "assets", stylesheet), "body { color: #123; }\n");
+  writeFileSync(join(dist, "assets", script), "console.log('PhraseGarden');\n");
 }
-function manifestFixture(root: string) {
-  const paths = ["assets/index-test.css", "assets/index-test.js", "index.html"];
+function manifestFixture(root: string, assetPaths = ["assets/index-test.css", "assets/index-test.js"]) {
+  const paths = [...assetPaths, "index.html"].sort();
   return {
     schemaVersion: 1,
     releaseVersion: "0.1.0-preview.3",
@@ -52,6 +54,16 @@ describe("release filesystem audit", () => {
     expect(result.status, result.stderr).toBe(0); expect(JSON.parse(result.stdout)).toMatchObject({ ok: true, root: "dist" });
     mkdirSync(join(root, "dist/unused"));
     expectAuditFailure(root, "unexpected release output shape", manifest);
+  });
+  it("binds CSS and JavaScript by path shape when JavaScript sorts first", () => {
+    const root = workspace();
+    createDist(root, "index-zzz.css", "index-aaa.js");
+    const manifest = writeManifest(root, manifestFixture(root, [
+      "assets/index-zzz.css",
+      "assets/index-aaa.js",
+    ]));
+    const result = runAudit(root, manifest);
+    expect(result.status, result.stderr).toBe(0);
   });
   it("fails cleanly for missing roots, extra arguments, and forbidden output", () => {
     const missing = workspace();
