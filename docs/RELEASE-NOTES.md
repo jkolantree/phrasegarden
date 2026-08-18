@@ -1,5 +1,35 @@
 # Release notes
 
+## 0.1.0-preview.4 — desktop fold correction and closed release path
+
+Status: source target; package, publication, and deployment are version-bound
+
+### Product behavior
+
+- Carries forward Preview 3's Interpreter, expanded Generic language catalog,
+  beginner-facing journey, and optional Advanced settings without changing
+  compiler, prompt, recipe, language, support-tier, privacy, or runtime
+  semantics.
+- Tightens wide/short Home spacing so the primary action remains within the
+  locally reviewed 1280 × 720 initial viewport.
+
+### Release tooling
+
+- Uses closed Preview 3/4 release specifications, pinned package and verifier
+  adapters, immutable Preview 3 predecessor bindings, and a main-only Pages
+  selector that deploys no rebuilt bytes.
+- Static policy and synthetic fixtures prove deterministic structure only;
+  they do not establish a workflow run, artifact, deployment, or public byte.
+
+### Evidence boundary
+
+No Preview 4 source freeze, release package, tag, GitHub release, Pages
+deployment, external English↔Japanese linguistic review, accessibility
+conformance, or stable-readiness claim exists from this source record alone.
+Preview 3 release assets are byte-qualified; its Pages run did not deploy, and
+Preview 2 is the qualified Pages rollback. Preview 4 publication and deployment
+status come only from its version-bound evidence and corresponding public state.
+
 ## 0.1.0-preview.3 — Interpreter, more language choices, and simpler setup
 
 Status: prerelease record; publication status is version-bound

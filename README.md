@@ -17,12 +17,13 @@ Open the public Prompt Studio at
 [jkolantree.github.io/phrasegarden](https://jkolantree.github.io/phrasegarden/).
 Versioned release status, evidence, and downloadable assets are available from
 the [PhraseGarden releases](https://github.com/jkolantree/phrasegarden/releases).
-The `0.1.0-preview.3` source adds the independently code-reviewed one-way
-Interpreter; identity-only Generic profiles for French, German, Italian,
-Spanish, and region-unspecified Portuguese; clearer language choices; and one
-Advanced settings disclosure for uncommon controls. Source presence does not
-establish packaging, publication, or deployment; the version-bound release
-evidence and corresponding public repository state establish those claims.
+The `0.1.0-preview.4` source carries forward Preview 3's independently
+code-reviewed one-way Interpreter, more languages with conservative Generic
+guidance, clearer setup, and optional settings. It also contains a locally
+reviewed spacing fix that keeps **Create prompt** visible on shorter desktop
+screens. Source presence does not
+establish packaging, publication, or deployment; version-bound release evidence
+and the corresponding public repository state establish those claims.
 
 ## Run locally
 
@@ -45,7 +46,7 @@ PhraseGarden never asks for the words you want to translate. Paste the
 generated prompt into a language tool of your choice, then provide source text
 there.
 
-## What Preview 3 includes
+## What Preview 4 includes
 
 - English→Japanese and Japanese→English Preview guidance
 - Conservative Generic generation for all other bundled directions
@@ -65,7 +66,7 @@ there.
 - No backend, account, database, telemetry, advertising, runtime AI, service
   worker, local recipe storage, or share payload
 
-The Preview 3 interface and generated instruction surface are English-only.
+The Preview 4 interface and generated instruction surface are English-only.
 Read the [product limitations](docs/LIMITATIONS.md) before use.
 
 ## Support labels
@@ -74,7 +75,7 @@ Read the [product limitations](docs/LIMITATIONS.md) before use.
 |---|---|
 | Preview | An exact built-in directed pair pack is versioned, but external linguistic review is incomplete. |
 | Generic | No exact pair pack is selected; only universal, conservative instructions are emitted. |
-| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 3 cannot assign them. |
+| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 4 cannot assign them. |
 
 A user or imported configuration cannot choose or upgrade its tier.
 
@@ -119,9 +120,9 @@ pnpm test:e2e:dist
 Browser tests run sequentially and use axe. Local Windows verification uses
 Microsoft Edge; the prepared Pages workflow uses Playwright Chromium.
 The core compiler implementation and version remain `0.1.0-preview.1`.
-Interpreter adds versioned recipe `1.0.0`, compiler policy `1.1.0`, English
+Interpreter uses versioned recipe `1.0.0`, compiler policy `1.1.0`, English
 prompt surface `1.1.0`, and English summary catalog `1.2.0`. Exact Preview 3
-Interpreter prompt hashes are locked in compiler tests. Published
+Interpreter regression hashes remain locked in compiler tests. Published
 byte-qualified sample prompts remain unchanged in
 [`samples/0.1.0-preview.1`](samples/0.1.0-preview.1).
 The public repository inventory is recorded in

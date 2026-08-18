@@ -608,4 +608,16 @@ workflow execution or deployment evidence.
 |---|---|---|
 | `P4-PS-01`–`P4-PS-03` | Exact Preview 4 adapter, archive, manifest, command/package-script allowlists, audits, and no-build order. | four unchanged substantive files retain two exact-byte PASSes |
 | `P4-PS-04`–`P4-PS-07` | Immutable actions, main-only authority, full non-partial history, exact active/predecessor triggers, and checkpoint order. | 34/34 focused, 322/322 full Vitest, 28/28 within 56/56 Python, dual typechecks |
-| `P4-PS-08` | Scope, protected paths, deterministic checks, accounting, independent review, and bounded claims. | substantive fingerprint `8D2F204F…E0E36` passed twice; current Project/Trace/contract completion closure separately rebound; checkpoint pending |
+| `P4-PS-08` | Scope, protected paths, deterministic checks, accounting, independent review, and bounded claims. | checkpoint `93e74f508cad465d0b1652c2ca4478fd62424fb8` |
+
+### Preview 4 source identity
+
+Source: `PREVIEW-4-PUBLICATION.md`. This package advances only the source and
+target-release identity. Preview 3 public assets, its failed Pages run, and the
+Preview 2 Pages rollback remain separate historical evidence.
+
+| ID | Deterministic owner | State / next blocker |
+|---|---|---|
+| `P4-SI-01`–`P4-SI-03` | Exact package/source identity, unchanged authored artifacts, and unchanged tier/review limits. | completed locally; `S4` checkpoint eligibility is conditional on exact-hash administrative PASS |
+| `P4-SI-04`–`P4-SI-07` | Public-state, accessibility, synthetic-evidence, and pinned-workflow claim separation. | 34/34 focused within 322/322 full Vitest |
+| `P4-SI-08`–`P4-SI-10` | Regressions, exact thirteen-path scope, full local gates, two reviews, and no release output. | repaired fingerprint `4C76985A…8293` received product/language/accessibility and release/security PASSes; ten unchanged substantive paths retain them; Project/Trace/contract carry no substantive verdict and become checkpoint-eligible only under separate exact-hash administrative PASS; when satisfied, the next action is the exact `S4` checkpoint; no Preview 4 artifact |

@@ -6,16 +6,16 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-4-PAGES-SELECTOR` exact pinned deployment identity policy |
-| `state` | `COMPLETED_LOCAL_PACKAGE_AWAITING_CHECKPOINT` |
-| `candidateFingerprint` | repaired substantive fingerprint `8D2F204FE5C34DDC9C0D264B3690DE49994D834622DD52BA72CDF393A42E0E36` received two zero-finding PASSes; four unchanged substantive files retain those verdicts; the current Project/Trace/contract completion closure is separately rebound and inherits no substantive verdict |
-| `closedAcceptanceIds` | prior IDs; `P4-RT-01`–`P4-RT-08` checkpointed at `c245244`; `P4-AV-01`–`P4-AV-12` checkpointed at `3fc477d`; `P4-PS-01`–`P4-PS-08` completed locally |
-| `nextKnownBlocker` | checkpoint the exact seven-path Pages-selector package; Preview 4 source/public-identity qualification remains separate |
-| `lastCompletedCheck` | second repair: 34/34 focused and 322/322 full Vitest, dual typechecks; 28/28 within 56/56 Python remains bound to unchanged Python/script/package inputs; exact scope/protected/cache/diff/accounting checks |
-| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 5; help-text regression 1; Git-boundary review returns 3, resolved by one consolidated redesign; Pages-selector review returns 2 |
+| `activePackage` | `PREVIEW-4-PUBLICATION` source and target-release identity |
+| `state` | `LOCAL_SOURCE_IDENTITY_CHECKPOINT_ELIGIBLE_ON_ADMIN_PASS` |
+| `candidateFingerprint` | repaired fingerprint `4C76985A43A858B3A9CAD394A01553B170D00EF276CD5EBD46DD2AB7DCA78293` received two zero-finding exact-byte PASSes; ten unchanged substantive paths retain them; this Project/Trace/contract status-only closure carries no substantive verdict and is checkpoint-eligible only under a separate exact-hash administrative PASS |
+| `closedAcceptanceIds` | prior IDs; `P4-RT-01`–`P4-RT-08` checkpointed at `c245244`; `P4-AV-01`–`P4-AV-12` checkpointed at `3fc477d`; `P4-PS-01`–`P4-PS-08` checkpointed at `93e74f5`; `P4-SI-01`–`P4-SI-10` completed locally; checkpoint eligibility is conditional on exact-hash administrative PASS for the three status files |
+| `nextKnownBlocker` | no substantive blocker; under an exact-hash administrative PASS for the three status files, checkpoint exactly thirteen paths as `S4`; otherwise stop on the returned issue |
+| `lastCompletedCheck` | repaired 13-path fingerprint: two independent zero-finding PASSes; 34/34 focused, 322/322 full Vitest, dual typechecks and zero-match domain scan; 56/56 Python remains bound to unchanged Python, script, package, and release-spec inputs |
+| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 5; help-text regression 1; Git-boundary review returns 3, resolved by one consolidated redesign; Pages-selector review returns 2; source-identity review return 1 |
 | `frozenManifestHash` | Preview 3 historical source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; no Preview 4 manifest exists |
-| `exactNextAction` | stage and commit only the exact seven-path Pages-selector package, then begin a separately contracted Preview 4 source/public-identity package |
-| `forbiddenUntil` | no Preview 4 source freeze/build/package, push, dispatch, deployment, public write, Preview 3 mutation/redeploy, or Gate 4+ work before the selector checkpoint |
+| `exactNextAction` | under an exact-hash administrative PASS for Project/Trace/contract, stage and commit exactly thirteen paths as `S4`; otherwise stop |
+| `forbiddenUntil` | no Preview 4 source manifest, release build, package/stage/promotion, push, tag, release, dispatch, deployment, public write, Preview 3 mutation, or Gate 4+ work before `S4` |
 
 ## Current product state
 
@@ -37,9 +37,9 @@ repair at `70858f1`. Generic catalog checkpoint `db85ed4` adds five
 identity-only profiles; beginner-journey checkpoint `3c2a606` clarifies their
 presentation. Pages checkpoint `4d9002f` hardens deployment policy; validator
 checkpoint `d6cb448` removes an asset-order assumption; mobile checkpoint
-`7fb32c7` makes complete default choices visible at 320 px. The target
-identity is `0.1.0-preview.3`. This checkpoint aligns its bounded public
-claims and accessibility evidence. Source-manifest core checkpoint
+`7fb32c7` makes complete default choices visible at 320 px. The source target
+is now `0.1.0-preview.4`; this does not change Preview 3's public
+release status. Source-manifest core checkpoint
 `e421e0a3248d9d7c1730929697920f8b757b8792` and regression checkpoint
 `06cc7cb032ec7798accb8757d10a21df75fcefdb` add complete-tree identity tooling
 without creating evidence bytes. Package core
@@ -138,7 +138,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 4 desktop-fold correction | completed locally | checkpoint `3a2cfd0`; 1/1 fold, 24/24 release-state, 12/12 Edge/axe, 312/312 Vitest, dual typechecks, build/audit, screenshot inspection, and independent PASSes |
 | Preview 4 closed release tooling | completed locally | checkpoint `c245244400858d759176b4d0679c343b700a5fde`; full gates, exact-byte substantive PASS, separate administrative rebind; net 496 |
 | Preview 4 archive verifier | completed locally | checkpoint `3fc477d86e66dbfcf3485b71beccfcadfb9a7291`; 28/28 within 56/56 Python, 312/312 Vitest, dual typechecks, build/audit/scans, two substantive PASSes and separate administrative rebind; net 639 |
-| Preview 4 Pages selector | completed locally; checkpoint pending | substantive fingerprint `8D2F204F…E0E36` received two zero-finding PASSes; four unchanged substantive files retain them and the final Project/Trace/contract closure is separately rebound; net 163 before closure |
+| Preview 4 Pages selector | completed locally | checkpoint `93e74f508cad465d0b1652c2ca4478fd62424fb8`; 34/34 focused, 322/322 full, 56/56 Python, dual typechecks, two substantive PASSes and separate administrative rebind; net 163 |
+| Preview 4 source identity | substantively completed; checkpoint conditional | repaired fingerprint `4C76985A…8293` received independent product/language/accessibility and release/security PASSes; ten substantive paths retain them; three status files carry no substantive verdict and are checkpoint-eligible only under exact-hash administrative PASS; no source manifest, release artifact, package, or public action |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -174,7 +175,8 @@ The correction reuses the existing design system and permanent browser fixture.
 
 ## Exact next eligible action
 
-Checkpoint only the exact seven-path Pages-selector package, then contract the
-Preview 4 source/public-identity package separately. Do not freeze source,
-build, package, push, dispatch, publish, deploy, begin Gate 4, or claim release
-readiness before that checkpoint.
+Under an exact-hash administrative PASS for Project/Trace/contract, stage and
+commit exactly thirteen source-identity paths as `S4`; otherwise stop on the
+returned issue. Do not create the source
+manifest, release build, package, push, tag, publish, dispatch, deploy, begin
+Gate 4, or claim release readiness before `S4`.

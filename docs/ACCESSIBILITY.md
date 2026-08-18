@@ -32,6 +32,15 @@ evidence for this Preview honestly.
 - Synthetic Japanese composition-event coverage
 - Direct visual inspection of the captured rendered screens
 
+## Preview 4 development delta
+
+The locally reviewed Preview 4 fold checkpoint keeps the primary Home action
+above the bottom of a 1280 × 720 viewport while preserving the existing
+narrow-screen, keyboard, bidi, reduced-motion, reflow, and axe journeys. That
+is bounded development/regression evidence. It does not establish a Preview 4
+source freeze, release, deployment, independent screen-reader matrix, or WCAG
+conformance.
+
 ## Known gaps
 
 Automated checks do not replace human assistive-technology testing. Preview 3

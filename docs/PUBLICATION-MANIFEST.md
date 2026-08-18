@@ -1,7 +1,7 @@
 # Publication manifest
 
 This manifest defines the authorized public repository contents and target
-identity for PhraseGarden `0.1.0-preview.3`. Preview 1 and Preview 2 repository,
+identity for PhraseGarden `0.1.0-preview.4`. Preview 1 and Preview 2 repository,
 release, license, and Pages evidence remains immutable. Actual package,
 publication, and deployment status is established only by version-bound
 release evidence and corresponding public state.
@@ -13,8 +13,9 @@ release evidence and corresponding public state.
 - Default branch: `main`
 - Repository: <https://github.com/jkolantree/phrasegarden>
 - Preview 2 rollback release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
-- Preview 3 target tag: `v0.1.0-preview.3`
-- Previous release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
+- Preview 3 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.3>
+- Preview 4 target tag: `v0.1.0-preview.4`
+- Preview 1 historical release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place
 - Licenses: MIT for code; CC BY 4.0 for maintained prompts, recipes,
@@ -33,6 +34,8 @@ release evidence and corresponding public state.
 - `release/phrasegarden-0.1.0-preview.2-pages-manifest.json`
 - `release/phrasegarden-0.1.0-preview.3-pages.zip`
 - `release/phrasegarden-0.1.0-preview.3-pages-manifest.json`
+- `release/phrasegarden-0.1.0-preview.4-pages.zip`
+- `release/phrasegarden-0.1.0-preview.4-pages-manifest.json`
 - `samples/0.1.0-preview.1/**`
 - `scripts/**`
 - `src/**`
@@ -64,6 +67,23 @@ qualifies all release archives, manifests, and the published prompt
 samples. An archive is not by itself evidence of hosted release-download
 identity or UI-mediated download identity. Repository refs, release assets,
 and production responses require separate remote verification.
+
+## Preview 4 publication boundary
+
+- Version: `0.1.0-preview.4`
+- Target tag: `v0.1.0-preview.4`
+- Source: exact source commit `S4`; qualification requires its exact Preview 4
+  source manifest
+- Package: exact seven-path child commit `P4` with sole parent `S4`;
+  qualification requires the pinned package verifier
+- Immutable predecessor assets: the qualified Preview 3 archive and manifest
+- Pages rollback: the qualified Preview 2 archive; Preview 3 did not deploy
+- Pages target: <https://jkolantree.github.io/phrasegarden/>
+
+This source target does not establish the Preview 4 source freeze, package,
+tag, release, deployment, production bytes, accessibility conformance, or
+linguistic review. Each requires its own version-bound evidence and applicable
+public verification.
 
 ## Preview 3 publication boundary
 

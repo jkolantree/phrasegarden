@@ -16,6 +16,8 @@ const productPath = join(repository, "docs/PRODUCT.md");
 const projectStatePath = join(repository, "docs/PROJECT-STATE.md");
 const publicationManifestPath = join(repository, "docs/PUBLICATION-MANIFEST.md");
 const releaseNotesPath = join(repository, "docs/RELEASE-NOTES.md");
+const releaseWorkflowPath = join(repository, "docs/RELEASE-WORKFLOW.md");
+const publicationContractPath = join(repository, "docs/work-packages/PREVIEW-4-PUBLICATION.md");
 const workspaces: string[] = [];
 const csp = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'";
 const canonicalHtml = [
@@ -66,6 +68,8 @@ describe("release filesystem audit", () => {
       ["docs/PROJECT-STATE.md", projectStatePath],
       ["docs/PUBLICATION-MANIFEST.md", publicationManifestPath],
       ["docs/RELEASE-NOTES.md", releaseNotesPath],
+      ["docs/RELEASE-WORKFLOW.md", releaseWorkflowPath],
+      ["docs/work-packages/PREVIEW-4-PUBLICATION.md", publicationContractPath],
     ] as const;
     const publicClaims = new Map(publicClaimSources.map(
       ([name, path]) => [name, readFileSync(path, "utf8").replace(/\r\n/g, "\n")] as const,
@@ -80,14 +84,15 @@ describe("release filesystem audit", () => {
           "English-only in this\ncandidate",
           "This candidate cannot assign them",
           "Exact current\nInterpreter prompt hashes",
+          "The `0.1.0-preview.3` source adds",
         ],
         stable: [
           "Versioned release status, evidence, and downloadable assets",
           "Source presence does not\nestablish packaging, publication, or deployment",
-          "## What Preview 3 includes",
-          "The Preview 3 interface and generated instruction surface are English-only.",
-          "Preview 3 cannot assign them",
-          "Exact Preview 3\nInterpreter prompt hashes",
+          "## What Preview 4 includes",
+          "The Preview 4 interface and generated instruction surface are English-only.",
+          "Preview 4 cannot assign them",
+          "Exact Preview 3\nInterpreter regression hashes",
         ],
       },
       {
@@ -101,6 +106,8 @@ describe("release filesystem audit", () => {
           "Checks recorded for Preview 3",
           "Preview 3\nevidence does not include an independent screen-reader matrix",
           "local Preview 3 build because that surface",
+          "## Preview 4 development delta",
+          "does not establish a Preview 4\nsource freeze, release, deployment",
         ],
       },
       {
@@ -115,9 +122,9 @@ describe("release filesystem audit", () => {
           "has not yet been packaged",
         ],
         stable: [
-          "This source tree targets PhraseGarden `0.1.0-preview.3`",
-          "Source presence does not establish packaging,\npublication, or deployment.",
-          "not supported by the `0.1.0-preview.3` source",
+          "This source tree targets PhraseGarden `0.1.0-preview.4`",
+          "Source presence does not establish packaging, publication, or\ndeployment.",
+          "not supported by the `0.1.0-preview.4` source",
           "Recorded local development evidence includes synthetic IME coverage",
           "code review does not itself establish package, publication, deployment, or",
           "version-bound release\n  evidence for those separate claims",
@@ -126,7 +133,7 @@ describe("release filesystem audit", () => {
       {
         name: "docs/PRIVACY.md",
         returned: ["This candidate has no backend"],
-        stable: ["PhraseGarden `0.1.0-preview.3` has no backend"],
+        stable: ["PhraseGarden `0.1.0-preview.4` has no backend"],
       },
       {
         name: "docs/PRODUCT.md",
@@ -136,13 +143,14 @@ describe("release filesystem audit", () => {
           "The proposed `0.1.0-preview.3`\nprerelease",
           "The proposed Preview 3 also adds",
           "The candidate is memory-only",
+          "carries forward the reviewed one-way",
         ],
         stable: [
-          "The `0.1.0-preview.3` source contains",
+          "The `0.1.0-preview.4` source contains",
           "Source presence does not establish package, publication, or\ndeployment status",
-          "Preview 3 adds the reviewed one-way Interpreter",
-          "Preview 3 also adds identity-only profiles",
-          "PhraseGarden `0.1.0-preview.3` is memory-only",
+          "one-way Interpreter,\nindependently reviewed as product code",
+          "Preview 4 retains identity-only profiles",
+          "PhraseGarden `0.1.0-preview.4` is memory-only",
         ],
       },
       {
@@ -162,7 +170,7 @@ describe("release filesystem audit", () => {
           "Its exact three assets passed final unauthenticated byte verification",
           "The workflow performed no deployment",
           "current live serving bytes require a fresh direct check",
-          "The target\nidentity is `0.1.0-preview.3`",
+          "source target\nis now `0.1.0-preview.4`",
           "This repair checkpoint itself establishes no\nreplacement source freeze, package, publication, or deployment",
           "Preview 3 main, tag, prerelease, and asset bytes established; Pages did not deploy",
         ],
@@ -173,11 +181,21 @@ describe("release filesystem audit", () => {
           "current PhraseGarden Preview channel and the proposed",
           "- Current public release:",
           "- Proposed prerelease tag:",
+          "- Previous release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>",
+          "Future qualified `release/phrasegarden-0.1.0-preview.4-pages.zip`",
+          "Source: one future clean `S4`",
+          "Package: one later seven-path commit",
         ],
         stable: [
           "Actual package,\npublication, and deployment status is established only by version-bound\nrelease evidence",
           "- Preview 2 rollback release:",
-          "- Preview 3 target tag:",
+          "- Preview 3 public prerelease:",
+          "- Preview 4 target tag: `v0.1.0-preview.4`",
+          "- Preview 1 historical release:",
+          "## Preview 4 publication boundary",
+          "Source: exact source commit `S4`",
+          "Package: exact seven-path child commit `P4`",
+          "Preview 3 did not deploy",
         ],
       },
       {
@@ -187,12 +205,48 @@ describe("release filesystem audit", () => {
           "exact current Interpreter",
           "claims remain pending until",
           "captures a current 320 px",
+          "Preview 3 remains the byte-qualified public prerelease",
         ],
         stable: [
           "Status: prerelease record; publication status is version-bound",
           "exact Preview 3 Interpreter",
           "each is recorded only when its named\n  qualification stage and version-bound evidence pass",
           "captures a 2026-08-18 320 px",
+          "## 0.1.0-preview.4 — desktop fold correction and closed release path",
+          "Status: source target; package, publication, and deployment are version-bound",
+          "No Preview 4 source freeze, release package, tag, GitHub release, Pages\ndeployment",
+          "Preview 3 release assets are byte-qualified",
+        ],
+      },
+      {
+        name: "docs/RELEASE-WORKFLOW.md",
+        returned: [
+          "python -B scripts/preview3-package.py freeze-source --source-commit <S>",
+          "artifacts/release/preview3-source-manifest.json",
+          "binds `S`, its",
+          "declared source `S`",
+          "sole parent `S`",
+        ],
+        stable: [
+          "python -B scripts/preview4-package.py freeze-source --source-commit <S4>",
+          "python -B scripts/preview4-package.py verify-source --source-commit <S4>",
+          "artifacts/release/preview4-source-manifest.json",
+          "binds `S4`, its",
+          "declared source `S4`",
+          "sole parent `S4`",
+          "Preview 3 adapter remains available only for\nhistorical verification",
+        ],
+      },
+      {
+        name: "docs/work-packages/PREVIEW-4-PUBLICATION.md",
+        returned: [
+          "Preview 3 remains the byte-qualified public prerelease",
+          "a clean descendant may become source `S4`",
+        ],
+        stable: [
+          "Preview 3 release assets are byte-qualified and its Pages run did not deploy",
+          "This exact thirteen-path checkpoint is source candidate `S4`",
+          "they do not create a descendant source identity",
         ],
       },
     ] as const;
@@ -204,6 +258,15 @@ describe("release filesystem audit", () => {
       for (const claim of returned) expect(document).not.toContain(claim);
       for (const claim of stable) expect(document).toContain(claim);
     }
+    const combinedClaims = [...publicClaims.values()].join("\n");
+    for (const prohibited of [
+      /Preview 4 (?:assigns|is) (?:Community|Reviewed|Flagship)\b/i,
+      /English↔Japanese (?:has completed|completed|passed) external linguistic review/i,
+      /Preview 4 (?:is|has been) WCAG conformant/i,
+      /Preview 4 (?:passed|completed) an independent screen-reader matrix/i,
+      /Preview 4 (?:is|has been) (?:published|deployed)\b/i,
+      /Current Pages (?:serves|runs) Preview 4/i,
+    ]) expect(combinedClaims).not.toMatch(prohibited);
   });
 
   it("accepts a regular dist tree bound to one exact manifest", () => {
@@ -333,9 +396,10 @@ describe("Pages workflow policy", () => {
   const p4Archive = "release/phrasegarden-0.1.0-preview.4-pages.zip";
   const occurrences = (value: string): number => workflow.split(value).length - 1;
   const workflowPolicyHash = "B1008B9F3A25A7E7BA22CBCCD2EA6ABB50387CE66D876207171A6E2DE46CB276";
-  const packageScripts = (JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
-    scripts: Record<string, string>;
-  }).scripts;
+  const packageDocument = JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
+    version: string; scripts: Record<string, string>;
+  };
+  const packageScripts = packageDocument.scripts;
   const exactWorkflow = (candidate: string): void => {
     expect(sha256(Buffer.from(candidate.replaceAll("\r\n", "\n")))).toBe(workflowPolicyHash);
   };
@@ -388,6 +452,7 @@ describe("Pages workflow policy", () => {
 
   it("pins authority and the complete Preview 4 command chain", () => {
     exactWorkflow(workflow);
+    expect(packageDocument.version).toBe("0.1.0-preview.4");
     exactPackageScripts(packageScripts);
     const uses = [...workflow.matchAll(/^\s+(?:-\s+)?uses:\s+([^\s#]+)/gm)].map((match) => match[1]);
     expect(uses).toEqual([

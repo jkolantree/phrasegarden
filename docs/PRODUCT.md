@@ -63,17 +63,19 @@ Users cannot select or upgrade a tier. The public Preview derives `Preview` only
 
 ## MVP
 
-The `0.1.0-preview.3` source contains Written Translator, Live Voice Coach, and
+The `0.1.0-preview.4` source contains Written Translator, Live Voice Coach, and
 one-way Interpreter for bundled language profiles, with Preview
 English↔Japanese guidance and conservative Generic fallback. It includes
 language swap, bounded settings, plain-language summaries, visible limitations
 and version provenance, prompt inspection, local editing, copy, and plain-text
 download. Source presence does not establish package, publication, or
 deployment status; those claims require the version-bound release evidence and
-corresponding public state. Preview 3 adds the reviewed one-way Interpreter and
-progressive disclosure without claiming Gate 3 exit or stable readiness.
+corresponding public state. Preview 4 carries forward the one-way Interpreter,
+independently reviewed as product code, and progressive disclosure. It includes
+the locally reviewed short-desktop spacing correction without claiming Gate 3
+exit or stable readiness.
 
-Preview 3 also adds identity-only profiles for French, German,
+Preview 4 retains identity-only profiles for French, German,
 Italian, Spanish, and region-unspecified Portuguese. These profiles add no
 language-specific prompt clause, pair pack, pronunciation claim, dialect
 claim, or review tier.
@@ -84,7 +86,7 @@ reversible; Review is the informed-use handoff where support, limitations,
 destination compatibility, paste order, and destination privacy are visible
 before Copy and Download.
 
-PhraseGarden `0.1.0-preview.3` is memory-only and intentionally excludes bidirectional or
+PhraseGarden `0.1.0-preview.4` is memory-only and intentionally excludes bidirectional or
 simultaneous interpreting, local recipe storage, import/export, sharing, a
 Japanese interface, service-worker caching, accounts, telemetry, runtime model
 calls, public submissions, and evidence-qualified tier promotion.
