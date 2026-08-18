@@ -6,16 +6,16 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-4-ARCHIVE-VERIFIER` pinned adapters and shared verifier engine |
+| `activePackage` | `PREVIEW-4-PAGES-SELECTOR` exact pinned deployment identity policy |
 | `state` | `COMPLETED_LOCAL_PACKAGE_AWAITING_CHECKPOINT` |
-| `candidateFingerprint` | prior exact ten-path fingerprint `9AEF5DEA0AB9E541F5AF5831B856D5D580FE9E3C20492F9450527737BF8C586B` received two zero-finding PASSes; its seven unchanged substantive files retain those verdicts; this three-doc administrative closure inherits no substantive verdict and must rebind before checkpoint |
-| `closedAcceptanceIds` | prior IDs; `P4-RT-01`–`P4-RT-08` checkpointed at `c245244`; `P4-AV-01`–`P4-AV-12` substantively complete subject only to this closure's administrative rebind |
-| `nextKnownBlocker` | zero-finding administrative rebind of the current Project/Trace/contract bytes, then checkpoint the exact ten-path package |
-| `lastCompletedCheck` | prior substantive bytes: 28/28 verifier within 56/56 Python, 312/312 Vitest, dual typechecks, 53-module build/audit, 11/11 checksums, scans, two exact-byte PASSes; net 639 |
-| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 5; help-text regression 1; Git-boundary review returns 3, resolved by one consolidated redesign |
+| `candidateFingerprint` | repaired substantive fingerprint `8D2F204FE5C34DDC9C0D264B3690DE49994D834622DD52BA72CDF393A42E0E36` received two zero-finding PASSes; four unchanged substantive files retain those verdicts; the current Project/Trace/contract completion closure is separately rebound and inherits no substantive verdict |
+| `closedAcceptanceIds` | prior IDs; `P4-RT-01`–`P4-RT-08` checkpointed at `c245244`; `P4-AV-01`–`P4-AV-12` checkpointed at `3fc477d`; `P4-PS-01`–`P4-PS-08` completed locally |
+| `nextKnownBlocker` | checkpoint the exact seven-path Pages-selector package; Preview 4 source/public-identity qualification remains separate |
+| `lastCompletedCheck` | second repair: 34/34 focused and 322/322 full Vitest, dual typechecks; 28/28 within 56/56 Python remains bound to unchanged Python/script/package inputs; exact scope/protected/cache/diff/accounting checks |
+| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 5; help-text regression 1; Git-boundary review returns 3, resolved by one consolidated redesign; Pages-selector review returns 2 |
 | `frozenManifestHash` | Preview 3 historical source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; no Preview 4 manifest exists |
-| `exactNextAction` | on zero-finding administrative rebind, stage and commit only the exact ten-path verifier package |
-| `forbiddenUntil` | no Gate 4+ work, Preview 3 mutation/redeploy, Pages selector change, Preview 4 source freeze/package, or public write |
+| `exactNextAction` | stage and commit only the exact seven-path Pages-selector package, then begin a separately contracted Preview 4 source/public-identity package |
+| `forbiddenUntil` | no Preview 4 source freeze/build/package, push, dispatch, deployment, public write, Preview 3 mutation/redeploy, or Gate 4+ work before the selector checkpoint |
 
 ## Current product state
 
@@ -137,7 +137,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 public prerelease | assets completed; Pages returned | `P=0482c8adb4aeefdbb7b6329e6408fd6c29fd96d4`; tag/release plus 3/3 unauthenticated asset hashes verified; run `32155197089` failed `728.9375 > 720`, upload/deploy skipped |
 | Preview 4 desktop-fold correction | completed locally | checkpoint `3a2cfd0`; 1/1 fold, 24/24 release-state, 12/12 Edge/axe, 312/312 Vitest, dual typechecks, build/audit, screenshot inspection, and independent PASSes |
 | Preview 4 closed release tooling | completed locally | checkpoint `c245244400858d759176b4d0679c343b700a5fde`; full gates, exact-byte substantive PASS, separate administrative rebind; net 496 |
-| Preview 4 archive verifier | substantive PASS; administrative rebind pending | seven substantive files retain two exact-byte PASSes; current Project/Trace/contract closure must rebind before the exact ten-path checkpoint; net 639 |
+| Preview 4 archive verifier | completed locally | checkpoint `3fc477d86e66dbfcf3485b71beccfcadfb9a7291`; 28/28 within 56/56 Python, 312/312 Vitest, dual typechecks, build/audit/scans, two substantive PASSes and separate administrative rebind; net 639 |
+| Preview 4 Pages selector | completed locally; checkpoint pending | substantive fingerprint `8D2F204F…E0E36` received two zero-finding PASSes; four unchanged substantive files retain them and the final Project/Trace/contract closure is separately rebound; net 163 before closure |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -173,6 +174,7 @@ The correction reuses the existing design system and permanent browser fixture.
 
 ## Exact next eligible action
 
-On zero-finding administrative rebind, checkpoint only the exact ten-path
-Preview 4 archive-verifier package. Do not change Pages, freeze source, package,
-publish, deploy, begin Gate 4, or claim release readiness.
+Checkpoint only the exact seven-path Pages-selector package, then contract the
+Preview 4 source/public-identity package separately. Do not freeze source,
+build, package, push, dispatch, publish, deploy, begin Gate 4, or claim release
+readiness before that checkpoint.

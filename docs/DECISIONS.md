@@ -770,3 +770,24 @@ pre/post physical checks and no redirects, lazy fetch, or replacements.
 hostile states fail closed. Private staging may be random and OS diagnostics
 noncanonical. Pages/publication stay separate; checks prove bytes and structure,
 not adversarial swap-use-restore, human review, or linguistic truth.
+
+## ADR-037 — Pages selects Preview 4 only through its pinned adapter
+
+Status: Accepted
+Date: 2026-08-18
+
+**Context:** Pages must advance release identity without a mutable selector,
+rebuild, alternate artifact path, or loss of Preview 3 lineage monitoring.
+
+**Decision:** The existing main-only workflow invokes only the pinned Preview 4
+adapter with exact Preview 4 ZIP/manifest paths and audits that manifest twice.
+Preview 3 ZIP/manifest remain push triggers solely as immutable predecessor
+dependencies. Checkout fetches full non-partial history because the permanent
+verifier differential reads checkpoint `c245244400858d759176b4d0679c343b700a5fde`;
+the verifier still rejects partial/promisor state. All action pins, authority,
+test order, and upload policy remain.
+
+**Consequences:** A selector-only remote run fails closed until the exact Preview
+4 packaging commit exists; this checkpoint must not be pushed or dispatched
+alone. Static policy proves configuration, not execution, deployment, or public
+bytes. Source freeze, packaging, and publication remain separate.

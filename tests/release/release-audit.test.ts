@@ -324,8 +324,71 @@ describe("release filesystem audit", () => {
   });
 });
 describe("Pages workflow policy", () => {
-  it("pins exact actions and preserves main-only same-byte deployment", () => {
-    const workflow = readFileSync(workflowPath, "utf8").replaceAll("\r\n", "\n");
+  const workflow = readFileSync(workflowPath, "utf8").replaceAll("\r\n", "\n");
+  const commands = [...workflow.matchAll(/^\s+(?:-\s+)?run:\s*(?:>-\n((?: {10}.+\n?)+)|([^\n]+))/gm)]
+    .map((match) => (match[2] ?? match[1]?.trim() ?? "").replace(/\n\s+/g, " "));
+  const p3Manifest = "release/phrasegarden-0.1.0-preview.3-pages-manifest.json";
+  const p3Archive = "release/phrasegarden-0.1.0-preview.3-pages.zip";
+  const p4Manifest = "release/phrasegarden-0.1.0-preview.4-pages-manifest.json";
+  const p4Archive = "release/phrasegarden-0.1.0-preview.4-pages.zip";
+  const occurrences = (value: string): number => workflow.split(value).length - 1;
+  const workflowPolicyHash = "B1008B9F3A25A7E7BA22CBCCD2EA6ABB50387CE66D876207171A6E2DE46CB276";
+  const packageScripts = (JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
+    scripts: Record<string, string>;
+  }).scripts;
+  const exactWorkflow = (candidate: string): void => {
+    expect(sha256(Buffer.from(candidate.replaceAll("\r\n", "\n")))).toBe(workflowPolicyHash);
+  };
+  const exactPackageScripts = (candidate: Record<string, string>): void => {
+    expect(Object.keys(candidate).sort()).toEqual([
+      "audit:release", "build", "check", "dev", "preview", "test", "test:clause",
+      "test:compiler", "test:compiler-policy", "test:e2e", "test:e2e:dist",
+      "test:language-profile", "test:prompt-surface", "test:review-evidence",
+      "test:spec", "test:summary-catalog", "test:watch", "typecheck", "verify:release",
+    ]);
+    expect({ test: candidate.test, typecheck: candidate.typecheck, e2e: candidate["test:e2e:dist"] }).toEqual({
+      test: "vitest run",
+      typecheck: "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.domain.json --noEmit",
+      e2e: "playwright test",
+    });
+  };
+  const policyMutations: [string, (source: string) => string][] = [
+    ["skipped post-browser audit", (source) => source.replace(
+      "      - name: Confirm browser checks did not alter the qualified bytes\n        run:",
+      "      - name: Confirm browser checks did not alter the qualified bytes\n        if: false\n        run:")],
+    ["ignored audit failure", (source) => source.replace(
+      "      - name: Confirm browser checks did not alter the qualified bytes\n        run:",
+      "      - name: Confirm browser checks did not alter the qualified bytes\n        continue-on-error: true\n        run:")],
+    ["alternate checkout", (source) => source.replace(
+      "        with:\n          fetch-depth: 0", "        with:\n          repository: another/public-repository\n          ref: main\n          fetch-depth: 0")],
+    ["elevated verify permission", (source) => source.replace(
+      "    permissions:\n      contents: read", "    permissions:\n      contents: read\n      issues: write")],
+    ["added schedule", (source) => source.replace(
+      "on:\n  workflow_dispatch:", "on:\n  schedule:\n    - cron: '0 0 * * *'\n  workflow_dispatch:")],
+    ["changed concurrency", (source) => source.replace("cancel-in-progress: false", "cancel-in-progress: true")],
+    ["deploy despite failure", (source) => source.replace(
+      "    if: github.ref == 'refs/heads/main'\n    permissions:\n      pages: write",
+      "    if: github.ref == 'refs/heads/main' && always()\n    permissions:\n      pages: write")],
+    ["unparsed run block", (source) => source.replace(
+      "      - uses: actions/upload-pages-artifact@", "      - run: |\n          echo shadow\n      - uses: actions/upload-pages-artifact@")],
+  ];
+
+  it.each(policyMutations)("rejects workflow control bypass: %s", (_label, mutate) => {
+    const changed = mutate(workflow);
+    expect(changed).not.toBe(workflow);
+    expect(() => exactWorkflow(changed)).toThrow();
+  });
+
+  it("rejects an added root pnpm lifecycle hook", () => {
+    exactPackageScripts(packageScripts);
+    expect(() => exactPackageScripts({
+      ...packageScripts, "pnpm:devPreinstall": "node scripts/change-release-tools.mjs",
+    })).toThrow();
+  });
+
+  it("pins authority and the complete Preview 4 command chain", () => {
+    exactWorkflow(workflow);
+    exactPackageScripts(packageScripts);
     const uses = [...workflow.matchAll(/^\s+(?:-\s+)?uses:\s+([^\s#]+)/gm)].map((match) => match[1]);
     expect(uses).toEqual([
       "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
@@ -339,32 +402,50 @@ describe("Pages workflow policy", () => {
     expect(workflow).toContain("permissions: {}");
     expect(workflow).toMatch(/verify:\n\s+if:.*\n\s+permissions:\n\s+contents: read/);
     expect(workflow).toMatch(/deploy:\n\s+if:.*\n\s+permissions:\n\s+pages: write\n\s+id-token: write/);
-    expect(workflow).toContain("fetch-depth: 2");
+    expect(workflow.match(/fetch-depth:/g)).toHaveLength(1);
+    expect(workflow.match(/fetch-depth: 0/g)).toHaveLength(1);
     expect(workflow).toContain("persist-credentials: false");
-    expect(workflow).toContain("--require-packaging-commit");
-    expect(workflow).not.toContain("--require-head-parent");
-    expect(workflow).not.toMatch(/\bpnpm build\b/);
-    expect(workflow).toContain("pnpm test\n");
-    expect(workflow).toContain("pnpm typecheck\n");
-    expect(workflow).toContain("python3 -m unittest tests/release/test_verify_release_archive.py");
-    expect(workflow).toContain("pnpm test:e2e:dist");
-    expect(workflow.match(/node scripts\/release-audit\.mjs/g)).toHaveLength(2);
+    expect(workflow).not.toMatch(/(?:filter|sparse-checkout):/);
+    expect(commands).toEqual([
+      "pnpm install --frozen-lockfile", "pnpm test", "pnpm typecheck",
+      "python3 -m unittest tests/release/test_verify_release_archive.py",
+      `python3 scripts/preview4-verify-release-archive.py --archive ${p4Archive} --manifest ${p4Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
+      `node scripts/release-audit.mjs ${p4Manifest}`,
+      "pnpm exec playwright install --with-deps chromium", "pnpm test:e2e:dist",
+      `node scripts/release-audit.mjs ${p4Manifest}`,
+    ]);
+    const extractionStep = workflow.split(/\n(?=      - )/).find((step) => step.includes("Extract the exact qualified Pages archive"));
+    expect(extractionStep).toBe([
+      "      - name: Extract the exact qualified Pages archive", "        run: >-",
+      "          python3 scripts/preview4-verify-release-archive.py",
+      `          --archive ${p4Archive}`, `          --manifest ${p4Manifest}`,
+      "          --checksums SHA256SUMS", "          --output dist",
+      "          --require-packaging-commit",
+    ].join("\n"));
+    const active = commands.join("\n");
+    expect(active).not.toMatch(/preview\.3|scripts\/verify-release-archive\.py|scripts\/release_archive_verifier\.py|--(?:release|version|spec)\b/);
     const extract = workflow.indexOf("--require-packaging-commit");
     const firstAudit = workflow.indexOf("node scripts/release-audit.mjs");
     const browser = workflow.indexOf("pnpm test:e2e:dist");
     const secondAudit = workflow.lastIndexOf("node scripts/release-audit.mjs");
     const upload = workflow.indexOf("actions/upload-pages-artifact@");
+    expect([extract, firstAudit, browser, secondAudit, upload].every((index) => index >= 0)).toBe(true);
     expect([extract, firstAudit, browser, secondAudit, upload]).toEqual([...[extract, firstAudit, browser, secondAudit, upload]].sort((left, right) => left - right));
     expect(workflow.indexOf("Confirm browser checks")).toBeLessThan(upload);
     expect(workflow).toContain("needs: verify");
+    expect(workflow.match(/\n\s+path: dist\n/g)).toHaveLength(1);
+  });
+
+  it("monitors exact active and predecessor release paths", () => {
     const paths = workflow.match(/    paths:\n((?:      - .+\n)+)/)?.[1]?.trim().split("\n").map((line) => line.replace(/^\s*-\s+"?|"?$/g, ""));
     expect(paths).toEqual([
       ".github/workflows/pages.yml", "SHA256SUMS", "index.html",
       "package.json", "pnpm-lock.yaml", "playwright.config.ts",
-      "release/phrasegarden-0.1.0-preview.3-pages-manifest.json",
-      "release/phrasegarden-0.1.0-preview.3-pages.zip", "scripts/**",
+      p3Manifest, p3Archive, p4Manifest, p4Archive, "scripts/**",
       "src/**", "tests/**", "tsconfig.json", "tsconfig.domain.json",
       "vite.config.ts", "vitest.config.ts",
     ]);
+    expect([occurrences(p3Manifest), occurrences(p3Archive)]).toEqual([1, 1]);
+    expect([occurrences(p4Manifest), occurrences(p4Archive)]).toEqual([4, 2]);
   });
 });

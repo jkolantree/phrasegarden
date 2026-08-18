@@ -593,6 +593,19 @@ Fixtures are regression evidence only.
 
 | ID | Deterministic owner | State / next blocker |
 |---|---|---|
-| `P4-AV-01`–`P4-AV-04` | Pinned adapters, raw manifest/argument identity, and Preview 3 differentials. | unchanged substantive bytes retain two exact-byte PASSes |
-| `P4-AV-05`–`P4-AV-07` | Exact child, physical typed Git objects/paths, Preview 4 source version, ledger, predecessor, and append. | unchanged substantive bytes retain two exact-byte PASSes |
-| `P4-AV-08`–`P4-AV-12` | Existing archive/resource boundary, compatibility consumers, hostile Git negatives, and bounded claims. | current three-doc closure requires separate administrative rebind before checkpoint |
+| `P4-AV-01`–`P4-AV-04` | Pinned adapters, raw manifest/argument identity, and Preview 3 differentials. | checkpoint `3fc477d86e66dbfcf3485b71beccfcadfb9a7291` |
+| `P4-AV-05`–`P4-AV-07` | Exact child, physical typed Git objects/paths, Preview 4 source version, ledger, predecessor, and append. | checkpoint `3fc477d86e66dbfcf3485b71beccfcadfb9a7291` |
+| `P4-AV-08`–`P4-AV-12` | Existing archive/resource boundary, compatibility consumers, hostile Git negatives, and bounded claims. | two substantive PASSes plus separate administrative rebind; net 639 |
+
+### Preview 4 Pages selector
+
+Source: ADR-037 and `PREVIEW-4-PAGES-SELECTOR.md`. The local candidate pins
+Pages to the Preview 4 adapter and artifact identity while retaining Preview 3
+artifact paths only as monitored predecessor dependencies. Static policy is not
+workflow execution or deployment evidence.
+
+| ID | Deterministic owner | State / next blocker |
+|---|---|---|
+| `P4-PS-01`–`P4-PS-03` | Exact Preview 4 adapter, archive, manifest, command/package-script allowlists, audits, and no-build order. | four unchanged substantive files retain two exact-byte PASSes |
+| `P4-PS-04`–`P4-PS-07` | Immutable actions, main-only authority, full non-partial history, exact active/predecessor triggers, and checkpoint order. | 34/34 focused, 322/322 full Vitest, 28/28 within 56/56 Python, dual typechecks |
+| `P4-PS-08` | Scope, protected paths, deterministic checks, accounting, independent review, and bounded claims. | substantive fingerprint `8D2F204F…E0E36` passed twice; current Project/Trace/contract completion closure separately rebound; checkpoint pending |

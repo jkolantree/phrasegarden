@@ -1,6 +1,6 @@
 # Preview 4 archive-verifier foundation
 
-Status: substantive exact-byte PASS; administrative closure must rebind before checkpoint | Base: `c245244400858d759176b4d0679c343b700a5fde` | Updated: 2026-08-18
+Status: completed local checkpoint `3fc477d86e66dbfcf3485b71beccfcadfb9a7291` | Base: `c245244400858d759176b4d0679c343b700a5fde` | Updated: 2026-08-18
 
 ## Objective
 
