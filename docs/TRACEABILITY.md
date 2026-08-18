@@ -222,15 +222,29 @@ a synthetic retry, cache deletion, and remote action-ref read without
 workaround. Twelve archive regressions and all nine old checksums passed; the
 cache stays unstaged and Pages policy stays blocked on exact action refs.
 
+Checkpoint `83558bd` then preserved those six paths and removed the generated
+cache. A later adversarial review superseded the earlier PASS by reproducing
+dirty-worktree acceptance plus strict-JSON, path, physical-size, special-mode,
+and partial-output failures. ADR-029 and
+`PREVIEW-3-ARCHIVE-VERIFIER-REPAIR.md` preserve that return. Two repair reviews
+found further resource-bound bypasses; the consolidated repair now caps every
+ledger target, sizes the parent Git blob before reading it, streams bounded ZIP
+members, binds all seven worktree files to exact `100644` HEAD blobs, and
+extracts only after full validation. Its core received an independent PASS
+with zero open P1/P2/P3: 20/20 focused tests, 277/277 Vitest, dual typechecks,
+Vite build, nine historical checksums, and zero forbidden-domain matches.
+This is development verification pending the exact six-path checkpoint, not a
+source freeze or publication qualification.
+
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
 | `P3-01` | Package, README, notes, and public inventory use `0.1.0-preview.3`; compiler/artifact versions remain unchanged. | prerelease identity only | verified / full source freeze |
 | `P3-02` | `preview.spec.ts` adds Written/Voice Advanced-open axe, Voice Review axe, and 320 px Voice-open overflow coverage. | named automated accessibility evidence | verified / full source run |
 | `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | open / source freeze |
 | `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | open / source freeze |
-| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | implemented / archive-bindings review |
+| `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | verified implementation / repair checkpoint |
 | `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | returned / Pages-policy repair |
-| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | implemented / archive-bindings review |
+| `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | verified implementation / repair checkpoint |
 | `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | open / review |
 | `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | open / exact confirmation |
 | `P3-10` | Unauthenticated asset and Pages downloads match every local length/hash. | captured public-byte identity | open / publication |

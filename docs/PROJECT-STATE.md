@@ -1,25 +1,25 @@
 # PhraseGarden project state
 
-Updated: 2026-07-24
+Updated: 2026-08-17
 
 ## Resume cursor
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-ARCHIVE-BINDINGS` |
-| `state` | `QUIESCENT_AWAITING_REVIEW` |
-| `candidateFingerprint` | source-claims checkpoint `aa75e60040ad2eeb5b55223fa83ff87b71031eaf`, tree `0fb8cab046585700c09b7234fc6480d1dcf5e632`; Preview 3 source is not frozen yet |
-| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, and Preview 3 source claims `P3-01`–`P3-02` verified; `P3-03`–`P3-12` active |
-| `nextKnownBlocker` | independent review and exact six-path checkpoint of archive bindings |
-| `lastCompletedCheck` | archive bindings: 12/12 focused tests, 277/277 Vitest, dual typechecks, nine historical checksums, and zero forbidden-domain matches passed |
-| `retryCounters` | process package: command 2, review repair 2, receipt correction 1, formatting repair 1; `G3.5`: command 5, implementation repair 0, review repair 1; Preview 3: command 10, review repair 3, process split 2 |
+| `activePackage` | `PREVIEW-3-ARCHIVE-VERIFIER-REPAIR` |
+| `state` | `QUIESCENT_AWAITING_CHECKPOINT` |
+| `candidateFingerprint` | checkpoint `83558bdc373a7e8ec8d1f18d6713f526c2aad505` is returned development history; its six-path forward repair has an independent core PASS and awaits its exact checkpoint |
+| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-01`–`P3-02`, and `P3-AR-01`–`P3-AR-08` verified; `P3-03`–`P3-12` remain active |
+| `nextKnownBlocker` | exact six-path archive-repair checkpoint, then the authorized five-language Generic catalog package |
+| `lastCompletedCheck` | archive repair: 20/20 focused, 277/277 Vitest, dual typechecks, Vite build, 9/9 historical checksums, zero forbidden-domain matches, and independent zero-P1/P2/P3 core PASS |
+| `retryCounters` | process package: review repair 2; `G3.5`: review repair 1; Preview 3: process split 2, archive repair returns 2, consolidated resource-bound redesign 1 |
 | `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
-| `exactNextAction` | independently review and checkpoint archive bindings, then contract and resolve the separately bounded Pages policy |
+| `exactNextAction` | checkpoint only the six archive-repair paths; then implement and review the separately bounded five-language Generic catalog before Pages policy and a new combined source qualification |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
 
-PhraseGarden `0.1.0-preview.2` is the immutable public pre-release at
+PhraseGarden `0.1.0-preview.2` is the last byte-qualified public pre-release at
 <https://jkolantree.github.io/phrasegarden/>. Tag `v0.1.0-preview.2` resolves
 to exact package commit `6e55e8d142c748de181cd5136076d576d0994e19`.
 It includes Written Translator and Live Voice Coach.
@@ -27,9 +27,10 @@ It includes Written Translator and Live Voice Coach.
 The local `release/next` branch adds the independently reviewed Gate 3
 Interpreter at `c2e6104`, process controls at `e293426`, and progressive
 Advanced settings at `e96f4b5`, and the independently reviewed Preview 3
-source claims at `aa75e60`. The proposed package identity is
-`0.1.0-preview.3`; its combined source is not yet frozen, packaged, published,
-or deployed.
+source claims at `aa75e60`, and the returned archive checkpoint at `83558bd`.
+The archive repair is independently reviewed but not checkpointed. The proposed
+package identity remains `0.1.0-preview.3`; its source is not frozen, packaged,
+published, or deployed. Current remote/public state has not been freshly read.
 
 Detailed proof is preserved outside this cursor:
 
@@ -77,8 +78,10 @@ Detailed proof is preserved outside this cursor:
 | Next-release process controls | completed | `PC-01`–`PC-10`, reviewed `PC-CORE-1`, normalized `PC-CORE-2`, and staged-byte transport PASS |
 | Gate 3 Advanced Controls | completed locally | `G3-ADV-CORE-2`; 277/277 Vitest, 11/11 Edge/axe, dual typechecks, build/audit, protected paths unchanged, desktop/320 px closed/open screenshots, independent PASS |
 | Preview 3 source claims and accessibility | completed locally | exact 13-path checkpoint `aa75e60`; focused checks and independent PASS |
-| Preview 3 archive bindings | current candidate | portable archive, exact ledger, source-parent, and seven-path packaging controls under validation |
-| Preview 3 Pages policy | blocked next package | immutable action refs and main-only deployment remain unresolved |
+| Preview 3 archive checkpoint | returned | `83558bd`; later adversarial review reproduced exact-byte, parsing, resource, metadata, and retry defects |
+| Preview 3 archive repair | completed locally / awaiting checkpoint | 20/20 focused plus full deterministic/type/build checks and independent core PASS |
+| Five-language Generic catalog | authorized next | `de`, `es`, `fr`, `it`, and region-unspecified `pt`; no pair pack or review-tier claim |
+| Preview 3 Pages policy | deferred after catalog | immutable action refs and main-only deployment remain unresolved |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -106,15 +109,15 @@ Detailed proof is preserved outside this cursor:
 
 ## Credit-expensive work deliberately avoided
 
-No new visual ideation, manual assistive-technology session, model evaluation,
-prospective-fixture use, remote CI, network write, release, or deployment has
-been performed for Preview 3. Existing local automated evidence is reused only
-where its exact bytes remain bound.
+No new visual-ideation batch, manual assistive-technology session, model
+evaluation, prospective-fixture use, remote CI, network write, release, or
+deployment has been performed. Existing evidence is reused only where its
+exact bytes remain bound.
 
 ## Exact next eligible action
 
-Pass focused checks and independent review for archive bindings, then
-checkpoint its exact owned paths. Next, resolve and review the separately
-bounded Pages policy. Only their clean combined descendant may become the
-source freeze, be built once, and be packaged by exact bytes. Do not begin
-Gate 4 or claim stable release readiness.
+Checkpoint only the six archive-repair paths. Then implement and review the
+bounded five-language Generic catalog and beginner-facing clarification
+package. Resolve Pages policy afterward. Only the clean combined descendant
+may enter fresh source qualification. Do not begin Gate 4 or claim stable
+release readiness.

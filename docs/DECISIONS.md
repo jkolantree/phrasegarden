@@ -511,3 +511,47 @@ offline, governance, and stable-release evidence honest.
 contract. Any source, tag, asset, target, rollback, permission, or public-byte
 change after exact authorization stops publication. Gates 4–6 remain
 unstarted.
+
+## ADR-029 — Release archives bind committed blobs before atomic extraction
+
+Status: Accepted
+Date: 2026-08-17
+Supersedes: the archive-verifier qualification claim at checkpoint `83558bd`
+
+**Context:** Independent adversarial review reproduced a packaging-mode pass
+after the ZIP, manifest, and checksum ledger were coherently replaced only in
+the worktree. It also found permissive JSON scalar equality, duplicate keys,
+Unicode-equivalent paths, an unbounded physical ZIP prefix, special-file mode
+metadata, and partial extraction left by a late validation failure. The earlier
+focused suite did not exercise a real Git repository and could not establish
+the intended same-byte claim.
+
+**Decision:** Packaging mode requires every one of its seven allowed paths to
+be a regular `100644` blob at `HEAD` and requires the unfiltered worktree bytes
+to hash to that exact Git object before accepting the parent ledger. Manifest
+JSON is size-bounded UTF-8 with unique keys, standard constants, closed fields,
+and exact scalar types. Release member paths use a documented safe ASCII
+subset; language content remains unrestricted inside files. Ledger and file
+hashes stream through bounded chunks. Manifest, ledger, physical ZIP, member
+count, and decompressed bytes have independent ceilings with release headroom.
+
+ZIP members must begin at byte zero, match the closed manifest, use supported
+compression, and carry only regular or unspecified file-type metadata. The
+verifier reads and validates all bounded member bytes before it creates a
+temporary sibling tree, then atomically renames that complete tree to the
+fresh requested output. Any validation or write failure removes only that
+verifier-owned temporary tree.
+
+**Rationale:** A path allowlist identifies scope, not bytes. Binding unfiltered
+worktree files to exact committed blobs closes that gap. Safe ASCII filenames
+avoid host-dependent Unicode normalization without restricting multilingual
+page content. Validate-then-rename makes a corrected retry possible without
+manual cleanup and prevents partial output from being mistaken for qualified
+bytes.
+
+**Consequences:** Checkpoint `83558bd` remains development history, not a
+source freeze. Its earlier PASS is superseded by the preserved reproduced
+failures. Permanent synthetic regressions must cover clean and dirty real-Git
+packaging commits, strict JSON, input budgets, ZIP prefix and metadata, and a
+same-path retry after a late member failure. Pages policy, action pins, actual
+artifact bytes, remote state, and publication remain separate packages.
