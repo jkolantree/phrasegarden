@@ -32,8 +32,8 @@ docs/work-packages/PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER.md
 scripts/preview3-package.py
 ```
 
-Child A1b adds permanent regressions from the exact reviewed A1a checkpoint;
-its source hash must be inserted here before staging it:
+Child A1b adds permanent regressions from exact reviewed A1a checkpoint
+`e421e0a3248d9d7c1730929697920f8b757b8792`:
 
 ```text
 docs/work-packages/PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER.md
