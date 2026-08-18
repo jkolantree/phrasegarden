@@ -22,7 +22,7 @@ Gate 3 exit, stable readiness, linguistic review, or accessibility conformance.
   `docs/PUBLICATION-MANIFEST.md`
 - `.github/workflows/pages.yml`, `scripts/release-audit.mjs`, and
   `tests/e2e/preview.spec.ts`
-- ADR-028, ADR-029, and ADR-030
+- ADR-028, ADR-029, ADR-030, and ADR-031
 
 ## In scope
 
@@ -34,7 +34,7 @@ The source work is intentionally split at the accepted 700-net-line boundary:
    and Pages mechanics.
 3. `PREVIEW-3-ARCHIVE-VERIFIER-REPAIR` repairs the returned archive checkpoint.
 4. `GENERIC-LANGUAGE-COHORT-1` owns the exact registry/profile migration.
-5. A separately contracted beginner-facing package owns presentation only.
+5. `PREVIEW-3-BEGINNER-JOURNEY` owns plain-language presentation only.
 
 Each package has exact owned paths, acceptance, checks, independent review, and
 a local checkpoint. Only their clean combined descendant after Pages policy
@@ -44,8 +44,10 @@ The source-claims subpackage is checkpointed at
 `aa75e60040ad2eeb5b55223fa83ff87b71031eaf`; returned archive checkpoint
 `83558bdc373a7e8ec8d1f18d6713f526c2aad505` is repaired by
 `70858f1c4157af3340cea6c95f50cf9fd387ffbf`. Those checkpoints remain useful
-history but are not a freeze after the authorized catalog expansion. Pages
-policy remains separate. The combined source is not frozen.
+history. Generic catalog checkpoint
+`db85ed4a09f2e960ce0f6a31f84844b6e719bdf6` advances the registry and profiles.
+None is a freeze after the authorized catalog and presentation expansion.
+Pages policy remains separate. The combined source is not frozen.
 
 Source-freeze phase:
 
@@ -80,15 +82,22 @@ docs/RECIPE-SCHEMA.md
 docs/TRACEABILITY.md
 docs/work-packages/GENERIC-LANGUAGE-COHORT-1.md
 docs/work-packages/PREVIEW-3-ARCHIVE-VERIFIER-REPAIR.md
+docs/work-packages/PREVIEW-3-BEGINNER-JOURNEY.md
 docs/work-packages/PREVIEW-3-PUBLICATION.md
 docs/work-packages/PREVIEW-3-SAME-BYTE-PIPELINE.md
 docs/work-packages/PREVIEW-3-SOURCE-CLAIMS.md
 package.json
 scripts/release-audit.mjs
 scripts/verify-release-archive.py
+src/app/App.tsx
 src/packs/canonical-language-registry.data.json
 src/packs/canonical-language-registry.ts
 src/packs/language-profiles.ts
+src/ui/LanguageLabel.tsx
+src/ui/SupportStatus.tsx
+src/ui/language-presentation.ts
+src/ui/styles.css
+tests/app/ui-copy.test.ts
 tests/domain/compiler.test.ts
 tests/domain/language-profile-validation.test.ts
 tests/e2e/preview.spec.ts

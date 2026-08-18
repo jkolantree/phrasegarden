@@ -706,7 +706,7 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
     .selectOption("id");
   await expect(page.getByTestId("support-status")).toContainText("Generic");
   await expect(page.getByTestId("support-status")).toContainText(
-    "Uses general guidance only",
+    "Uses PhraseGarden's general meaning-and-tone rules",
   );
   await generate(page);
   await expect(page.getByTestId("limitations")).toHaveCount(0);
@@ -728,6 +728,168 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   expect(remoteRequests.map((request) => request.url())).toEqual([]);
   expect(runtimeNetwork.map((request) => request.url())).toEqual([]);
   expect(audit.webSockets).toEqual([]);
+});
+
+test("expanded languages stay understandable, exact, and accessible", async ({
+  context,
+  page,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: "http://127.0.0.1:4173",
+  });
+  await page.goto("/");
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator(".hero-copy")).toContainText(
+    "PhraseGarden makes instructions you copy into another AI chat or language tool",
+  );
+  await expect(page.locator(".hero-copy")).toContainText(
+    "Put the words you want translated there—not here",
+  );
+  await expect(
+    page.getByRole("radio", { name: /Written Translator/ }).locator(".."),
+  ).toContainText("Make instructions for translating text");
+  await expect(
+    page.getByRole("radio", { name: /Live Voice Coach/ }).locator(".."),
+  ).toContainText("Audio depends on the other tool");
+
+  const expectedOptionValues = [
+    "zh-Hant-TW",
+    "en",
+    "fr",
+    "de",
+    "he",
+    "id",
+    "it",
+    "ja",
+    "tlh",
+    "pt",
+    "es",
+    "yi",
+  ];
+  for (const label of ["Home language", "Target language"] as const) {
+    const select = page.getByLabel(label);
+    expect(await select.locator("option").evaluateAll((options) =>
+      options.map((option) => (option as HTMLOptionElement).value),
+    )).toEqual(expectedOptionValues);
+    const optionText = await select.locator("option").allTextContents();
+    expect(optionText).toContain("French — ⁨français⁩");
+    expect(optionText).toContain("German — ⁨Deutsch⁩");
+    expect(optionText).toContain("Portuguese — ⁨português⁩");
+    expect(optionText).toContain("Hebrew — ⁨עברית⁩");
+    expect(optionText).toContain("Yiddish — ⁨ייִדיש⁩");
+    expect(optionText.join(" ")).not.toMatch(/\((?:en|ja|fr|de|pt|es|it)\)/);
+    await expect(select.locator("option[dir='auto']")).toHaveCount(12);
+  }
+
+  await expect(page.getByText("Translate from", { exact: true })).toBeVisible();
+  await expect(page.getByText("Translate into", { exact: true })).toBeVisible();
+  await page.getByLabel("Target language").selectOption("fr");
+  await expect(page.locator(".sr-only[role='status']")).toHaveText(
+    "Direction changed to English to French. Support level: Generic. General guidance only.",
+  );
+  await expect(page.getByTestId("support-status")).toContainText(
+    "This exact language direction has no pair-specific guidance or independent language review",
+  );
+  await expect(page.locator(".target-rail bdi[lang='fr'][dir='ltr']")).toHaveText(
+    "français",
+  );
+  const desktopAction = await page
+    .getByRole("button", { name: "Create my prompt" })
+    .boundingBox();
+  expect(desktopAction).not.toBeNull();
+  expect(desktopAction!.y + desktopAction!.height).toBeLessThanOrEqual(720);
+  await page.screenshot({
+    path: "artifacts/screenshots/home-generic-desktop.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "Generic language homepage");
+
+  await page.setViewportSize({ width: 320, height: 900 });
+  const homeOverflow = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(homeOverflow.scroll).toBeLessThanOrEqual(homeOverflow.client + 1);
+  await page.screenshot({
+    path: "artifacts/screenshots/home-generic-mobile-320.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await expect(page.getByTestId("review-direction")).toContainText(
+    "English",
+  );
+  await expect(page.getByTestId("review-direction")).toContainText(
+    "French (français)",
+  );
+  await expect(page.getByTestId("review-direction")).toContainText(
+    "Written Translator",
+  );
+  const genericPrompt = await page.getByTestId("canonical-prompt").textContent();
+  expect(genericPrompt).toContain("Support tier: Generic");
+  expect(genericPrompt).not.toContain("## 6. Exact pair guidance");
+  expect(genericPrompt).not.toContain("ordinary Japanese omission");
+  await page.getByTestId("copy-prompt").click();
+  expect(normalizeClipboardText(await page.evaluate(() => navigator.clipboard.readText())))
+    .toBe(genericPrompt);
+  const frenchDownload = page.waitForEvent("download");
+  await page.getByTestId("download-prompt").click();
+  expect(readFileSync((await (await frenchDownload).path())!, "utf8")).toBe(
+    genericPrompt,
+  );
+  await page.screenshot({
+    path: "artifacts/screenshots/review-generic-desktop.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "Generic language desktop review");
+  await page.setViewportSize({ width: 320, height: 900 });
+  const reviewOverflow = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(reviewOverflow.scroll).toBeLessThanOrEqual(reviewOverflow.client + 1);
+  await page.screenshot({
+    path: "artifacts/screenshots/review-generic-mobile-320.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "Generic language review");
+
+  await page.getByRole("button", { name: "Start another prompt" }).click();
+  await page.getByLabel("Home language").selectOption("de");
+  await page.getByLabel("Target language").selectOption("it");
+  await expect(page.locator(".sr-only[role='status']")).toHaveText(
+    "Direction changed to German to Italian. Support level: Generic. General guidance only.",
+  );
+  await page.getByRole("button", { name: "Swap languages" }).click();
+  await expect(page.locator(".sr-only[role='status']")).toHaveText(
+    "Direction changed to Italian to German. Support level: Generic. General guidance only.",
+  );
+  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await expect(
+    page.getByTestId("review-direction").locator("span[lang='en'][dir='ltr']").first(),
+  ).toHaveText("Italian");
+  await expect(
+    page.getByTestId("review-direction").locator("bdi[lang='de'][dir='ltr']"),
+  ).toHaveText("Deutsch");
+
+  await page.getByRole("button", { name: "Start another prompt" }).click();
+  await page.getByLabel("Home language").selectOption("en");
+  await page.getByLabel("Target language").selectOption("pt");
+  await page.getByRole("button", { name: "Create my prompt" }).click();
+  const portuguesePrompt = await page.getByTestId("canonical-prompt").textContent();
+  expect(portuguesePrompt).toContain("pt@1.0.0");
+  expect(portuguesePrompt).not.toMatch(/Brazil|Portugal|pt-BR|pt-PT/i);
+
+  await page.getByRole("button", { name: "Start another prompt" }).click();
+  await page.getByLabel("Target language").selectOption("es");
+  await expect(page.locator(".target-rail bdi[lang='es'][dir='ltr']")).toHaveText(
+    "español",
+  );
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.getByRole("radio", { name: /Live Voice Coach/ }).check();
+  await expect(page.getByText("Explain in", { exact: true })).toBeVisible();
+  await expect(page.getByText("Practice in", { exact: true })).toBeVisible();
 });
 
 test("edited copy is explicit, IME-safe, downloadable, and regenerates only after confirmation", async ({
@@ -1006,6 +1168,7 @@ test("200% and 400% equivalent layout widths do not create page overflow", async
   ] as const) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
+    await page.getByLabel("Home language").selectOption("zh-Hant-TW");
     await openBuilder(page);
     await page.getByText("Advanced settings", { exact: true }).click();
     const dimensions = await page.evaluate(() => ({

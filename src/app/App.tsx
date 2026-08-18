@@ -39,13 +39,15 @@ import {
   OPTION_LABELS_EN,
   WARNING_MESSAGES_EN,
 } from "../locales";
-import {
-  SEARCHABLE_LANGUAGE_PROFILE_CATALOG,
-  type SearchableLanguageProfile,
-} from "../packs";
+import type { SearchableLanguageProfile } from "../packs";
 import { BehaviorSummary } from "../ui/BehaviorSummary";
 import { LanguageLabel } from "../ui/LanguageLabel";
 import { SupportStatus } from "../ui/SupportStatus";
+import {
+  PUBLIC_LANGUAGE_PROFILE_CATALOG,
+  publicLanguageName,
+  publicLanguageOptionLabel,
+} from "../ui/language-presentation";
 import {
   activePromptText,
   createPromptDraft,
@@ -126,20 +128,13 @@ function reviewLimitations(
 }
 
 function profileFor(id: string): SearchableLanguageProfile {
-  const profile = SEARCHABLE_LANGUAGE_PROFILE_CATALOG.find(
+  const profile = PUBLIC_LANGUAGE_PROFILE_CATALOG.find(
     (item) => item.ref.id === id,
   );
   if (profile === undefined) {
     throw new Error(`Missing bundled language profile: ${id}`);
   }
   return profile;
-}
-
-function optionLabel(profile: SearchableLanguageProfile): string {
-  const primaryName = profile.searchableNames[0] ?? profile.ref.id;
-  return primaryName === profile.autonym
-    ? `${profile.autonym} (${profile.ref.id})`
-    : `${primaryName} — ${profile.autonym} (${profile.ref.id})`;
 }
 
 function humanize(value: string): string {
@@ -159,6 +154,32 @@ function toolName(recipeId: ActiveRecipeId): string {
       return "Live Voice Coach";
     case "interpreter":
       return "Interpreter";
+  }
+}
+
+function pairRailCopy(modality: ActiveModality) {
+  switch (modality) {
+    case "written":
+      return {
+        homeKicker: "Translate from",
+        homeHelp: "The language of the text you will give the other tool.",
+        targetKicker: "Translate into",
+        targetHelp: "The language you want the other tool to produce.",
+      } as const;
+    case "live-voice":
+      return {
+        homeKicker: "Explain in",
+        homeHelp: "The language you want explanations and teaching in.",
+        targetKicker: "Practice in",
+        targetHelp: "The language you want to practice speaking.",
+      } as const;
+    case "interpreting":
+      return {
+        homeKicker: "Translate from",
+        homeHelp: "The language of each turn you give the other tool.",
+        targetKicker: "Translate into",
+        targetHelp: "The one language the other tool should produce.",
+      } as const;
   }
 }
 
@@ -230,6 +251,23 @@ function rematerialize(
   return { ...base, ...common } as RecipeConfiguration;
 }
 
+function directionAnnouncement(configuration: RecipeConfiguration): string {
+  const homeName = publicLanguageName(configuration.languages.home.id);
+  const targetName = publicLanguageName(configuration.languages.target.id);
+  const compiled = compilePresentation(configuration);
+  if (!compiled.ok) {
+    return `Direction changed to ${homeName} to ${targetName}. Support level could not be determined.`;
+  }
+  const preview = compiled.result.provenance.supportTier === "preview";
+  return `Direction changed to ${homeName} to ${targetName}. Support level: ${
+    preview ? "Preview" : "Generic"
+  }. ${
+    preview
+      ? "Built-in direction guidance; independent language review is not complete."
+      : "General guidance only."
+  }`;
+}
+
 interface LanguageSelectProps {
   readonly id: string;
   readonly label: string;
@@ -257,13 +295,14 @@ function LanguageSelect({
         aria-describedby={helpId}
         onChange={(event) => onChange(event.currentTarget.value)}
       >
-        {SEARCHABLE_LANGUAGE_PROFILE_CATALOG.map((profile) => (
+        {PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => (
           <option
             key={profile.ref.id}
             value={profile.ref.id}
             disabled={profile.ref.id === excludedId}
+            dir="auto"
           >
-            {optionLabel(profile)}
+            {publicLanguageOptionLabel(profile)}
           </option>
         ))}
       </select>
@@ -296,7 +335,10 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
           />
           <span>
             <strong>Written Translator</strong>
-            <small>Translate text. Keep meaning and tone.</small>
+            <small>
+              Make instructions for translating text while keeping meaning and
+              tone.
+            </small>
           </span>
         </label>
         <label for={`${prefix}-voice`}>
@@ -310,7 +352,10 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
           />
           <span>
             <strong>Live Voice Coach</strong>
-            <small>Practice speaking with useful corrections.</small>
+            <small>
+              Make instructions for speaking practice. Audio depends on the
+              other tool.
+            </small>
           </span>
         </label>
         <label for={`${prefix}-interpreter`}>
@@ -324,7 +369,9 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
           />
           <span>
             <strong>Interpreter</strong>
-            <small>Translate each complete turn in one direction.</small>
+            <small>
+              Make one-way instructions for translating each complete turn.
+            </small>
           </span>
         </label>
       </div>
@@ -430,19 +477,18 @@ function PairRails({
 }) {
   const home = profileFor(configuration.languages.home.id);
   const target = profileFor(configuration.languages.target.id);
+  const copy = pairRailCopy(configuration.settings.modality);
   return (
     <div class={`pair-rails${compact ? " pair-rails-compact" : ""}`}>
       <section class="language-rail home-rail" aria-labelledby="home-rail-title">
         <p class="rail-kicker" id="home-rail-title">
-          {configuration.settings.modality === "interpreting"
-            ? "Translate from"
-            : "Start with"}
+          {copy.homeKicker}
         </p>
         <LanguageLabel profile={home} showCode={false} />
         <LanguageSelect
           id={compact ? "builder-home-language" : "home-language"}
           label="Home language"
-          help="The language you start from or use for explanations."
+          help={copy.homeHelp}
           value={home.ref.id}
           excludedId={target.ref.id}
           onChange={onHome}
@@ -459,21 +505,53 @@ function PairRails({
         aria-labelledby="target-rail-title"
       >
         <p class="rail-kicker" id="target-rail-title">
-          {configuration.settings.modality === "interpreting"
-            ? "Translate into"
-            : "Work in"}
+          {copy.targetKicker}
         </p>
         <LanguageLabel profile={target} showCode={false} />
         <LanguageSelect
           id={compact ? "builder-target-language" : "target-language"}
           label="Target language"
-          help="The language you want to produce, practice, or interpret into."
+          help={copy.targetHelp}
           value={target.ref.id}
           excludedId={home.ref.id}
           onChange={onTarget}
         />
       </section>
     </div>
+  );
+}
+
+function ReviewDirection({
+  configuration,
+}: {
+  readonly configuration: RecipeConfiguration;
+}) {
+  const home = profileFor(configuration.languages.home.id);
+  const target = profileFor(configuration.languages.target.id);
+  const targetName = publicLanguageName(target.ref.id);
+  return (
+    <p class="review-direction" data-testid="review-direction">
+      <span lang="en" dir="ltr">
+        {publicLanguageName(home.ref.id)}
+      </span>
+      <span aria-hidden="true">→</span>
+      <span class="sr-only"> to </span>
+      <span lang="en" dir="ltr">
+        {targetName}
+        {targetName !== target.autonym && (
+          <>
+            {" ("}
+            <bdi lang={target.ref.id} dir={target.direction}>
+              {target.autonym}
+            </bdi>
+            {")"}
+          </>
+        )}
+      </span>
+      <span aria-hidden="true">·</span>
+      <span class="sr-only">, </span>
+      <span>{toolName(configuration.recipe.id)}</span>
+    </p>
   );
 }
 
@@ -630,7 +708,6 @@ export function App() {
   function selectLanguages(
     homeLanguageId: string,
     targetLanguageId: string,
-    message: string,
   ): void {
     if (homeLanguageId === targetLanguageId) {
       setAnnouncement(
@@ -638,15 +715,14 @@ export function App() {
       );
       return;
     }
-    setConfiguration((current) =>
-      rematerialize(
-        current,
-        homeLanguageId,
-        targetLanguageId,
-        current.recipe.id,
-      ),
+    const next = rematerialize(
+      configuration,
+      homeLanguageId,
+      targetLanguageId,
+      configuration.recipe.id,
     );
-    setAnnouncement(message);
+    setConfiguration(next);
+    setAnnouncement(directionAnnouncement(next));
   }
 
   function chooseTool(recipeId: ActiveRecipeId): void {
@@ -855,10 +931,10 @@ export function App() {
               Make a better translation prompt.
             </h1>
             <p class="hero-copy">
-              <strong>No prompt skills needed.</strong> Choose your languages
-              and what you need. PhraseGarden makes a ready-to-copy prompt for
-              another AI or language tool. It does not translate, send, or ask
-              for your private text.
+              <strong>No prompt skills needed.</strong> Choose two languages and
+              what you want to do. PhraseGarden makes instructions you copy
+              into another AI chat or language tool. Put the words you want
+              translated there—not here.
             </p>
           </section>
 
@@ -869,13 +945,9 @@ export function App() {
             >
               <p class="eyebrow">Quick start</p>
               <h2 id="mobile-quick-start-title">
-                {profileFor(configuration.languages.home.id)
-                  .searchableNames[0] ??
-                  configuration.languages.home.id}
+                {publicLanguageName(configuration.languages.home.id)}
                 {" to "}
-                {profileFor(configuration.languages.target.id)
-                  .searchableNames[0] ??
-                  configuration.languages.target.id}
+                {publicLanguageName(configuration.languages.target.id)}
                 {" · "}
                 {toolName(configuration.recipe.id)}
               </h2>
@@ -901,21 +973,18 @@ export function App() {
                 selectLanguages(
                   id,
                   configuration.languages.target.id,
-                  `Home language changed to ${profileFor(id).autonym}.`,
                 )
               }
               onTarget={(id) =>
                 selectLanguages(
                   configuration.languages.home.id,
                   id,
-                  `Target language changed to ${profileFor(id).autonym}.`,
                 )
               }
               onSwap={() =>
                 selectLanguages(
                   configuration.languages.target.id,
                   configuration.languages.home.id,
-                  "Language direction swapped.",
                 )
               }
             />
@@ -931,11 +1000,6 @@ export function App() {
                 value={configuration.recipe.id}
                 onChange={chooseTool}
               />
-              <p class="quick-start-note">
-                {configuration.settings.modality === "interpreting"
-                  ? "One direction at a time. Swap the languages and create another prompt for the reverse direction."
-                  : "Most people can use these choices as they are. Create the prompt now, or change optional details first."}
-              </p>
               <div class="home-actions">
                 <button
                   type="button"
@@ -962,6 +1026,11 @@ export function App() {
                   </button>
                 )}
               </div>
+              <p class="quick-start-note">
+                {configuration.settings.modality === "interpreting"
+                  ? "One direction at a time. Swap the languages and create another prompt for the reverse direction."
+                  : "The defaults work for most people. Optional settings are there if tone or teaching details matter."}
+              </p>
               {confirmReplacePrompt && (
                 <ReplacePromptConfirmation
                   onKeep={() => navigateTo("review")}
@@ -1017,21 +1086,18 @@ export function App() {
               selectLanguages(
                 id,
                 configuration.languages.target.id,
-                `Home language changed to ${profileFor(id).autonym}.`,
               )
             }
             onTarget={(id) =>
               selectLanguages(
                 configuration.languages.home.id,
                 id,
-                `Target language changed to ${profileFor(id).autonym}.`,
               )
             }
             onSwap={() =>
               selectLanguages(
                 configuration.languages.target.id,
                 configuration.languages.home.id,
-                "Language direction swapped.",
               )
             }
           />
@@ -1512,6 +1578,10 @@ export function App() {
               instructions. PhraseGarden does not send or run it.
             </p>
           </div>
+
+          <ReviewDirection
+            configuration={artifact.result.normalizedConfiguration}
+          />
 
           <div class="review-handoff-grid">
             <div class="review-notices">

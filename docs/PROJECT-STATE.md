@@ -6,15 +6,15 @@ Updated: 2026-08-17
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `GENERIC-LANGUAGE-COHORT-1` |
+| `activePackage` | `PREVIEW-3-BEGINNER-JOURNEY` |
 | `state` | `QUIESCENT_AWAITING_CHECKPOINT` |
-| `candidateFingerprint` | archive repair checkpoint `70858f1c4157af3340cea6c95f50cf9fd387ffbf`; twelve-path Generic language cohort has an independent core PASS and awaits its exact checkpoint |
-| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, and `GLC-01`–`GLC-10` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
-| `nextKnownBlocker` | exact twelve-path Generic catalog checkpoint, then the separately bounded beginner-facing presentation package |
-| `lastCompletedCheck` | Generic cohort: 31/31 profile, 26/26 compiler, 285/285 full tests, 396 exact compilations (6 Preview/390 Generic), dual typechecks, Vite build, 9/9 checksums, zero forbidden matches, and independent PASS |
-| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1, review repair 0 |
+| `candidateFingerprint` | Generic catalog checkpoint `db85ed4a09f2e960ce0f6a31f84844b6e719bdf6`; twelve-path beginner presentation has an independent PASS and awaits its exact checkpoint |
+| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, `GLC-01`–`GLC-10`, and `BJ-01`–`BJ-12` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
+| `nextKnownBlocker` | exact twelve-path beginner-journey checkpoint, then the separately bounded Pages-policy repair |
+| `lastCompletedCheck` | Beginner journey: 3/3 focused UI, 287/287 full Vitest, dual typechecks, Vite build, 12/12 sequential Edge/axe, visual/copy/download/reflow checks, and independent PASS |
+| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: initial-viewport repair 1 and semantic-language review repair 1 |
 | `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
-| `exactNextAction` | checkpoint only the twelve Generic-catalog paths; then contract, implement, and review the beginner-facing language journey before Pages policy |
+| `exactNextAction` | checkpoint only the twelve beginner-journey paths; then contract and repair Pages policy |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -28,10 +28,11 @@ The local `release/next` branch adds the independently reviewed Gate 3
 Interpreter at `c2e6104`, process controls at `e293426`, and progressive
 Advanced settings at `e96f4b5`, and the independently reviewed Preview 3
 source claims at `aa75e60`, returned archive checkpoint `83558bd`, and archive
-repair at `70858f1`. The independently reviewed Generic catalog adds five
-identity-only profiles but is not checkpointed yet. The proposed identity
-remains `0.1.0-preview.3`; its source is not frozen, packaged, published, or
-deployed. Current remote/public state has not been freshly read.
+repair at `70858f1`. Generic catalog checkpoint `db85ed4` adds five
+identity-only profiles. The working tree adds the bounded beginner-facing
+presentation but has not checkpointed it. The proposed identity remains
+`0.1.0-preview.3`; its source is not frozen, packaged, published, or deployed.
+Current remote/public state has not been freshly read.
 
 Detailed proof is preserved outside this cursor:
 
@@ -54,6 +55,9 @@ Detailed proof is preserved outside this cursor:
 - `LanguageProfile.id === LanguageProfile.bcp47`; identity is exact and
   registry-pinned. Profile version remains separate.
 - Interface, home, target, and generated-instruction language remain distinct.
+- One authored presentation catalog orders English names deterministically and
+  shows autonyms without flags or visible language codes; canonical tags remain
+  control values and technical provenance.
 - The app never asks for source text. Current settings and prompt edits are
   memory-only.
 - Home creates from current defaults; Builder adjusts optional settings; Review
@@ -83,8 +87,9 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 source claims and accessibility | completed locally | exact 13-path checkpoint `aa75e60`; focused checks and independent PASS |
 | Preview 3 archive checkpoint | returned | `83558bd`; later adversarial review reproduced exact-byte, parsing, resource, metadata, and retry defects |
 | Preview 3 archive repair | completed locally | checkpoint `70858f1`; 20/20 focused plus full checks and independent PASS |
-| Five-language Generic catalog | completed locally / awaiting checkpoint | `de`, `es`, `fr`, `it`, region-unspecified `pt`; 396 matrix and independent PASS |
-| Preview 3 Pages policy | deferred after catalog | immutable action refs and main-only deployment remain unresolved |
+| Five-language Generic catalog | completed locally | checkpoint `db85ed4`; `de`, `es`, `fr`, `it`, region-unspecified `pt`; 396 matrix and independent PASS |
+| Beginner-facing language journey | completed locally / awaiting checkpoint | 3/3 focused UI, 287/287 Vitest, 12/12 Edge/axe, dual typechecks/build, desktop/mobile screenshots, copy/download/reflow, independent PASS |
+| Preview 3 Pages policy | deferred after presentation | immutable action refs and main-only deployment remain unresolved |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -112,14 +117,13 @@ Detailed proof is preserved outside this cursor:
 
 ## Credit-expensive work deliberately avoided
 
-No new visual-ideation batch, manual assistive-technology session, model
-evaluation, prospective-fixture use, remote CI, network write, release, or
-deployment has been performed. Existing evidence is reused only where its
-exact bytes remain bound.
+No new visual-ideation batch, manual assistive-technology or moderated usability
+session, model evaluation, prospective-fixture use, remote CI, network write,
+release, or deployment has been performed. Existing evidence is reused only
+where its exact bytes remain bound.
 
 ## Exact next eligible action
 
-Checkpoint only the twelve Generic-catalog paths. Then implement and review the
-bounded beginner-facing language journey. Resolve Pages policy afterward. Only
-the clean combined descendant may enter fresh source qualification. Do not
-begin Gate 4 or claim stable release readiness.
+Checkpoint only the twelve beginner-journey paths. Resolve Pages policy
+afterward. Only the clean combined descendant may enter fresh source
+qualification. Do not begin Gate 4 or claim stable release readiness.

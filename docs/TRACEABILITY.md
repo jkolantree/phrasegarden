@@ -247,20 +247,52 @@ review passed with zero open P1/P2/P3 after 31/31 profile tests, 26/26 compiler
 tests, 285/285 full Vitest, both typechecks, Vite build, protected-path and
 checksum checks, and all 396 direction/recipe compilations. This proves
 deterministic structure and Generic isolation, not linguistic review or
-regional adequacy. The exact twelve-path checkpoint is still required.
+regional adequacy.
+Checkpoint `db85ed4a09f2e960ce0f6a31f84844b6e719bdf6` preserves those exact
+twelve paths after the independent PASS. It is not a source freeze.
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
-| `GLC-01` | Registry bytes/version/source/hash agree. | deterministic registry identity | verified / checkpoint |
-| `GLC-02` | Twelve profiles share exact canonical identity and registry binding. | structural profile validity | verified / checkpoint |
-| `GLC-03` | Five new NFC autonyms and identity-only `Latn`/`ltr` profiles. | endpoint identity metadata only | verified / checkpoint |
-| `GLC-04` | Regional, alias, casing, private, extension, and unlisted forms reject. | fail-closed accepted-ID boundary | verified / checkpoint |
-| `GLC-05` | 396 compilations partition into 6 Preview and 390 Generic. | deterministic tier resolution only | verified / checkpoint |
-| `GLC-06` | Generic has no pack, review claim, section 6, or endpoint clause. | conservative Generic isolation | verified / checkpoint |
-| `GLC-07` | Authored versions stay separate; registry provenance advances. | explicit version transition | verified / checkpoint |
-| `GLC-08` | Domain, samples, releases, checksums, and review evidence stay unchanged. | protected-byte preservation | verified / checkpoint |
-| `GLC-09` | Old registry refs fail; no alias or silent migration exists. | exact current-registry acceptance | verified / checkpoint |
-| `GLC-10` | Focused/full/type/build/scan/review gates pass. | local development verification | verified / checkpoint |
+| `GLC-01` | Registry bytes/version/source/hash agree. | deterministic registry identity | verified / `db85ed4` |
+| `GLC-02` | Twelve profiles share exact canonical identity and registry binding. | structural profile validity | verified / `db85ed4` |
+| `GLC-03` | Five new NFC autonyms and identity-only `Latn`/`ltr` profiles. | endpoint identity metadata only | verified / `db85ed4` |
+| `GLC-04` | Regional, alias, casing, private, extension, and unlisted forms reject. | fail-closed accepted-ID boundary | verified / `db85ed4` |
+| `GLC-05` | 396 compilations partition into 6 Preview and 390 Generic. | deterministic tier resolution only | verified / `db85ed4` |
+| `GLC-06` | Generic has no pack, review claim, section 6, or endpoint clause. | conservative Generic isolation | verified / `db85ed4` |
+| `GLC-07` | Authored versions stay separate; registry provenance advances. | explicit version transition | verified / `db85ed4` |
+| `GLC-08` | Domain, samples, releases, checksums, and review evidence stay unchanged. | protected-byte preservation | verified / `db85ed4` |
+| `GLC-09` | Old registry refs fail; no alias or silent migration exists. | exact current-registry acceptance | verified / `db85ed4` |
+| `GLC-10` | Focused/full/type/build/scan/review gates pass. | local development verification | verified / `db85ed4` |
+
+### Preview 3 beginner-facing journey
+
+Source: ADR-031 and `PREVIEW-3-BEGINNER-JOURNEY.md`. The direct-create flow is
+preserved. One authored UI catalog presents all twelve exact identities in
+English-name order with autonyms, bidi isolation, native selects, and no
+visible codes or flags. The first 1280×720 Generic run preserved a real failure:
+the primary action ended 53 px below the viewport. Moving the action directly
+after tool choice fixed the interface layer without hiding support or changing
+compiler output.
+
+Focused UI copy passed 3/3; full Vitest passed 287/287; both typechecks and the
+Vite build passed; all 12 sequential Edge/axe journeys passed. Fresh Generic
+Home and Review screenshots at 1280×720 and 320×900 were inspected with no
+clipping or page overflow. Copy/download bytes, Generic isolation, exact
+direction announcements, and 200%/400%-equivalent reflow passed. Independent
+review returned one semantic-language defect: authored English direction names
+in Review inherited the selected language tag/direction. English names now use
+`lang="en"`/`dir="ltr"`; only the autonym receives its exact language and
+direction, with a permanent Italian→German regression. Final handoff review
+passed with zero open P1/P2/P3. The exact twelve-path checkpoint remains.
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `BJ-01`–`BJ-03` | Plain explanation, task-specific tool copy, and modality-specific direction labels. | beginner-facing interface behavior | verified / checkpoint |
+| `BJ-04`–`BJ-05` | Exact native option order, names/autonyms, isolation, and English interface identity. | deterministic accessible presentation | verified / checkpoint |
+| `BJ-06`–`BJ-08` | Exact Generic explanation, Review direction/tool, and live direction/tier announcements. | visible and announced support context | verified / checkpoint |
+| `BJ-09`–`BJ-10` | Named Generic/Preview journeys, regional boundary, copy/download, and no Japanese leakage. | tested browser behavior | verified / checkpoint |
+| `BJ-11` | Desktop/mobile screenshots, axe, keyboard, overflow, and reflow checks. | named automated and visual evidence | verified / checkpoint |
+| `BJ-12` | Deterministic layers, prompt/provenance snapshots, and historical artifacts stay unchanged. | protected-byte preservation | verified / checkpoint |
 
 ### Preview 3 acceptance
 

@@ -1,4 +1,5 @@
 import type { SearchableLanguageProfile } from "../packs";
+import { publicLanguageName } from "./language-presentation";
 
 interface LanguageLabelProps {
   readonly profile: SearchableLanguageProfile;
@@ -9,7 +10,7 @@ export function LanguageLabel({
   profile,
   showCode = true,
 }: LanguageLabelProps) {
-  const primaryName = profile.searchableNames[0] ?? profile.ref.id;
+  const primaryName = publicLanguageName(profile.ref.id);
   const namesMatch = primaryName === profile.autonym;
   return (
     <span class="language-label">

@@ -24,7 +24,7 @@ export function SupportStatus({
       <p class="support-detail">
         {preview
           ? "Includes built-in guidance for this language direction. Independent language review is not complete."
-          : "Uses general guidance only. No guidance written for this exact language direction is included."}
+          : "Uses PhraseGarden's general meaning-and-tone rules. This exact language direction has no pair-specific guidance or independent language review."}
       </p>
     </div>
   );

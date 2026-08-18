@@ -20,6 +20,11 @@ import {
   WRITTEN_OUTPUT_DETAILS,
 } from "../../src/domain";
 import { OPTION_LABELS_EN } from "../../src/locales";
+import {
+  PUBLIC_LANGUAGE_PROFILE_CATALOG,
+  publicLanguageName,
+  publicLanguageOptionLabel,
+} from "../../src/ui/language-presentation";
 
 const EXPOSED_OPTION_VALUES = [
   ...RELATIONSHIPS,
@@ -49,5 +54,52 @@ describe("plain-language UI copy", () => {
       return label === undefined || label.trim().length === 0;
     });
     expect(missing).toEqual([]);
+  });
+
+  it("presents the exact language catalog in authored English-name order", () => {
+    expect(
+      PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => [
+        profile.ref.id,
+        publicLanguageName(profile.ref.id),
+      ]),
+    ).toEqual([
+      ["zh-Hant-TW", "Chinese, Traditional (Taiwan)"],
+      ["en", "English"],
+      ["fr", "French"],
+      ["de", "German"],
+      ["he", "Hebrew"],
+      ["id", "Indonesian"],
+      ["it", "Italian"],
+      ["ja", "Japanese"],
+      ["tlh", "Klingon"],
+      ["pt", "Portuguese"],
+      ["es", "Spanish"],
+      ["yi", "Yiddish"],
+    ]);
+  });
+
+  it("keeps canonical tags out of visible labels and isolates autonyms", () => {
+    const labels = PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => ({
+      id: profile.ref.id,
+      label: publicLanguageOptionLabel(profile),
+    }));
+    expect(labels).toEqual([
+      { id: "zh-Hant-TW", label: "Chinese, Traditional (Taiwan) — ⁨正體中文（臺灣）⁩" },
+      { id: "en", label: "English" },
+      { id: "fr", label: "French — ⁨français⁩" },
+      { id: "de", label: "German — ⁨Deutsch⁩" },
+      { id: "he", label: "Hebrew — ⁨עברית⁩" },
+      { id: "id", label: "Indonesian — ⁨Bahasa Indonesia⁩" },
+      { id: "it", label: "Italian — ⁨italiano⁩" },
+      { id: "ja", label: "Japanese — ⁨日本語⁩" },
+      { id: "tlh", label: "Klingon — ⁨tlhIngan Hol⁩" },
+      { id: "pt", label: "Portuguese — ⁨português⁩" },
+      { id: "es", label: "Spanish — ⁨español⁩" },
+      { id: "yi", label: "Yiddish — ⁨ייִדיש⁩" },
+    ]);
+    for (const { id, label } of labels) {
+      expect(label).not.toContain(`(${id})`);
+      expect(label).not.toMatch(/[\u{1f1e6}-\u{1f1ff}]/u);
+    }
   });
 });

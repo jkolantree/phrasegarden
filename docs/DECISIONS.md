@@ -607,3 +607,40 @@ browser qualification on the clean descendant that contains this migration
 and the separately reviewed beginner-facing presentation. No Flagship,
 Reviewed, or Community tier is created; English↔Japanese remains Preview
 pending real external linguistic evidence.
+
+## ADR-031 — Public language presentation is authored, plain, and tier-aware
+
+Status: Accepted
+Date: 2026-08-17
+
+**Context:** The exact language identities are machine-friendly by design, but
+ordinary visitors should not need BCP-47 knowledge or prompt-engineering
+vocabulary. Expanding to twelve profiles exposed technical codes in selectors,
+generic tool descriptions that sounded like PhraseGarden performed the task,
+and a Review page that did not immediately restate direction and tool.
+
+**Decision:** Keep native selects and one explicit display catalog authored in
+English-name order; never derive order or names from ambient `Intl`. Each option
+uses the canonical tag only as its value and shows an authored English name plus
+isolated autonym, with no flag or visible code. Home/target labels adapt to the
+selected modality. Language changes announce the resulting English-readable
+direction and compiler-derived tier. Review restates direction and tool before
+support and handoff content.
+
+PhraseGarden says it makes instructions to copy into another AI or language
+tool, never asks for source text, and keeps direct creation primary. Generic is
+described positively but exactly: general meaning-and-tone rules apply, while
+the exact direction has no pair-specific guidance or independent language
+review. Presentation never changes identity, prompt bytes, provenance, or tier.
+
+**Rationale:** Authored display metadata is deterministic and understandable
+without turning a language endpoint into a support claim. Native controls and
+explicit bidi isolation preserve established keyboard and assistive-technology
+behavior. Moving the primary action directly after tool choice keeps it in the
+initial desktop viewport without hiding limitations.
+
+**Consequences:** Adding a profile now requires an explicit display name/order
+entry and presentation regression. Search and aliases remain later work; no
+custom combobox is implied. Automated completion, axe, and reflow checks do not
+prove the under-two-minute goal or human screen-reader comprehension, which
+still require consented usability and manual assistive-technology evidence.
