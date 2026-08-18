@@ -6,24 +6,28 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-PUBLICATION` local packaging |
-| `state` | `PACKAGING_COMMIT_BOUNDARY` |
-| `candidateFingerprint` | source `58890218721c16e2226d42d6bc6ccd98622ae30c`, tree `802c0952bcaa5855aa47dadb2f423fb34f5150c3`, source manifest `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`, archive `48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`, release manifest `C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F`, appended ledger `E65D2D74EF7374B65E12B7898F54D83164093C267B090D0E4E7EC95B578DEA2A`, and reviewed seven-content fingerprint `16CC7104E4BE9CA7ACBBA09027768280645280E3D98EE2D1D1878E9780C0AE66`; this administrative closure changes only state records and requires a final narrow rebind before staging |
-| `closedAcceptanceIds` | prior IDs plus `CSC-01`–`CSC-06` and local evidence for `P3-01`–`P3-05`, `P3-07`, `P3-08`, and local `P3-12`; `P3-06` has reviewed implementation evidence and `P3-09`–`P3-11` remain public boundaries |
-| `nextKnownBlocker` | zero-finding rebind of this state-only closure, then packaging-commit verification of the containing exact seven-path, sole-parent commit; exact-value publication confirmation remains separate |
-| `lastCompletedCheck` | exact `S2`: 312/312 Vitest, 45/45 Python release tests, dual typechecks, zero domain matches, one byte-identical build, pre/post audits, 12/12 sequential Edge/axe, 9/9 historical checksums, 3/3 staged ZIP binding, source reverify, direct screenshot inspection, two independent source/package PASSes, focused packaging-record regression 24/24, and two independent repaired seven-content PASSes |
-| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2; mobile select: two fixture-driven repairs, now development-only; commit-stable claims: temporal root-cause repair 1 and test-typing repair 1; packaging evidence: remote-preflight boundary repair 1 |
-| `frozenManifestHash` | source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; release manifest 976 bytes, SHA-256 `C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F` |
-| `exactNextAction` | after a zero-finding narrow rebind of this closure, stage and commit only the seven-path allowlist; treat that commit as `P` only if its sole parent is `S2` and the packaging-commit verifier passes, then perform remote preflight and present exact publication values for confirmation |
-| `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
+| `activePackage` | `PREVIEW-4-DESKTOP-FOLD-CORRECTION` development repair |
+| `state` | `COMPLETED_LOCAL_CHECKPOINT_AWAITING_COMMIT` |
+| `candidateFingerprint` | immutable public Preview 3 package `0482c8adb4aeefdbb7b6329e6408fd6c29fd96d4`, tag object `12afe35384c59341d39861a47884eb20e56c93cb`, archive `48C2A6CE…DAFA`, release manifest `C72862B5…3B5F`, and ledger `E65D2D74…EA2A`; current correction is an unfrozen seven-path development diff and has no Preview 4 public identity |
+| `closedAcceptanceIds` | prior local IDs; Preview 3 public main/tag/release assets and 3/3 unauthenticated downloads are established, while `P3-06` execution and `P3-11` returned at the browser fold assertion; `P4-FOLD-01`–`P4-FOLD-06` passed on the prior substantive seven-path freeze, while this two-document state-only closure is bound only by its separate administrative rebind |
+| `nextKnownBlocker` | exact seven-path local checkpoint commit, then a separately bounded Preview 4 identity/tooling package before any new source freeze or public action |
+| `lastCompletedCheck` | Preview 3 public assets matched all three local lengths/hashes; Pages run `32155197089` returned at exact `728.9375 > 720` interface fixture with deploy skipped; the prior substantive seven-path freeze measures 48.78125 px Generic Edge headroom and 71.109375 px Preview/Interpreter headroom at `1280 x 720`, passes 1/1 focused fold, 24/24 focused release-state, 12/12 sequential Edge/axe, 312/312 Vitest, dual typechecks, the current development build/audit, zero forbidden-domain matches and direct screenshot inspection, and received independent UI/accessibility and release/security PASSes; this Project/Trace closure receives only a separate administrative rebind |
+| `retryCounters` | prior counters retained; Preview 3 public Pages fold failure 1; Preview 4 desktop-fold causal repair 1; public-state regression-fixture repair 1 |
+| `frozenManifestHash` | Preview 3 historical source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; no Preview 4 manifest exists |
+| `exactNextAction` | stage and commit only the exact seven-path development correction; then define closed Preview 3/4 release specs and new Preview 4 identity without mutating Preview 3 |
+| `forbiddenUntil` | no Gate 4+ work and no Preview 3 mutation or redeploy; Preview 4 identity/tooling must qualify before its source freeze and package, while push, tag, assets, and deployment require later confirmation of the resulting exact public values |
 
 ## Current product state
 
-The last public state qualified by repository evidence before Preview 3
-publication work was PhraseGarden `0.1.0-preview.2` at
-<https://jkolantree.github.io/phrasegarden/>. Its immutable tag resolves to
-package commit `6e55e8d142c748de181cd5136076d576d0994e19`. Current public status requires
-fresh remote evidence rather than inference from this source document.
+PhraseGarden `0.1.0-preview.3` is now a public GitHub prerelease at
+<https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.3>.
+Its exact three assets passed final unauthenticated byte verification. Pages
+workflow run `32155197089` failed before upload/deploy because the longest
+Generic Home state placed `Create my prompt` at `728.9375` in a 720 px Linux
+Chromium viewport. The workflow performed no deployment. Repository evidence
+therefore still treats immutable Preview 2 package
+`6e55e8d142c748de181cd5136076d576d0994e19` as the last qualified Pages
+rollback; current live serving bytes require a fresh direct check.
 
 The local `release/next` branch adds the independently reviewed Gate 3
 Interpreter at `c2e6104`, process controls at `e293426`, and progressive
@@ -52,19 +56,22 @@ deterministic release regression. This repair checkpoint itself establishes no
 replacement source freeze, package, publication, or deployment; later status
 must come from the version-bound evidence that owns that boundary.
 
-Replacement source `58890218721c16e2226d42d6bc6ccd98622ae30c` is locally
-frozen and qualified. Its one build is byte-identical to the returned build,
-and its exact archive, manifest, and append-only ledger are promoted locally
-after two independent source/package PASSes. The containing commit qualifies as
-packaging commit `P` only under the exact review, sole-parent, seven-path, and
-verifier conditions in the cursor above. This source row does not establish
-publication or deployment.
+Replacement source `58890218721c16e2226d42d6bc6ccd98622ae30c` was frozen and
+qualified. Exact seven-path package commit
+`0482c8adb4aeefdbb7b6329e6408fd6c29fd96d4` passed its local verifier, became
+remote `main`, and received annotated tag `v0.1.0-preview.3`. All three public
+prerelease assets match the qualified local bytes. The later Pages browser
+failure is preserved in
+`docs/evidence/releases/0.1.0-preview.3-publication.md`; it blocks a Preview 3
+Pages-deployment claim but does not invalidate the separately verified release
+asset bytes.
 
 Detailed proof is preserved outside this cursor:
 
 - [Preview 1 release evidence](evidence/releases/0.1.0-preview.1.md)
 - [Preview 2 release evidence](evidence/releases/0.1.0-preview.2.md)
 - [Preview 3 local packaging evidence](evidence/releases/0.1.0-preview.3.md)
+- [Preview 3 publication outcome](evidence/releases/0.1.0-preview.3-publication.md)
 - [Gate 3 Interpreter evidence](evidence/candidates/gate-3-interpreter.md)
 
 ## Durable boundaries
@@ -127,11 +134,12 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 same-byte packager | completed locally | `cc61a60205c04bd34709acb0fa6b071802de0526` core plus `7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` regressions; 25/25 focused within 45/45 Python release tests, independent B1/B2 PASSes, and two B3 content PASSes |
 | Preview 3 frozen source and package | returned | `S=9bc73b96a48d2ca96f0b4460da860afe954a3eb8`; archive `48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA`; final product/language review returned P2 on commit-unstable limitations wording, so no `P` was created |
 | Preview 3 commit-stable claims | completed locally | checkpoint `58890218721c16e2226d42d6bc6ccd98622ae30c`; exact twelve paths, closed old→stable regression mapping, 312/312, dual typechecks, and two independent final PASSes |
-| Preview 3 replacement source and package | packaging-commit boundary | `S2=58890218721c16e2226d42d6bc6ccd98622ae30c`; source manifest `73629B90…148E2`; one qualified byte-identical build; archive `48C2A6CE…DAFA`; release manifest `C72862B5…3B5F`; ledger `E65D2D74…EA2A`; source/package and repaired seven-content reviews PASS; final state-only rebind then `P` verifier |
+| Preview 3 public prerelease | assets completed; Pages returned | `P=0482c8adb4aeefdbb7b6329e6408fd6c29fd96d4`; tag/release plus 3/3 unauthenticated asset hashes verified; run `32155197089` failed `728.9375 > 720`, upload/deploy skipped |
+| Preview 4 desktop-fold correction | completed locally; checkpoint pending | prior substantive seven-path freeze: 1/1 focused fold, 24/24 focused release-state, 12/12 Edge/axe, 312/312 Vitest after one returned public-state fixture, dual typechecks, build/audit, zero domain matches, screenshot inspection, and two independent PASSes; current Project/Trace closure separately rebound as administrative-only |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
-| Remote release work | external evidence boundary | push, tag, release, Pages, and CI-write state must be established from version-bound public evidence; this source row makes no current-state claim |
+| Remote release work | partial / stopped | Preview 3 main, tag, prerelease, and asset bytes established; Pages did not deploy; no Preview 4 public action authorized yet |
 
 ## Known limitations and next release decisions
 
@@ -156,19 +164,16 @@ Detailed proof is preserved outside this cursor:
 ## Credit-expensive work deliberately avoided
 
 No new visual-ideation batch, manual assistive-technology or moderated usability
-session, model evaluation, prospective-fixture use, remote CI, network write,
-release, or deployment has been performed. Five official action refs were read
-once; no PhraseGarden remote write or public-state claim was made. Existing
-evidence is reused only where its exact bytes remain bound. The returned source
-manifest and release package were created only after tooling development closed
-and remain local regression evidence; neither may be promoted. No model,
-moderated-user, assistive-technology, remote, or public evaluation was added.
+session, model evaluation, or prospective-fixture use was performed. Preview 3
+publication used the confirmed exact plan; after the Pages failure, no retry,
+asset replacement, retag, redeploy, or Preview 4 public write was attempted.
+The correction reuses the existing design system and permanent browser fixture.
 
 ## Exact next eligible action
 
-After a zero-finding narrow rebind of the final state-only closure, stage and
-commit only the exact seven-path allowlist. Treat the containing commit as `P`
-only if its sole parent is source
-`58890218721c16e2226d42d6bc6ccd98622ae30c` and the packaging-commit verifier
-passes. Then perform fresh remote preflight and present the exact publication
-values for confirmation. Do not begin Gate 4 or claim stable release readiness.
+Stage and commit only the exact seven-path desktop-fold correction. Then begin
+only the separately contracted
+Preview 4 identity/tooling package: preserve closed Preview 3 specs, add closed
+Preview 4 specs, update workflow paths, and reject cross-version combinations.
+Do not freeze, package, publish, deploy, begin Gate 4, or claim stable release
+readiness from this development repair.

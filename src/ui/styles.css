@@ -1282,6 +1282,24 @@ code {
   }
 }
 
+@media (min-width: 60rem) and (max-height: 48rem) {
+  .home-page {
+    padding-block-start: var(--space-1);
+  }
+
+  .hero {
+    padding-block: var(--space-2) var(--space-3);
+  }
+
+  .hero h1 {
+    margin-block-end: var(--space-3);
+  }
+
+  .home-weave {
+    padding-block: var(--space-5);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   button,
   select,

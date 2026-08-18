@@ -547,10 +547,27 @@ GitHub prerelease, Pages deployment, or public verification has occurred.
 | `P3-03` | Full deterministic, type, domain, one-build, audit, and sequential browser checks bind one clean source commit. | local source qualification | verified / exact `S2` qualification |
 | `P3-04` | Desktop and 320 px closed/open screenshots receive direct visual inspection. | named viewport evidence | verified / 18 exact-source screenshots |
 | `P3-05` | ZIP, manifest, original `dist`, and fresh extraction match exactly. | local release-byte identity | verified / exact replacement package |
-| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | implemented / actual `P` verifier, then Pages |
+| `P3-06` | Pages verifies and deploys the checked-in ZIP without rebuilding. | same-byte deployment procedure | implementation verified; Preview 3 execution returned before upload/deploy |
 | `P3-07` | `SHA256SUMS` preserves nine old targets and adds exactly two required Preview 3 targets; missing/mismatched bindings fail closed. | local checksum-ledger enforcement | verified / exact append-only ledger |
 | `P3-08` | Independent frozen-source and package review has zero open P1/P2/P3. | reviewed local package | verified source/package and repaired seven-content / final closure rebind, then `P` verifier |
-| `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | open / exact confirmation |
-| `P3-10` | Unauthenticated asset and Pages downloads match every local length/hash. | captured public-byte identity | open / publication |
-| `P3-11` | Named production product, accessibility, privacy, CSP, and runtime-request smoke journeys pass. | production checks on named matrix | open / publication |
-| `P3-12` | Preview 2 remains immutable rollback; stronger completion/review claims remain absent. | bounded prerelease claim | verified locally / public recheck after publication |
+| `P3-09` | Confirmed main, tag, prerelease assets, and Pages target receive exact authorized bytes. | remote publication identity | partial: main/tag/release assets exact; Pages deploy skipped after browser failure |
+| `P3-10` | Unauthenticated asset and Pages downloads match every local length/hash. | captured public-byte identity | partial: 3/3 final release assets exact; no Preview 3 Pages deployment to qualify |
+| `P3-11` | Named production product, accessibility, privacy, CSP, and runtime-request smoke journeys pass. | production checks on named matrix | returned: Linux Chromium Generic Home action bottom `728.9375 > 720`; production smoke not reached |
+| `P3-12` | Preview 2 remains immutable rollback; stronger completion/review claims remain absent. | bounded prerelease claim | verified: Preview 3 remains prerelease and Preview 2 rollback identity unchanged |
+
+### Preview 4 desktop-fold correction
+
+Preview 3 publication evidence is recorded separately in
+`docs/evidence/releases/0.1.0-preview.3-publication.md`. The failed input,
+observation, and historical record are permanent development/regression
+evidence. The product may be repaired against that evidence, but later success
+cannot serve as untouched or independent release evidence.
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `P4-FOLD-01` | Short, wide Home-layout owner: `src/ui/styles.css` reserves at least 24 CSS pixels below the Generic primary action at `1280 x 720`. | development layout behavior | verified locally: 48.78125 px Edge headroom / exact-byte review |
+| `P4-FOLD-02` | Regression owner: the publication record preserves exact `728.9375 > 720`; `tests/e2e/preview.spec.ts` retains the original at-or-above-fold assertion and adds a separate 24 px safety invariant. | permanent failure plus development regression coverage | verified locally / exact-byte review |
+| `P4-FOLD-03` | Default Preview and Interpreter desktop states retain their existing fold assertions. | named desktop browser coverage | verified / 12/12 local Edge/axe |
+| `P4-FOLD-04` | Mobile, keyboard, bidi, reduced-motion, zoom/reflow, and axe journeys remain enabled. | named browser/accessibility coverage | verified / 12/12 local Edge/axe |
+| `P4-FOLD-05` | No compiler, prompt, language, tier, privacy, public identity, or existing Preview 1–3 archive, manifest, ledger-prefix, tag, or public-asset bytes change in this package. Future Preview 4 distributable bytes are intentionally not claimed unchanged. | bounded development correction | verified / exact seven-path diff and immutable public identities |
+| `P4-FOLD-06` | The prior substantive seven-path freeze, including the public-state transition regression, receives independent UI and release review; the current Project/Trace state-only closure inherits no substantive verdict and is bound only by a separate administrative rebind. | reviewed development checkpoint | verified / two substantive PASSes plus separate administrative rebind, zero open P1/P2/P3 |

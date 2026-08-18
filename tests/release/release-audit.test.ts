@@ -153,13 +153,18 @@ describe("release filesystem audit", () => {
           "The source is not frozen, packaged,\npublished, or deployed.",
           "no push, tag, release, Pages, or CI write for the local candidate",
           "PhraseGarden remote/public state has not been freshly\nread.",
-        ],
-        stable: [
           "The last public state qualified by repository evidence before Preview 3\npublication work",
           "Current public status requires\nfresh remote evidence",
+          "push, tag, release, Pages, and CI-write state must be established from version-bound public evidence",
+        ],
+        stable: [
+          "PhraseGarden `0.1.0-preview.3` is now a public GitHub prerelease",
+          "Its exact three assets passed final unauthenticated byte verification",
+          "The workflow performed no deployment",
+          "current live serving bytes require a fresh direct check",
           "The target\nidentity is `0.1.0-preview.3`",
           "This repair checkpoint itself establishes no\nreplacement source freeze, package, publication, or deployment",
-          "push, tag, release, Pages, and CI-write state must be established from version-bound public evidence",
+          "Preview 3 main, tag, prerelease, and asset bytes established; Pages did not deploy",
         ],
       },
       {

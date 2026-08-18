@@ -798,7 +798,13 @@ test("expanded languages stay understandable, exact, and accessible", async ({
     .getByRole("button", { name: "Create my prompt" })
     .boundingBox();
   expect(desktopAction).not.toBeNull();
-  expect(desktopAction!.y + desktopAction!.height).toBeLessThanOrEqual(720);
+  const desktopActionBottom = desktopAction!.y + desktopAction!.height;
+  expect(desktopActionBottom).toBeLessThanOrEqual(
+    page.viewportSize()!.height,
+  );
+  expect(
+    page.viewportSize()!.height - desktopActionBottom,
+  ).toBeGreaterThanOrEqual(24);
   await page.screenshot({
     path: "artifacts/screenshots/home-generic-desktop.png",
     fullPage: true,
