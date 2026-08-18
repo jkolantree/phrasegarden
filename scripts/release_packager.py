@@ -35,6 +35,8 @@ MAX_TOTAL_BYTES = 32 * 1024 * 1024
 MAX_MANIFEST_BYTES = 1024 * 1024
 MAX_PACKAGE_JSON_BYTES = 256 * 1024
 MAX_GIT_OUTPUT_BYTES = 1024 * 1024
+MAX_GIT_OBJECT_ENTRIES = 65536
+MAX_GIT_OBJECT_DEPTH = 8
 MAX_PACKAGE_FILES = 64
 MAX_PACKAGE_ENTRIES = 128
 MAX_PACKAGE_DEPTH = 16
@@ -356,6 +358,28 @@ def commit_tree(source_commit: str) -> str:
         fail("E-SOURCE-COMMIT", "commit has no exact leading tree identity")
     return match.group(1).decode("ascii")
 
+def require_physical_git_objects(root: Path) -> None:
+    objects, pending, remaining = root / ".git" / "objects", [()], MAX_GIT_OBJECT_ENTRIES
+    try:
+        while pending:
+            parts = pending.pop()
+            if len(parts) > MAX_GIT_OBJECT_DEPTH:
+                fail("E-GIT-OBJECTS", "Git object-store traversal budget exceeded")
+            require_directories(root / ".git", ("objects", *parts), create=False)
+            directory = objects.joinpath(*parts)
+            names = directory_names(directory, "E-GIT-OBJECTS", remaining)
+            remaining -= len(names)
+            for name in names:
+                child = directory / name
+                metadata = child.lstat()
+                if is_reparse(metadata) or not (stat.S_ISDIR(metadata.st_mode)
+                                                or stat.S_ISREG(metadata.st_mode)):
+                    fail("E-GIT-OBJECTS", "Git object-store entries must be physical")
+                if stat.S_ISDIR(metadata.st_mode):
+                    pending.append((*parts, name))
+    except (OSError, ToolError):
+        fail("E-GIT-OBJECTS", "physical bounded Git object store required")
+
 def reject_external_objects(root: Path) -> None:
     for name in ("objects/info/alternates", "objects/info/http-alternates"):
         raw, _ = git(["rev-parse", "--git-path", name])
@@ -373,6 +397,7 @@ def reject_external_objects(root: Path) -> None:
     )
     if partial:
         fail("E-GIT-PARTIAL", "partial-clone object storage is not allowed")
+    require_physical_git_objects(root)
 
 def require_output_policy(spec: ReleaseSpec, source_commit: str) -> None:
     path = spec.source_manifest.as_posix().encode("ascii")
@@ -599,6 +624,7 @@ def build_source_manifest(spec: ReleaseSpec,
     if final_tree != source_tree or final_entries != entries:
         fail("E-SOURCE-DRIFT", "source identity changed during construction")
     qualify_checkout(final_root, final_entries)
+    reject_external_objects(final_root)
     files = [{"path": path, "mode": "100644", "bytes": size, "sha256": digest}
              for path, _, size, digest in entries]
     manifest: dict[str, object] = {
@@ -681,7 +707,8 @@ def source_evidence_file(spec: ReleaseSpec) -> bytes:
     require_directories(root, spec.source_manifest.parent.parts, create=False)
     return actual
 
-def directory_names(path: Path, code: str) -> list[str]:
+def directory_names(path: Path, code: str,
+                    limit: int = MAX_PACKAGE_ENTRIES) -> list[str]:
     try:
         before = path.lstat()
     except FileNotFoundError:
@@ -690,7 +717,7 @@ def directory_names(path: Path, code: str) -> list[str]:
         fail(code, "required directory must be physical")
     names: list[str] = []
     for item in path.iterdir():
-        if len(names) >= MAX_PACKAGE_ENTRIES:
+        if len(names) >= limit:
             fail(code, "directory entry budget exceeded")
         names.append(item.name)
     names.sort()

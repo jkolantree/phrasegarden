@@ -751,3 +751,22 @@ and predecessor ledger must agree before output.
 **Consequences:** Preview 3 behavior stays available through its pinned adapter
 without copied security logic. Preview 4 remains blocked until the archive
 verifier and Pages workflow select the same closed specification.
+
+## ADR-036 — Archive qualification uses pinned adapters and one shared engine
+
+Status: Accepted
+Date: 2026-08-18
+
+**Context:** The original verifier embedded Preview 3 identity. Copying it
+duplicates security logic; a selector lets input choose release identity.
+
+**Decision:** One non-executable engine imports immutable shared `ReleaseSpec`s;
+two adapters pin Preview 3/4 without a selector. Generic extraction remains
+nonqualifying. Packaging binds exact arguments, manifest, child, source version,
+ledger, predecessors, and append through bounded typed-rehashed Git with
+pre/post physical checks and no redirects, lazy fetch, or replacements.
+
+**Consequences:** Canonical bounded Preview 3 behavior remains compatible; new
+hostile states fail closed. Private staging may be random and OS diagnostics
+noncanonical. Pages/publication stay separate; checks prove bytes and structure,
+not adversarial swap-use-restore, human review, or linguistic truth.

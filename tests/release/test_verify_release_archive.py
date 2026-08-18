@@ -6,8 +6,10 @@ import json
 import os
 from pathlib import Path
 import runpy
+import shutil
 import stat
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -15,7 +17,12 @@ import warnings
 from zipfile import ZIP_BZIP2, ZipFile, ZipInfo
 
 ROOT = Path(__file__).resolve().parents[2]
-MODULE = runpy.run_path(str(ROOT / "scripts" / "verify-release-archive.py"))
+BASE = "c245244400858d759176b4d0679c343b700a5fde"
+sys.path.insert(0, str(ROOT / "scripts"))
+MODULE = runpy.run_path(str(ROOT / "scripts" / "release_archive_verifier.py"))
+RELEASE_SPECS = MODULE["RELEASE_SPECS"]
+PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
+PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
 verify_checksums = MODULE["verify_checksums"]
 require_checksum = MODULE["require_checksum"]
 load_manifest = MODULE["load_manifest"]
@@ -29,16 +36,25 @@ verify_packaging_commit = MODULE["verify_packaging_commit"]
 require_regular_file = MODULE["require_regular_file"]
 path_entry_exists = MODULE["path_entry_exists"]
 read_member_bounded = MODULE["read_member_bounded"]
-read_git_blob_bounded = MODULE["read_git_blob_bounded"]
-PACKAGING_PATHS = MODULE["PACKAGING_PATHS"]
+read_commit_blob_bounded = MODULE["read_commit_blob_bounded"]
+release_input_limit = MODULE["release_input_limit"]
+validate_manifest_identity = MODULE["validate_manifest_identity"]
+validate_source_release_identity = MODULE["validate_source_release_identity"]
+run_for = MODULE["run_for"]
+git_output = MODULE["git_output"]
+require_packaging_repository = MODULE["require_packaging_repository"]
+require_head_blob = MODULE["require_head_blob"]
+ToolError = MODULE["ToolError"]
+PACKAGING_PATHS = PREVIEW3_SPEC.packaging_paths
 MAX_RELEASE_BYTES = MODULE["MAX_RELEASE_BYTES"]
 MAX_ARCHIVE_BYTES = MODULE["MAX_ARCHIVE_BYTES"]
 MAX_MANIFEST_BYTES = MODULE["MAX_MANIFEST_BYTES"]
 MAX_CHECKSUM_BYTES = MODULE["MAX_CHECKSUM_BYTES"]
 MAX_CHECKSUM_TARGET_BYTES = MODULE["MAX_CHECKSUM_TARGET_BYTES"]
+MAX_PACKAGE_JSON_BYTES = MODULE["MAX_PACKAGE_JSON_BYTES"]
 CHECKSUM_PATH = MODULE["CHECKSUM_PATH"]
-MANIFEST_PATH = MODULE["MANIFEST_PATH"]
-ARCHIVE_PATH = MODULE["ARCHIVE_PATH"]
+MANIFEST_PATH = PREVIEW3_SPEC.final_manifest.as_posix()
+ARCHIVE_PATH = PREVIEW3_SPEC.final_archive.as_posix()
 
 def digest(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest().upper()
@@ -60,12 +76,218 @@ def manifest_for(path: str, value: bytes) -> dict:
     }
 
 
+def fixture_git_environment() -> dict[str, str]:
+    environment = {name: value for name, value in os.environ.items()
+                   if not name.upper().startswith("GIT_")}
+    environment.update({"GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull,
+        "GIT_TERMINAL_PROMPT": "0", "GIT_ALLOW_PROTOCOL": "file",
+        "GIT_OPTIONAL_LOCKS": "0", "LC_ALL": "C", "LANG": "C"})
+    return environment
+
+
 def run_git(root: Path, *arguments: str) -> bytes:
     return subprocess.run(
-        ["git", "-C", str(root), *arguments],
-        check=True,
-        capture_output=True,
+        ["git", "-c", "commit.gpgSign=false", "-c", "core.autocrlf=false",
+         "-c", f"core.hooksPath={os.devnull}", "-c",
+         f"safe.directory={root.resolve().as_posix()}", "-C", str(root), *arguments],
+        check=True, capture_output=True, env=fixture_git_environment(),
     ).stdout
+
+
+def build_package(
+    root: Path,
+    spec=PREVIEW3_SPEC,
+    *,
+    release_version: str | None = None,
+    package_version: str | None = None,
+    extra_path: bool = False,
+    reverse_append: bool = False,
+) -> tuple[str, list[str]]:
+    run_git(root, "init", "--object-format=sha1", "--template=")
+    run_git(root, "config", "user.name", "Synthetic test")
+    run_git(root, "config", "user.email", "test@example.invalid")
+    if spec.id == "preview4":
+        parent_ledger = (ROOT / CHECKSUM_PATH).read_bytes()
+        source_paths = [CHECKSUM_PATH, "package.json"]
+        for line in parent_ledger.decode("ascii").splitlines():
+            name = line.split("  ", 1)[1]
+            target = root.joinpath(*name.split("/"))
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(ROOT.joinpath(*name.split("/")).read_bytes())
+            source_paths.append(name)
+    else:
+        old = root / "release" / "old.zip"
+        old.parent.mkdir()
+        old.write_bytes(b"qualified predecessor\n")
+        parent_ledger = f"{digest(old.read_bytes())}  release/old.zip\n".encode()
+        source_paths = [CHECKSUM_PATH, "package.json", "release/old.zip"]
+    (root / CHECKSUM_PATH).write_bytes(parent_ledger)
+    (root / "package.json").write_text(
+        json.dumps({"version": package_version or spec.required_package_version}) + "\n",
+        encoding="utf-8",
+    )
+    run_git(root, "add", *source_paths)
+    run_git(root, "commit", "-m", "source")
+    source = run_git(root, "rev-parse", "HEAD").decode().strip()
+    for name in spec.packaging_paths[1:-2]:
+        path = root.joinpath(*name.split("/"))
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(f"committed {name}\n".encode())
+    archive = root / spec.final_archive
+    value = f"qualified {spec.id} extraction\n".encode()
+    with ZipFile(archive, "w") as package:
+        package.writestr("index.html", value)
+    manifest = manifest_for("index.html", value)
+    version = release_version or spec.release_version
+    manifest.update(releaseVersion=version,
+                    artifactName=f"phrasegarden-{version}-pages.zip")
+    manifest["sourceProvenance"]["gitCommit"] = source
+    manifest_path = root / spec.final_manifest
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    appended = [
+        f"{digest(archive.read_bytes())}  {spec.final_archive.as_posix()}\n".encode(),
+        f"{digest(manifest_path.read_bytes())}  {spec.final_manifest.as_posix()}\n".encode(),
+    ]
+    tail = reversed(appended) if reverse_append else appended
+    (root / CHECKSUM_PATH).write_bytes(parent_ledger + b"".join(tail))
+    added = list(spec.packaging_paths)
+    if extra_path:
+        extra = root / "src" / "extra.txt"
+        extra.parent.mkdir()
+        extra.write_text("extra\n", encoding="utf-8")
+        added.append("src/extra.txt")
+    run_git(root, "add", *added)
+    run_git(root, "commit", "-m", "package")
+    return source, ["--archive", spec.final_archive.as_posix(), "--manifest",
+                    spec.final_manifest.as_posix(), "--checksums", CHECKSUM_PATH,
+                    "--output", "dist", "--require-packaging-commit"]
+
+
+class PinnedAdapterCompatibilityTest(unittest.TestCase):
+    def invoke(self, script: Path, arguments: list[str],
+               root: Path) -> subprocess.CompletedProcess[bytes]:
+        return subprocess.run(
+            [sys.executable, "-B", str(script), *arguments], cwd=root,
+            capture_output=True, env=fixture_git_environment(),
+        )
+
+    def test_preview3_help_and_generic_extraction_match_the_base(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="phrasegarden-verifier-compat-") as directory:
+            root = Path(directory)
+            base_script = root / "verify-release-archive.py"
+            base_script.write_bytes(run_git(
+                ROOT, "show", f"{BASE}:scripts/verify-release-archive.py"))
+            current = ROOT / "scripts" / "verify-release-archive.py"
+            old_help = self.invoke(base_script, ["--help"], root)
+            new_help = self.invoke(current, ["--help"], root)
+            self.assertEqual((new_help.returncode, new_help.stdout, new_help.stderr),
+                             (old_help.returncode, old_help.stdout, old_help.stderr))
+
+            release = root / "release"
+            release.mkdir()
+            value = b"synthetic generic extraction\n"
+            archive = release / "phrasegarden-synthetic-pages.zip"
+            with ZipFile(archive, "w") as package:
+                package.writestr("index.html", value)
+            manifest = manifest_for("index.html", value)
+            manifest["releaseVersion"] = "synthetic"
+            manifest["artifactName"] = archive.name
+            manifest_path = release / "synthetic-manifest.json"
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            unrelated = root / PREVIEW4_SPEC.final_manifest
+            unrelated.write_bytes(b"x" * (MAX_MANIFEST_BYTES + 1))
+            (root / CHECKSUM_PATH).write_text(
+                f"{digest(archive.read_bytes())}  {archive.relative_to(root).as_posix()}\n"
+                f"{digest(manifest_path.read_bytes())}  {manifest_path.relative_to(root).as_posix()}\n"
+                f"{digest(unrelated.read_bytes())}  {PREVIEW4_SPEC.final_manifest.as_posix()}\n",
+                encoding="utf-8",
+            )
+            arguments = [
+                "--archive", archive.relative_to(root).as_posix(),
+                "--manifest", manifest_path.relative_to(root).as_posix(),
+                "--checksums", CHECKSUM_PATH, "--output", "dist",
+            ]
+            old = self.invoke(base_script, arguments, root)
+            old_output = (root / "dist" / "index.html").read_bytes()
+            shutil.rmtree(root / "dist")
+            new = self.invoke(current, arguments, root)
+            self.assertEqual((new.returncode, new.stdout, new.stderr),
+                             (old.returncode, old.stdout, old.stderr))
+            self.assertEqual((root / "dist" / "index.html").read_bytes(), old_output)
+            shutil.rmtree(root / "dist")
+            preview4 = self.invoke(
+                ROOT / "scripts" / "preview4-verify-release-archive.py", arguments, root
+            )
+            self.assertEqual(preview4.returncode, 1)
+            self.assertIn(b"input byte budget exceeded", preview4.stderr)
+            self.assertFalse((root / "dist").exists())
+
+    def test_preview3_qualifying_success_and_order_match_the_base(self) -> None:
+        cases = [
+            ({}, None),
+            ({"release_version": "0.1.0-preview.4", "extra_path": True},
+             b"packaging commit path set does not equal the exact allowlist\n"),
+            ({"package_version": "wrong", "reverse_append": True},
+             b"SHA256SUMS must preserve the parent bytes and append exactly the "
+             b"Preview 3 archive and manifest\n"),
+        ]
+        for index, (options, expected_error) in enumerate(cases):
+            with self.subTest(options=options), tempfile.TemporaryDirectory(
+                prefix=f"phrasegarden-preview3-differential-{index}-"
+            ) as directory:
+                root = Path(directory)
+                _, arguments = build_package(root, **options)
+                base_script = root / f"preview3-base-{index}.py"
+                base_script.write_bytes(run_git(
+                    ROOT, "show", f"{BASE}:scripts/verify-release-archive.py"))
+                old = self.invoke(base_script, arguments, root)
+                old_tree = ([p.relative_to(root / "dist").as_posix(), p.read_bytes()]
+                            for p in (root / "dist").rglob("*") if p.is_file())
+                old_tree = dict(old_tree) if (root / "dist").exists() else {}
+                shutil.rmtree(root / "dist", ignore_errors=True)
+                new = self.invoke(
+                    ROOT / "scripts" / "verify-release-archive.py", arguments, root)
+                self.assertEqual(
+                    (new.returncode, new.stdout, new.stderr.replace(b"\r\n", b"\n")),
+                    (old.returncode, old.stdout, old.stderr.replace(b"\r\n", b"\n")),
+                )
+                if expected_error is None:
+                    actual = {p.relative_to(root / "dist").as_posix(): p.read_bytes()
+                              for p in (root / "dist").rglob("*") if p.is_file()}
+                    self.assertEqual((old.returncode, old.stderr), (0, b""))
+                    self.assertEqual(old_tree, {"index.html": b"qualified preview3 extraction\n"})
+                    self.assertEqual(actual, old_tree)
+                else:
+                    self.assertEqual(new.stderr.replace(b"\r\n", b"\n"), expected_error)
+                    self.assertEqual(new.stdout, b"")
+                    self.assertFalse((root / "dist").exists())
+
+    def test_adapters_are_pinned_and_direct_or_unknown_selection_fails(self) -> None:
+        core = self.invoke(ROOT / "scripts" / "release_archive_verifier.py", [], ROOT)
+        self.assertEqual(core.returncode, 1)
+        self.assertEqual(core.stderr.replace(b"\r\n", b"\n"),
+                         b"release verifier core requires a pinned adapter\n")
+        preview4 = self.invoke(
+            ROOT / "scripts" / "preview4-verify-release-archive.py", ["--help"], ROOT
+        )
+        self.assertEqual(preview4.returncode, 0)
+        self.assertNotIn(b"--release", preview4.stdout)
+        self.assertNotIn(b"--version", preview4.stdout)
+        documented = subprocess.run(
+            [sys.executable, "-B", "-c", "import runpy;from pathlib import Path;"
+             "m=runpy.run_path('scripts/verify-release-archive.py');"
+             "print(len(m['verify_checksums'](Path('SHA256SUMS'))))"],
+            cwd=ROOT, capture_output=True,
+        )
+        self.assertEqual(
+            (documented.returncode, documented.stdout.replace(b"\r\n", b"\n")),
+            (0, b"11\n"),
+        )
+        error = io.StringIO()
+        with mock.patch.object(sys, "stderr", error):
+            self.assertEqual(run_for("Preview4"), 1)
+        self.assertEqual(error.getvalue(), "release specification ID is unsupported\n")
+
 
 class ChecksumBindingTest(unittest.TestCase):
     def setUp(self) -> None:
@@ -97,13 +319,13 @@ class ChecksumBindingTest(unittest.TestCase):
         )
         return ledger
     def test_missing_archive_entry_fails_closed(self) -> None:
-        checksums = verify_checksums(self.write_ledger([self.manifest]))
+        checksums = verify_checksums(PREVIEW3_SPEC, self.write_ledger([self.manifest]))
         with self.assertRaisesRegex(ValueError, "missing SHA256SUMS entry"):
-            require_checksum(checksums, self.archive, "archive")
+            require_checksum(PREVIEW3_SPEC, checksums, self.archive, "archive")
     def test_missing_manifest_entry_fails_closed(self) -> None:
-        checksums = verify_checksums(self.write_ledger([self.archive]))
+        checksums = verify_checksums(PREVIEW3_SPEC, self.write_ledger([self.archive]))
         with self.assertRaisesRegex(ValueError, "missing SHA256SUMS entry"):
-            require_checksum(checksums, self.manifest, "manifest")
+            require_checksum(PREVIEW3_SPEC, checksums, self.manifest, "manifest")
     def test_mismatched_digest_fails_closed(self) -> None:
         ledger = self.write_ledger([self.archive, self.manifest])
         ledger.write_text(
@@ -113,13 +335,13 @@ class ChecksumBindingTest(unittest.TestCase):
             encoding="utf-8",
         )
         with self.assertRaisesRegex(ValueError, "SHA-256 mismatch"):
-            verify_checksums(ledger)
+            verify_checksums(PREVIEW3_SPEC, ledger)
 
     def test_ledger_and_manifest_inputs_are_bounded(self) -> None:
         ledger = Path("SHA256SUMS")
         ledger.write_bytes(b"x" * (MAX_CHECKSUM_BYTES + 1))
         with self.assertRaisesRegex(ValueError, "input byte budget"):
-            verify_checksums(ledger)
+            verify_checksums(PREVIEW3_SPEC, ledger)
         manifest = Path("manifest.json")
         manifest.write_bytes(b"x" * (MAX_MANIFEST_BYTES + 1))
         with self.assertRaisesRegex(ValueError, "input byte budget"):
@@ -130,9 +352,10 @@ class ChecksumBindingTest(unittest.TestCase):
             encoding="utf-8",
         )
         with self.assertRaisesRegex(ValueError, "input byte budget"):
-            verify_checksums(ledger)
+            verify_checksums(PREVIEW3_SPEC, ledger)
         with self.assertRaisesRegex(ValueError, "input byte budget"):
             require_checksum(
+                PREVIEW3_SPEC,
                 {ARCHIVE_PATH: digest(self.archive.read_bytes())},
                 self.archive,
                 "archive",
@@ -143,7 +366,7 @@ class ChecksumBindingTest(unittest.TestCase):
             stream.write(b"x")
         ledger.write_text(f"{'0' * 64}  other.bin\n", encoding="utf-8")
         with self.assertRaisesRegex(ValueError, "input byte budget"):
-            verify_checksums(ledger)
+            verify_checksums(PREVIEW3_SPEC, ledger)
 
 
 class ArchiveValidationTest(unittest.TestCase):
@@ -335,23 +558,67 @@ class ArchiveValidationTest(unittest.TestCase):
             load_manifest(path)
 class PackagingCommitValidationTest(unittest.TestCase):
     def test_exact_arguments_and_regular_files_are_required(self) -> None:
+        events: list[str] = []
+        with mock.patch.dict(require_head_blob.__globals__, {
+            "require_directories": lambda *args, **kwargs: events.append("directory"),
+            "read_regular": lambda *args, **kwargs: events.append("read") or b"x",
+        }):
+            require_head_blob({"x": ("", 1, digest(b"x"))}, "x")
+        self.assertEqual(events, ["directory", "read", "directory"])
         exact = (Path(CHECKSUM_PATH), Path(ARCHIVE_PATH), Path(MANIFEST_PATH))
-        validate_packaging_arguments(*exact)
+        validate_packaging_arguments(PREVIEW3_SPEC, *exact)
+        preview4_exact = (Path(CHECKSUM_PATH), PREVIEW4_SPEC.final_archive,
+                          PREVIEW4_SPEC.final_manifest)
+        validate_packaging_arguments(PREVIEW4_SPEC, *preview4_exact)
         for changed in [
             (exact[0], Path("other/archive.zip"), exact[2]),
             (exact[0], exact[1], Path("other/manifest.json")),
+            (exact[0], PREVIEW4_SPEC.final_archive, exact[2]),
+            (exact[0], exact[1], PREVIEW4_SPEC.final_manifest),
+            ("./SHA256SUMS", ARCHIVE_PATH, MANIFEST_PATH),
+            (CHECKSUM_PATH, ARCHIVE_PATH.replace("/", "\\"), MANIFEST_PATH),
+            (CHECKSUM_PATH, ARCHIVE_PATH, MANIFEST_PATH.replace("/", "//", 1)),
         ]:
             with self.subTest(changed=changed):
-                with self.assertRaisesRegex(ValueError, "exact release paths"):
-                    validate_packaging_arguments(*changed)
+                message = "exact release paths" if isinstance(changed[0], Path) else "path"
+                with self.assertRaisesRegex(ValueError, message):
+                    validate_packaging_arguments(PREVIEW3_SPEC, *changed)
         link = os.stat_result((stat.S_IFLNK, 0, 0, 0, 0, 0, 0, 0, 0, 0))
         with mock.patch.object(Path, "lstat", return_value=link):
             with self.assertRaisesRegex(ValueError, "expected regular file"):
                 require_regular_file(Path("synthetic-link"), "fixture")
             self.assertTrue(path_entry_exists(Path("broken-link")))
+
+    def test_packaging_manifest_identity_is_exact_for_each_spec(self) -> None:
+        preview3 = manifest_for("index.html", b"fixture")
+        validate_manifest_identity(PREVIEW3_SPEC, preview3)
+        with self.assertRaisesRegex(ValueError, "releaseVersion"):
+            validate_manifest_identity(PREVIEW4_SPEC, preview3)
+        preview4 = {
+            **preview3,
+            "releaseVersion": PREVIEW4_SPEC.release_version,
+            "artifactName": PREVIEW4_SPEC.archive_name,
+        }
+        validate_manifest_identity(PREVIEW4_SPEC, preview4)
+        with self.assertRaisesRegex(ValueError, "artifactName"):
+            validate_manifest_identity(
+                PREVIEW4_SPEC, {**preview4, "artifactName": PREVIEW3_SPEC.archive_name}
+            )
+
+    def test_checksum_budget_is_scoped_to_the_pinned_adapter(self) -> None:
+        preview4_manifest = PREVIEW4_SPEC.final_manifest.as_posix()
+        self.assertEqual(
+            release_input_limit(PREVIEW3_SPEC, preview4_manifest),
+            MAX_CHECKSUM_TARGET_BYTES,
+        )
+        self.assertEqual(
+            release_input_limit(PREVIEW4_SPEC, preview4_manifest), MAX_MANIFEST_BYTES
+        )
     def test_exact_parent_and_path_set_are_required(self) -> None:
         source = "0" * 40
-        validate_packaging_identity(source, [source], list(PACKAGING_PATHS))
+        validate_packaging_identity(
+            PREVIEW3_SPEC, source, [source], list(PACKAGING_PATHS)
+        )
         invalid = [
             ([], list(PACKAGING_PATHS)),
             ([source, "1" * 40], list(PACKAGING_PATHS)),
@@ -362,25 +629,81 @@ class PackagingCommitValidationTest(unittest.TestCase):
         for parents, paths in invalid:
             with self.subTest(parents=parents, paths=paths):
                 with self.assertRaises(ValueError):
-                    validate_packaging_identity(source, parents, paths)
+                    validate_packaging_identity(
+                        PREVIEW3_SPEC, source, parents, paths
+                    )
 
-    def test_parent_git_blob_is_sized_before_content_is_read(self) -> None:
-        git = mock.Mock(
-            return_value=f"{MAX_CHECKSUM_BYTES + 1}\n".encode("ascii")
+    def test_git_boundary_preserves_codes_and_rejects_redirecting_environment(self) -> None:
+        denied = ToolError("E-GIT-OUTPUT-LIMIT", "Git output byte budget exceeded")
+        with mock.patch.dict(
+            git_output.__globals__, {"hardened_git": mock.Mock(side_effect=denied)}
+        ):
+            with self.assertRaises(ToolError) as caught:
+                git_output(["status"], "fixture")
+        self.assertEqual(caught.exception.code, "E-GIT-OUTPUT-LIMIT")
+        self.assertEqual(str(caught.exception), "fixture: Git output byte budget exceeded")
+        with mock.patch.dict(os.environ, {"GIT_DIR": "redirected"}):
+            with self.assertRaises(ToolError) as redirected:
+                require_packaging_repository()
+        self.assertEqual(redirected.exception.code, "E-GIT-ENV")
+
+    def test_committed_blob_requires_mode_before_typed_read(self) -> None:
+        object_id = "a" * 40
+        nonregular = mock.Mock(
+            return_value=f"100755 blob {object_id}\tpackage.json\0".encode()
         )
         with mock.patch.dict(
-            read_git_blob_bounded.__globals__, {"git_output": git}
+            read_commit_blob_bounded.__globals__, {"git_output": nonregular}
         ):
-            with self.assertRaisesRegex(ValueError, "input byte budget"):
-                read_git_blob_bounded(
-                    "HEAD^:SHA256SUMS",
-                    "parent SHA256SUMS",
-                    MAX_CHECKSUM_BYTES,
+            with self.assertRaisesRegex(ValueError, "committed regular blob"):
+                read_commit_blob_bounded(
+                    "0" * 40,
+                    "package.json",
+                    "source package.json",
+                    MAX_PACKAGE_JSON_BYTES,
                 )
-        git.assert_called_once_with(
-            ["cat-file", "-s", "HEAD^:SHA256SUMS"],
-            "parent SHA256SUMS",
-        )
+        nonregular.assert_called_once()
+
+    def test_preview4_source_identity_is_strict_and_predecessor_bound(self) -> None:
+        ledger = (ROOT / CHECKSUM_PATH).read_bytes()
+        values = {
+            "package.json": b'{"version":"0.1.0-preview.4"}\n',
+            **{
+                path.as_posix(): (ROOT / path).read_bytes()
+                for path, _, _ in PREVIEW4_SPEC.predecessor_bindings
+            },
+        }
+
+        def reader(_: str, name: str, __: str, ___: int) -> bytes:
+            return values[name]
+
+        with mock.patch.dict(
+            validate_source_release_identity.__globals__,
+            {"read_commit_blob_bounded": reader},
+        ):
+            validate_source_release_identity(PREVIEW4_SPEC, "0" * 40, ledger)
+            for package in [
+                b"{}\n",
+                b'{"version":true}\n',
+                b'{"version":"0.1.0-preview.3"}\n',
+                b'{"version":"0.1.0-preview.4","version":"0.1.0-preview.4"}\n',
+                b'{"version":"0.1.0-preview.4","x":NaN}\n',
+            ]:
+                with self.subTest(package=package):
+                    values["package.json"] = package
+                    with self.assertRaises(ValueError):
+                        validate_source_release_identity(
+                            PREVIEW4_SPEC, "0" * 40, ledger
+                        )
+            values["package.json"] = b'{"version":"0.1.0-preview.4"}\n'
+            with self.assertRaisesRegex(ValueError, "qualified predecessor ledger"):
+                validate_source_release_identity(
+                    PREVIEW4_SPEC, "0" * 40, ledger + b"x"
+                )
+            predecessor = PREVIEW4_SPEC.predecessor_bindings[0][0].as_posix()
+            values[predecessor] += b"x"
+            with self.assertRaisesRegex(ValueError, "byte identity mismatch"):
+                validate_source_release_identity(PREVIEW4_SPEC, "0" * 40, ledger)
     def test_ledger_preserves_parent_and_appends_exactly_two_lines(self) -> None:
         with tempfile.TemporaryDirectory(
             prefix="phrasegarden-ledger-test-"
@@ -399,7 +722,7 @@ class PackagingCommitValidationTest(unittest.TestCase):
                     f"{digest(manifest.read_bytes())}  manifest.json\n"
                 ).encode()
                 validate_ledger_append(
-                    parent, parent + appended, archive, manifest
+                    PREVIEW3_SPEC, parent, parent + appended, archive, manifest
                 )
                 for current in [
                     appended,
@@ -410,7 +733,7 @@ class PackagingCommitValidationTest(unittest.TestCase):
                             ValueError, "preserve the parent bytes"
                         ):
                             validate_ledger_append(
-                                parent, current, archive, manifest
+                                PREVIEW3_SPEC, parent, current, archive, manifest
                             )
             finally:
                 os.chdir(original)
@@ -420,12 +743,15 @@ class PackagingCommitValidationTest(unittest.TestCase):
             prefix="phrasegarden-packaging-git-test-"
         ) as directory:
             root = Path(directory)
-            run_git(root, "init")
+            run_git(root, "init", "--object-format=sha1", "--template=")
             run_git(root, "config", "user.name", "Synthetic test")
             run_git(root, "config", "user.email", "test@example.invalid")
             parent_ledger = f"{'A' * 64}  release/old.zip\n".encode()
             (root / CHECKSUM_PATH).write_bytes(parent_ledger)
-            run_git(root, "add", CHECKSUM_PATH)
+            (root / "package.json").write_text(
+                '{"version":"0.1.0-preview.3"}\n', encoding="utf-8"
+            )
+            run_git(root, "add", CHECKSUM_PATH, "package.json")
             run_git(root, "commit", "-m", "parent")
             source = run_git(root, "rev-parse", "HEAD").decode().strip()
 
@@ -443,16 +769,18 @@ class PackagingCommitValidationTest(unittest.TestCase):
             )
             run_git(root, "add", *PACKAGING_PATHS)
             run_git(root, "commit", "-m", "package")
+            head = run_git(root, "rev-parse", "HEAD").decode().strip()
+            run_git(root, "replace", head, source)
 
             original = Path.cwd()
             try:
                 os.chdir(root)
-                verify_packaging_commit(
-                    source,
-                    Path(CHECKSUM_PATH),
-                    Path(ARCHIVE_PATH),
-                    Path(MANIFEST_PATH),
-                )
+                object_checks = mock.Mock(wraps=MODULE["reject_external_objects"])
+                with mock.patch.dict(verify_packaging_commit.__globals__,
+                                     {"reject_external_objects": object_checks}):
+                    verify_packaging_commit(PREVIEW3_SPEC, source, Path(CHECKSUM_PATH),
+                                            Path(ARCHIVE_PATH), Path(MANIFEST_PATH))
+                self.assertEqual(object_checks.call_count, 2)
                 archive.write_bytes(b"dirty archive")
                 manifest.write_bytes(b"dirty manifest")
                 ledger.write_bytes(
@@ -462,11 +790,41 @@ class PackagingCommitValidationTest(unittest.TestCase):
                 )
                 with self.assertRaisesRegex(ValueError, "HEAD blob"):
                     verify_packaging_commit(
+                        PREVIEW3_SPEC,
                         source,
                         Path(CHECKSUM_PATH),
                         Path(ARCHIVE_PATH),
                         Path(MANIFEST_PATH),
                     )
+            finally:
+                os.chdir(original)
+
+    def test_preview4_packaging_commit_binds_the_qualified_predecessor(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="phrasegarden-preview4-package-") as directory:
+            root = Path(directory)
+            _, arguments = build_package(root, PREVIEW4_SPEC)
+
+            original = Path.cwd()
+            try:
+                os.chdir(root)
+                result = subprocess.run(
+                    [sys.executable, "-B", str(ROOT / "scripts" /
+                     "preview4-verify-release-archive.py"),
+                     *arguments],
+                    capture_output=True, env=fixture_git_environment())
+                self.assertEqual((result.returncode, result.stderr), (0, b""))
+                self.assertEqual((root / "dist" / "index.html").read_bytes(),
+                                 b"qualified preview4 extraction\n")
+                crossed = subprocess.run(
+                    [sys.executable, "-B", str(ROOT / "scripts" / "verify-release-archive.py"),
+                     *["cross-dist" if item == "dist" else item for item in arguments]],
+                    capture_output=True, env=fixture_git_environment())
+                self.assertEqual(crossed.returncode, 1)
+                self.assertEqual(
+                    crossed.stderr.replace(b"\r\n", b"\n"),
+                    b"packaging arguments do not equal the exact release paths\n",
+                )
+                self.assertFalse((root / "cross-dist").exists())
             finally:
                 os.chdir(original)
 

@@ -6,16 +6,16 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-4-RELEASE-TOOLING` shared engine and closed specs |
-| `state` | `COMPLETED_LOCAL_CHECKPOINT_AWAITING_COMMIT` |
-| `candidateFingerprint` | clean base `3a2cfd0f81a6a9513991eef4f3b1e604185536bc`; immutable public Preview 3 identities remain unchanged; current tooling diff has no source freeze, package, or Preview 4 public identity |
-| `closedAcceptanceIds` | prior IDs; six unchanged substantive files retain their exact-byte PASS and this Project/Trace state-only closure received separate administrative rebind |
-| `nextKnownBlocker` | checkpoint this exact tooling package; then make the archive verifier and Pages policy spec-aware in a separate package |
-| `lastCompletedCheck` | six unchanged substantive files: 28/28 within 48/48 Python, 312/312 Vitest, dual typechecks, build/audit, 11 checksums, scans/golden, exact-byte PASS; state-only closure separately rebound; net 496 |
-| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 2; help-text regression 1; security-review return 1 |
+| `activePackage` | `PREVIEW-4-ARCHIVE-VERIFIER` pinned adapters and shared verifier engine |
+| `state` | `COMPLETED_LOCAL_PACKAGE_AWAITING_CHECKPOINT` |
+| `candidateFingerprint` | prior exact ten-path fingerprint `9AEF5DEA0AB9E541F5AF5831B856D5D580FE9E3C20492F9450527737BF8C586B` received two zero-finding PASSes; its seven unchanged substantive files retain those verdicts; this three-doc administrative closure inherits no substantive verdict and must rebind before checkpoint |
+| `closedAcceptanceIds` | prior IDs; `P4-RT-01`–`P4-RT-08` checkpointed at `c245244`; `P4-AV-01`–`P4-AV-12` substantively complete subject only to this closure's administrative rebind |
+| `nextKnownBlocker` | zero-finding administrative rebind of the current Project/Trace/contract bytes, then checkpoint the exact ten-path package |
+| `lastCompletedCheck` | prior substantive bytes: 28/28 verifier within 56/56 Python, 312/312 Vitest, dual typechecks, 53-module build/audit, 11/11 checksums, scans, two exact-byte PASSes; net 639 |
+| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 5; help-text regression 1; Git-boundary review returns 3, resolved by one consolidated redesign |
 | `frozenManifestHash` | Preview 3 historical source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; no Preview 4 manifest exists |
-| `exactNextAction` | stage and commit only the exact closed release-tooling allowlist; then contract spec-aware verifier/Pages work |
-| `forbiddenUntil` | no Gate 4+ work, Preview 3 mutation/redeploy, Preview 4 source freeze/package, or public write; verifier/workflow spec parity is a later package |
+| `exactNextAction` | on zero-finding administrative rebind, stage and commit only the exact ten-path verifier package |
+| `forbiddenUntil` | no Gate 4+ work, Preview 3 mutation/redeploy, Pages selector change, Preview 4 source freeze/package, or public write |
 
 ## Current product state
 
@@ -136,7 +136,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 commit-stable claims | completed locally | checkpoint `58890218721c16e2226d42d6bc6ccd98622ae30c`; exact twelve paths, closed old→stable regression mapping, 312/312, dual typechecks, and two independent final PASSes |
 | Preview 3 public prerelease | assets completed; Pages returned | `P=0482c8adb4aeefdbb7b6329e6408fd6c29fd96d4`; tag/release plus 3/3 unauthenticated asset hashes verified; run `32155197089` failed `728.9375 > 720`, upload/deploy skipped |
 | Preview 4 desktop-fold correction | completed locally | checkpoint `3a2cfd0`; 1/1 fold, 24/24 release-state, 12/12 Edge/axe, 312/312 Vitest, dual typechecks, build/audit, screenshot inspection, and independent PASSes |
-| Preview 4 closed release tooling | completed locally; checkpoint pending | six substantive files retain full gates/exact-byte PASS; Project/Trace closure separately rebound with zero findings; net 496 |
+| Preview 4 closed release tooling | completed locally | checkpoint `c245244400858d759176b4d0679c343b700a5fde`; full gates, exact-byte substantive PASS, separate administrative rebind; net 496 |
+| Preview 4 archive verifier | substantive PASS; administrative rebind pending | seven substantive files retain two exact-byte PASSes; current Project/Trace/contract closure must rebind before the exact ten-path checkpoint; net 639 |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -172,6 +173,6 @@ The correction reuses the existing design system and permanent browser fixture.
 
 ## Exact next eligible action
 
-Stage and commit only the exact Preview 4 closed release-tooling allowlist. Then
-contract the spec-aware archive-verifier/Pages package; do not freeze, package,
+On zero-finding administrative rebind, checkpoint only the exact ten-path
+Preview 4 archive-verifier package. Do not change Pages, freeze source, package,
 publish, deploy, begin Gate 4, or claim release readiness.

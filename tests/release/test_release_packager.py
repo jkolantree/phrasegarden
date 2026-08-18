@@ -23,6 +23,7 @@ import zlib
 from zipfile import ZIP_STORED, ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
 BASE = "3a2cfd0f81a6a9513991eef4f3b1e604185536bc"
 SCRIPT = ROOT / "scripts" / "preview3-package.py"
 P4_SCRIPT = ROOT / "scripts" / "preview4-package.py"
@@ -42,6 +43,8 @@ git_object_size = MODULE["git_object_size"]
 main = partial(MODULE["main"], PREVIEW3_SPEC)
 MAX_GIT_OUTPUT_BYTES = MODULE["MAX_GIT_OUTPUT_BYTES"]
 reject_config_indirection = MODULE["reject_config_indirection"]
+reject_external_objects = MODULE["reject_external_objects"]
+require_physical_git_objects = MODULE["require_physical_git_objects"]
 require_directories = MODULE["require_directories"]
 run_bounded = MODULE["run_bounded"]
 source_entries = partial(MODULE["source_entries"], PREVIEW3_SPEC)
@@ -60,13 +63,15 @@ stage_package = partial(MODULE["stage_package"], PREVIEW3_SPEC)
 promote_package = partial(MODULE["promote_package"], PREVIEW3_SPEC)
 scan_dist = MODULE["scan_dist"]
 
-ARCHIVE_MODULE = runpy.run_path(str(ROOT / "scripts" / "verify-release-archive.py"))
-PACKAGING_PATHS = ARCHIVE_MODULE["PACKAGING_PATHS"]
+ARCHIVE_MODULE = runpy.run_path(str(ROOT / "scripts" / "release_archive_verifier.py"))
+PACKAGING_PATHS = PREVIEW3_SPEC.packaging_paths
 load_release_manifest = ARCHIVE_MODULE["load_manifest"]
 verify_checksums = ARCHIVE_MODULE["verify_checksums"]
 require_checksum = ARCHIVE_MODULE["require_checksum"]
 verify_and_extract = ARCHIVE_MODULE["verify_and_extract"]
-verify_packaging_commit = ARCHIVE_MODULE["verify_packaging_commit"]
+verify_packaging_commit = partial(
+    ARCHIVE_MODULE["verify_packaging_commit"], PREVIEW3_SPEC
+)
 
 def fixture_git_environment() -> dict[str, str]:
     environment = os.environ.copy()
@@ -510,6 +515,24 @@ class SourceManifestTest(unittest.TestCase):
             self.assertEqual(raised.exception.code, "E-GIT-CONFIG")
 
     def test_physical_prefix_and_partial_write_are_fail_closed(self) -> None:
+        for parts, directory in ((('pack',), True), (('info',), True),
+                                 (('ab',), True), (('ab', 'object'), False)):
+            with self.subTest(parts=parts), tempfile.TemporaryDirectory() as location:
+                root = Path(location)
+                target = root / ".git" / "objects" / Path(*parts)
+                target.mkdir(parents=True) if directory else (
+                    target.parent.mkdir(parents=True), target.write_bytes(b"x"))
+                original = Path.lstat
+                with mock.patch.object(Path, "lstat", lambda path, target=target:
+                        SimpleNamespace(st_mode=stat.S_IFLNK) if path == target else original(path)), \
+                        self.assertRaises(ToolError) as objects:
+                    require_physical_git_objects(root)
+                self.assertEqual(objects.exception.code, "E-GIT-OBJECTS")
+        with tempfile.TemporaryDirectory() as location, mock.patch.dict(
+                require_physical_git_objects.__globals__, {"MAX_GIT_OBJECT_ENTRIES": 0}), \
+                self.assertRaises(ToolError):
+            (Path(location) / ".git" / "objects" / "info").mkdir(parents=True)
+            require_physical_git_objects(Path(location))
         with repository() as (root, head):
             (root / "artifacts").mkdir()
             original = Path.lstat
@@ -933,9 +956,11 @@ class SameBytePackageTest(unittest.TestCase):
             os.chdir(root)
             try:
                 manifest = load_release_manifest(Path(FINAL_MANIFEST))
-                checksums = verify_checksums(Path("SHA256SUMS"))
-                require_checksum(checksums, Path(FINAL_ARCHIVE), "archive")
-                require_checksum(checksums, Path(FINAL_MANIFEST), "manifest")
+                checksums = verify_checksums(PREVIEW3_SPEC, Path("SHA256SUMS"))
+                require_checksum(
+                    PREVIEW3_SPEC, checksums, Path(FINAL_ARCHIVE), "archive")
+                require_checksum(
+                    PREVIEW3_SPEC, checksums, Path(FINAL_MANIFEST), "manifest")
                 verify_packaging_commit(head, Path("SHA256SUMS"),
                                         Path(FINAL_ARCHIVE), Path(FINAL_MANIFEST))
                 output = root / "verified-output"

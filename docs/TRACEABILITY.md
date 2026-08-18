@@ -582,4 +582,17 @@ bindings. Synthetic fixtures are development/regression evidence only.
 | ID | Deterministic owner | State / next blocker |
 |---|---|---|
 | `P4-RT-01`–`P4-RT-07` | Shared engine, closed specs, adapters, and cross-version negatives. | six unchanged substantive files retain exact-byte PASS |
-| `P4-RT-08` | Full gates, exact accounting, and independent frozen-byte review. | substantive PASS retained / state-only closure separately rebound; checkpoint pending |
+| `P4-RT-08` | Full gates, exact accounting, and independent frozen-byte review. | checkpoint `c245244400858d759176b4d0679c343b700a5fde` |
+
+### Preview 4 archive-verifier foundation
+
+Source: ADR-036 and `PREVIEW-4-ARCHIVE-VERIFIER.md`. Pinned adapters select closed
+specs; generic extraction stays nonqualifying. Three Git-boundary returns caused
+one consolidated bounded typed-object/path redesign with P3 differentials.
+Fixtures are regression evidence only.
+
+| ID | Deterministic owner | State / next blocker |
+|---|---|---|
+| `P4-AV-01`–`P4-AV-04` | Pinned adapters, raw manifest/argument identity, and Preview 3 differentials. | unchanged substantive bytes retain two exact-byte PASSes |
+| `P4-AV-05`–`P4-AV-07` | Exact child, physical typed Git objects/paths, Preview 4 source version, ledger, predecessor, and append. | unchanged substantive bytes retain two exact-byte PASSes |
+| `P4-AV-08`–`P4-AV-12` | Existing archive/resource boundary, compatibility consumers, hostile Git negatives, and bounded claims. | current three-doc closure requires separate administrative rebind before checkpoint |
