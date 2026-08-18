@@ -113,16 +113,46 @@ the active checkpoint's recorded base.
 
 ## Child B — same-byte staging and promotion
 
-Child A1c must replace `PREVIEW-3-PUBLICATION`'s stale manual source-path list
-with this complete-tree manifest authority; A1a/A1b do not claim that repair.
+Child B starts at `ba886b41780780644c1dbbe115ef1cb8281e8026` and owns this contract,
+`scripts/preview3-package.py`, and its test. B1 freezes core, B2 adds returned-failure regressions, and B3 fixes claims.
 
-Child B may extend only this tool and its tests plus the separately named
-administrative contracts. It will create one fixed ignored staging directory,
-one deterministic `ZIP_STORED` archive and closed manifest from one qualified
-`dist`, and an exact two-line append to the parent checksum ledger. Promotion
-will copy those already verified bytes to the three fixed packaging paths only,
-without regeneration or overwrite. Its own contract, fixtures, budgets, and
-independent review are required before any release bytes are generated.
+```text
+python -B scripts/preview3-package.py {stage-package|verify-package|promote-package} --source-commit <S>
+```
+
+Every command byte-verifies the source manifest at clean `HEAD == S`; no other option exists. The already built
+`dist` is externally qualified. This tool proves byte structure, never that a build, test, or review occurred.
+
+The ignored stage contains exactly `SHA256SUMS` and, under `release/`, the Preview 3 manifest and ZIP.
+Closed schema 1 records fixed release/build identity, `S`, and sorted `dist` paths, lengths, and uppercase SHA-256.
+The later seven-path commit/evidence record binds its reported source-manifest hash and qualification evidence;
+schema 1 itself claims neither qualification nor package commit.
+
+The exact `dist` is `index.html`, plus CSS/JS names with lowercase prefix/extensions and a case-sensitive hash.
+The canonical ZIP is sorted `ZIP_STORED`, no ZIP64/directories, fixed epoch, Unix/version 2.0, regular `100644`,
+zero flags/attributes, and empty extras/comments. Limits: 64 files, 128 entries, depth 16, 5 MiB release,
+5 MiB + 256 KiB ZIP, 256 KiB manifest, and 64 KiB ledger.
+
+Stage creation is exclusive, fsynced, re-read, and retained after failure. Read-only verification requires exact
+stage, source, `dist`, canonical manifest/ZIP, and source ledger plus archive-then-manifest lines. Promotion first
+verifies, exclusively creates final archive/manifest, then appends both lines in one write. It copies only staged
+bytes, never regenerates or replaces output; partial results block retry. The seven-path commit remains separate.
+Detected mutation fails closed; hostile concurrent filesystem mutation outside these barriers is out of scope.
+
+### Child B acceptance
+
+| ID | Observable evidence |
+|---|---|
+| `PB-01` | Fixed CLI and paths; exact source manifest, `S`, root ledger, and current three-file `dist` bind one candidate. |
+| `PB-02` | Release-manifest schema/serialization and every ZIP metadata byte are deterministic across locale, timezone, creation order, and ambient Git state. |
+| `PB-03` | Unsafe, colliding, extra, missing, nonregular, reparse, mutable, or over-budget inputs and unknown staging entries fail closed. |
+| `PB-04` | Stage is exclusive and retained on partial failure; verify is read-only; archive/manifest promotion is exclusive; ledger preserves every parent byte. |
+| `PB-05` | Promotion writes only exact staged bytes, invokes no staging command, and retains partial output as blocking evidence. |
+| `PB-06` | A synthetic stage-to-promotion seven-path commit passes the existing archive/package verifier; all fixtures remain development/regression evidence. |
+| `PB-07` | Focused tests, all Python release tests, full Vitest, both typechecks, build/audit, historical checksums, domain scan, diff/cache hygiene, budget, and independent review pass. |
+
+Run no real stage/promotion during development. Stop on identity ambiguity, schema 2/eighth-path need, ledger
+preservation failure, unsupported `dist`, drift, baseline failure, or net change at/above 650. Closure is separate.
 
 ## Out of scope
 

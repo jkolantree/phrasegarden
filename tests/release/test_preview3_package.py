@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import re
 import runpy
+import shutil
 import stat
 import subprocess
 import sys
@@ -17,6 +18,7 @@ from contextlib import redirect_stderr
 from types import SimpleNamespace
 from unittest import mock
 import zlib
+from zipfile import ZIP_STORED, ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "preview3-package.py"
@@ -36,6 +38,23 @@ source_entries = MODULE["source_entries"]
 verify_source = MODULE["verify_source"]
 validate_paths = MODULE["validate_paths"]
 SOURCE_MANIFEST = MODULE["SOURCE_MANIFEST"]
+STAGE_ROOT = MODULE["STAGE_ROOT"]
+STAGE_ARCHIVE = MODULE["STAGE_ARCHIVE"]
+STAGE_MANIFEST = MODULE["STAGE_MANIFEST"]
+STAGE_LEDGER = MODULE["STAGE_LEDGER"]
+FINAL_ARCHIVE = MODULE["FINAL_ARCHIVE"]
+FINAL_MANIFEST = MODULE["FINAL_MANIFEST"]
+stage_package = MODULE["stage_package"]
+promote_package = MODULE["promote_package"]
+scan_dist = MODULE["scan_dist"]
+
+ARCHIVE_MODULE = runpy.run_path(str(ROOT / "scripts" / "verify-release-archive.py"))
+PACKAGING_PATHS = ARCHIVE_MODULE["PACKAGING_PATHS"]
+load_release_manifest = ARCHIVE_MODULE["load_manifest"]
+verify_checksums = ARCHIVE_MODULE["verify_checksums"]
+require_checksum = ARCHIVE_MODULE["require_checksum"]
+verify_and_extract = ARCHIVE_MODULE["verify_and_extract"]
+verify_packaging_commit = ARCHIVE_MODULE["verify_packaging_commit"]
 
 def fixture_git_environment() -> dict[str, str]:
     environment = os.environ.copy()
@@ -84,6 +103,30 @@ def repository():
         yield root, head
     finally:
         temporary.cleanup()
+
+@contextmanager
+def package_repository():
+    with repository() as (root, _):
+        (root / ".gitignore").write_bytes(b"artifacts/\ndist/\n")
+        release = root / "release"
+        release.mkdir()
+        old = release / "old.zip"
+        old.write_bytes(b"historical archive\n")
+        digest = hashlib.sha256(old.read_bytes()).hexdigest().upper()
+        (root / "SHA256SUMS").write_bytes(
+            f"{digest}  release/old.zip\n".encode("ascii")
+        )
+        git(root, "add", ".gitignore", "SHA256SUMS", "release/old.zip")
+        head = commit(root, "package source")
+        assets = root / "dist" / "assets"
+        assets.mkdir(parents=True)
+        (root / "dist" / "index.html").write_bytes(b"<!doctype html>\n")
+        (assets / "index-a.css").write_bytes(b"body{}\n")
+        (assets / "index-b.js").write_bytes(b"console.log('fixture')\n")
+        frozen = tool(root, "freeze-source", head)
+        if frozen.returncode != 0:
+            raise AssertionError(frozen.stderr)
+        yield root, head
 
 def tool(root: Path, command: str, source: str, *, env=None):
     return subprocess.run(
@@ -505,6 +548,181 @@ class SourceManifestTest(unittest.TestCase):
                 self.assertEqual(raised.exception.code, "E-GIT-OUTPUT-LIMIT")
             finally:
                 os.chdir(original)
+
+class SameBytePackageTest(unittest.TestCase):
+    def assert_package_failure(self, root: Path, head: str, command: str,
+                               code: str) -> None:
+        result = tool(root, command, head)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(result.stdout, "")
+        self.assertRegex(result.stderr, rf"\A{re.escape(code)}: [^\r\n]+\n\Z")
+
+    @staticmethod
+    def staged(root: Path) -> dict[Path, bytes]:
+        return {path: (root / path).read_bytes()
+                for path in (STAGE_ARCHIVE, STAGE_MANIFEST, STAGE_LEDGER)}
+
+    def test_stage_is_canonical_and_environment_independent(self) -> None:
+        with package_repository() as (root, head):
+            first = tool(root, "stage-package", head)
+            self.assertEqual(first.returncode, 0, first.stderr)
+            initial = self.staged(root)
+            verified = tool(root, "verify-package", head)
+            self.assertEqual(verified.returncode, 0, verified.stderr)
+            self.assertEqual(json.loads(verified.stdout)["status"], "verified")
+            raw_manifest = initial[STAGE_MANIFEST]
+            parsed = json.loads(raw_manifest)
+            self.assertEqual(
+                raw_manifest,
+                (json.dumps(parsed, ensure_ascii=True, indent=2,
+                            separators=(",", ": ")) + "\n").encode(),
+            )
+            with ZipFile(io.BytesIO(initial[STAGE_ARCHIVE])) as package:
+                self.assertEqual([item.filename for item in package.infolist()],
+                                 [item["path"] for item in parsed["files"]])
+                for item in package.infolist():
+                    self.assertEqual(item.compress_type, ZIP_STORED)
+                    self.assertEqual(item.date_time, (1980, 1, 1, 0, 0, 0))
+                    self.assertEqual(item.external_attr,
+                                     (stat.S_IFREG | 0o644) << 16)
+                    self.assertEqual((item.extra, item.comment, item.flag_bits),
+                                     (b"", b"", 0))
+            shutil.rmtree(root / STAGE_ROOT)
+            hostile = fixture_git_environment()
+            hostile.update({"TZ": "Pacific/Kiritimati", "LC_ALL": "tr_TR.UTF-8",
+                            "LANG": "ja_JP.UTF-8"})
+            second = tool(root, "stage-package", head, env=hostile)
+            self.assertEqual(second.returncode, 0, second.stderr)
+            self.assertEqual(self.staged(root), initial)
+
+    def test_mismatches_shapes_and_budgets_fail_without_rewrite(self) -> None:
+        with package_repository() as (root, head):
+            self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+            for path, code in ((STAGE_ARCHIVE, "E-PACKAGE-ARCHIVE"),
+                               (STAGE_MANIFEST, "E-PACKAGE-STAGE-MISMATCH"),
+                               (STAGE_LEDGER, "E-PACKAGE-STAGE-MISMATCH")):
+                original = (root / path).read_bytes()
+                (root / path).write_bytes(original + b"x")
+                self.assert_package_failure(root, head, "verify-package", code)
+                self.assertEqual((root / path).read_bytes(), original + b"x")
+                (root / path).write_bytes(original)
+            extra = root / STAGE_ROOT / "extra"
+            extra.write_bytes(b"x")
+            self.assert_package_failure(root, head, "verify-package",
+                                        "E-PACKAGE-STAGE-SHAPE")
+            extra.unlink()
+            dist_extra = root / "dist" / "extra.txt"
+            dist_extra.write_bytes(b"x")
+            self.assert_package_failure(root, head, "verify-package",
+                                        "E-PACKAGE-DIST-SHAPE")
+            dist_extra.unlink()
+            source = root / SOURCE_MANIFEST
+            original = source.read_bytes()
+            source.write_bytes(original + b" ")
+            self.assert_package_failure(root, head, "verify-package",
+                                        "E-SOURCE-MANIFEST-MISMATCH")
+            source.write_bytes(original)
+            cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                with mock.patch.dict(scan_dist.__globals__, {"MAX_RELEASE_BYTES": 1}), \
+                        self.assertRaises(ToolError) as raised:
+                    scan_dist()
+                self.assertEqual(raised.exception.code, "E-PACKAGE-DIST-FILE")
+            finally:
+                os.chdir(cwd)
+
+    def test_partial_stage_and_promotion_remain_blocking(self) -> None:
+        with package_repository() as (root, head):
+            cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                with mock.patch.object(os, "fsync", side_effect=OSError), \
+                        self.assertRaises(ToolError) as raised:
+                    stage_package(head)
+                self.assertEqual(raised.exception.code, "E-PACKAGE-STAGE-WRITE")
+                self.assertTrue((root / STAGE_ARCHIVE).is_file())
+                with self.assertRaises(ToolError) as repeated:
+                    stage_package(head)
+                self.assertEqual(repeated.exception.code, "E-PACKAGE-STAGE-EXISTS")
+            finally:
+                os.chdir(cwd)
+        with package_repository() as (root, head):
+            self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+            cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                with mock.patch.object(os, "fsync", side_effect=OSError), \
+                        self.assertRaises(ToolError) as raised:
+                    promote_package(head)
+                self.assertEqual(raised.exception.code,
+                                 "E-PACKAGE-PROMOTION-WRITE")
+                self.assertTrue((root / FINAL_ARCHIVE).is_file())
+                with self.assertRaises(ToolError) as repeated:
+                    promote_package(head)
+                self.assertEqual(repeated.exception.code, "E-PACKAGE-FINAL-EXISTS")
+            finally:
+                os.chdir(cwd)
+
+    def test_mutable_ignore_cannot_hide_package_inputs(self) -> None:
+        with package_repository() as (root, _):
+            (root / SOURCE_MANIFEST).unlink()
+            (root / ".gitignore").write_bytes(b"artifacts/\n")
+            git(root, "add", ".gitignore")
+            head = commit(root, "remove committed dist ignore")
+            (root / ".git" / "info" / "exclude").write_bytes(b"dist/\n")
+            self.assertEqual(tool(root, "freeze-source", head).returncode, 0)
+            self.assert_package_failure(root, head, "stage-package",
+                                        "E-PACKAGE-OUTPUT-IGNORE")
+
+    def test_promotion_copies_stage_and_appends_ledger_once(self) -> None:
+        with package_repository() as (root, head):
+            self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+            staged = self.staged(root)
+            parent = (root / "SHA256SUMS").read_bytes()
+            cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                with mock.patch.object(os, "write", wraps=os.write) as writes, \
+                        redirect_stderr(io.StringIO()), \
+                        mock.patch("sys.stdout", new=io.StringIO()):
+                    promote_package(head)
+                self.assertEqual(writes.call_count, 1)
+            finally:
+                os.chdir(cwd)
+            self.assertEqual((root / FINAL_ARCHIVE).read_bytes(), staged[STAGE_ARCHIVE])
+            self.assertEqual((root / FINAL_MANIFEST).read_bytes(), staged[STAGE_MANIFEST])
+            self.assertEqual((root / "SHA256SUMS").read_bytes(), staged[STAGE_LEDGER])
+            self.assertTrue(staged[STAGE_LEDGER].startswith(parent))
+            self.assert_package_failure(root, head, "promote-package",
+                                        "E-PACKAGE-FINAL-EXISTS")
+
+    def test_promoted_seven_path_commit_passes_existing_verifier(self) -> None:
+        with package_repository() as (root, head):
+            self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+            self.assertEqual(tool(root, "promote-package", head).returncode, 0)
+            for name in PACKAGING_PATHS[1:5]:
+                path = root.joinpath(*name.split("/"))
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(f"synthetic {name}\n".encode())
+            git(root, "add", *PACKAGING_PATHS)
+            commit(root, "synthetic packaging commit")
+            cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                manifest = load_release_manifest(Path(FINAL_MANIFEST))
+                checksums = verify_checksums(Path("SHA256SUMS"))
+                require_checksum(checksums, Path(FINAL_ARCHIVE), "archive")
+                require_checksum(checksums, Path(FINAL_MANIFEST), "manifest")
+                verify_packaging_commit(head, Path("SHA256SUMS"),
+                                        Path(FINAL_ARCHIVE), Path(FINAL_MANIFEST))
+                output = root / "verified-output"
+                verify_and_extract(Path(FINAL_ARCHIVE), manifest, output)
+                self.assertEqual(sorted(path.relative_to(output).as_posix()
+                                        for path in output.rglob("*") if path.is_file()),
+                                 [item["path"] for item in manifest["files"]])
+            finally:
+                os.chdir(cwd)
 
 
 if __name__ == "__main__":

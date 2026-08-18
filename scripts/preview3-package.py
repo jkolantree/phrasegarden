@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -12,9 +13,25 @@ import re
 import stat
 import subprocess
 import sys
+from zipfile import BadZipFile, ZIP_STORED, ZipFile, ZipInfo
 
 SOURCE_MANIFEST = Path("artifacts/release/preview3-source-manifest.json")
 SOURCE_KIND = "phrasegarden-source-freeze"
+RELEASE_VERSION = "0.1.0-preview.3"
+ARCHIVE_NAME = f"phrasegarden-{RELEASE_VERSION}-pages.zip"
+MANIFEST_NAME = f"phrasegarden-{RELEASE_VERSION}-pages-manifest.json"
+STAGE_ROOT = Path("artifacts/release/preview3-package-stage")
+STAGE_ARCHIVE = STAGE_ROOT / "release" / ARCHIVE_NAME
+STAGE_MANIFEST = STAGE_ROOT / "release" / MANIFEST_NAME
+STAGE_LEDGER = STAGE_ROOT / "SHA256SUMS"
+FINAL_ARCHIVE = Path("release") / ARCHIVE_NAME
+FINAL_MANIFEST = Path("release") / MANIFEST_NAME
+CHECKSUM_LEDGER = Path("SHA256SUMS")
+DIST_ROOT = Path("dist")
+BUILD_STATEMENT = (
+    "Records the declared source commit and distributable byte inventory; this "
+    "manifest does not establish build qualification or a packaging commit."
+)
 GIT_SHA = re.compile(r"^[0-9a-f]{40}$")
 PORTABLE_PATH = re.compile(r"^[A-Za-z0-9._/-]+$")
 MAX_FILES = 512
@@ -24,7 +41,16 @@ MAX_BLOB_BYTES = 8 * 1024 * 1024
 MAX_TOTAL_BYTES = 32 * 1024 * 1024
 MAX_MANIFEST_BYTES = 1024 * 1024
 MAX_GIT_OUTPUT_BYTES = 1024 * 1024
+MAX_PACKAGE_FILES = 64
+MAX_PACKAGE_ENTRIES = 128
+MAX_PACKAGE_DEPTH = 16
+MAX_RELEASE_BYTES = 5 * 1024 * 1024
+MAX_ARCHIVE_BYTES = MAX_RELEASE_BYTES + 256 * 1024
+MAX_RELEASE_MANIFEST_BYTES = 256 * 1024
+MAX_LEDGER_BYTES = 64 * 1024
 READ_CHUNK_BYTES = 64 * 1024
+ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
+ASSET_NAME = re.compile(r"^index-[A-Za-z0-9_-]+\.(?:css|js)$")
 WINDOWS_RESERVED = {
     "AUX", "CON", "NUL", "PRN",
     *(f"COM{index}" for index in range(1, 10)),
@@ -221,6 +247,24 @@ def require_output_policy(source_commit: str) -> None:
     root_ignore, _ = git(["ls-tree", "-z", source_commit, "--", ".gitignore"])
     if not re.fullmatch(rb"100644 blob [0-9a-f]{40}\t\.gitignore\0", root_ignore):
         fail("E-SOURCE-OUTPUT-IGNORE", "root .gitignore must be a 100644 source blob")
+
+def require_package_ignore_policy(source_commit: str,
+                                  dist_paths: list[str]) -> None:
+    tracked, _ = git(["ls-tree", "-r", "-z", source_commit, "--",
+                      DIST_ROOT.as_posix(), STAGE_ROOT.as_posix()])
+    if tracked:
+        fail("E-PACKAGE-OUTPUT-TRACKED", "dist and package stage must be untracked")
+    paths = [DIST_ROOT.joinpath(*PurePosixPath(name).parts) for name in dist_paths]
+    for path in (*paths, STAGE_ARCHIVE, STAGE_MANIFEST, STAGE_LEDGER):
+        encoded = path.as_posix().encode("ascii")
+        ignored, result = git(["check-ignore", "--stdin", "-z", "-v", "--no-index"],
+                              allowed=(0, 1), input_bytes=encoded + b"\0")
+        fields = ignored.split(b"\0")
+        if (result != 0 or len(fields) != 5 or fields[-1] != b""
+                or fields[0] != b".gitignore" or not fields[1].isdigit()
+                or fields[3] != encoded):
+            fail("E-PACKAGE-OUTPUT-IGNORE",
+                 "dist and package stage require the committed root ignore")
 
 def require_repository(source_commit: str) -> tuple[Path, str]:
     validate_git_environment()
@@ -426,18 +470,363 @@ def verify_source(source_commit: str) -> None:
     require_directories(Path.cwd(), SOURCE_MANIFEST.parent.parts, create=False)
     report(encoded, manifest, "verified")
 
+def path_entry_exists(path: Path) -> bool:
+    try:
+        path.lstat()
+    except FileNotFoundError:
+        return False
+    return True
+
+def canonical_json(value: object) -> bytes:
+    return (json.dumps(value, ensure_ascii=True, indent=2,
+                       separators=(",", ": ")) + "\n").encode("utf-8")
+
+def require_source_evidence(source_commit: str) -> bytes:
+    expected, _ = build_source_manifest(source_commit)
+    actual = source_evidence_file()
+    if actual != expected:
+        fail("E-SOURCE-MANIFEST-MISMATCH", "source manifest bytes do not match source")
+    return actual
+
+def source_evidence_file() -> bytes:
+    root = Path.cwd()
+    require_directories(root, SOURCE_MANIFEST.parent.parts, create=False)
+    actual = read_regular(root / SOURCE_MANIFEST, MAX_MANIFEST_BYTES,
+                          "E-SOURCE-MANIFEST-FILE")
+    require_directories(root, SOURCE_MANIFEST.parent.parts, create=False)
+    return actual
+
+def directory_names(path: Path, code: str) -> list[str]:
+    try:
+        before = path.lstat()
+    except FileNotFoundError:
+        fail(code, "required directory is missing")
+    if not stat.S_ISDIR(before.st_mode) or is_reparse(before):
+        fail(code, "required directory must be physical")
+    names: list[str] = []
+    for item in path.iterdir():
+        if len(names) >= MAX_PACKAGE_ENTRIES:
+            fail(code, "directory entry budget exceeded")
+        names.append(item.name)
+    names.sort()
+    after = path.lstat()
+    if ((after.st_dev, after.st_ino) != (before.st_dev, before.st_ino)
+            or not stat.S_ISDIR(after.st_mode) or is_reparse(after)):
+        fail(code, "directory identity changed during inspection")
+    return names
+
+def release_paths(paths: list[str]) -> list[str]:
+    checked = validate_paths(paths)
+    assets = [path for path in checked if path.startswith("assets/")]
+    if (len(checked) != 3 or "index.html" not in checked or len(assets) != 2
+            or {PurePosixPath(path).suffix for path in assets} != {".css", ".js"}
+            or any(len(PurePosixPath(path).parts) != 2 for path in assets)
+            or any(ASSET_NAME.fullmatch(PurePosixPath(path).name) is None
+                   for path in assets)):
+        fail("E-PACKAGE-DIST-SHAPE", "dist must contain the exact supported release shape")
+    return checked
+
+def scan_dist() -> list[tuple[str, bytes]]:
+    root = Path.cwd()
+    require_directories(root, DIST_ROOT.parts, create=False)
+    dist = root / DIST_ROOT
+    if directory_names(dist, "E-PACKAGE-DIST-SHAPE") != ["assets", "index.html"]:
+        fail("E-PACKAGE-DIST-SHAPE", "dist root has an unexpected entry")
+    assets = dist / "assets"
+    names = directory_names(assets, "E-PACKAGE-DIST-SHAPE")
+    paths = release_paths(["index.html", *(f"assets/{name}" for name in names)])
+    if len(paths) > MAX_PACKAGE_FILES or len(names) + 2 > MAX_PACKAGE_ENTRIES:
+        fail("E-PACKAGE-DIST-LIMIT", "dist entry budget exceeded")
+    files: list[tuple[str, bytes]] = []
+    total = 0
+    for name in paths:
+        value = read_regular(dist.joinpath(*PurePosixPath(name).parts),
+                             MAX_RELEASE_BYTES, "E-PACKAGE-DIST-FILE")
+        total += len(value)
+        if total > MAX_RELEASE_BYTES:
+            fail("E-PACKAGE-DIST-LIMIT", "dist byte budget exceeded")
+        files.append((name, value))
+    if (directory_names(dist, "E-PACKAGE-DIST-SHAPE") != ["assets", "index.html"]
+            or directory_names(assets, "E-PACKAGE-DIST-SHAPE") != names):
+        fail("E-PACKAGE-DIST-DRIFT", "dist changed during inspection")
+    return files
+
+def require_parent_ledger() -> bytes:
+    raw = read_regular(Path.cwd() / CHECKSUM_LEDGER, MAX_LEDGER_BYTES,
+                       "E-PACKAGE-LEDGER")
+    if not raw.endswith(b"\n") or raw.endswith(b"\n\n"):
+        fail("E-PACKAGE-LEDGER", "source ledger must end in exactly one LF")
+    seen: set[str] = set()
+    forbidden = {FINAL_ARCHIVE.as_posix().lower(), FINAL_MANIFEST.as_posix().lower()}
+    for line in raw.splitlines(keepends=True):
+        match = re.fullmatch(rb"([0-9A-F]{64})  ([A-Za-z0-9._/-]+)\n", line)
+        if match is None:
+            fail("E-PACKAGE-LEDGER", "source ledger has a malformed line")
+        name = canonical_repo_path(match.group(2).decode("ascii"))
+        if name.lower() in seen or name.lower() in forbidden:
+            fail("E-PACKAGE-LEDGER", "source ledger has a duplicate or Preview 3 path")
+        seen.add(name.lower())
+    return raw
+
+def build_release_manifest(source_commit: str,
+                           files: list[tuple[str, bytes]]) -> bytes:
+    return canonical_json({
+        "schemaVersion": 1,
+        "releaseVersion": RELEASE_VERSION,
+        "artifactName": ARCHIVE_NAME,
+        "sourceProvenance": {"kind": "git-commit", "gitCommit": source_commit,
+                             "statement": BUILD_STATEMENT},
+        "build": {"command": "pnpm build", "base": "./", "sourceMaps": False},
+        "files": [{"path": name, "bytes": len(value), "sha256": sha256(value)}
+                  for name, value in files],
+    })
+
+def build_archive(files: list[tuple[str, bytes]]) -> bytes:
+    output = io.BytesIO()
+    with ZipFile(output, "w", compression=ZIP_STORED, allowZip64=False) as package:
+        package.comment = b""
+        for name, value in files:
+            info = ZipInfo(name, ZIP_TIMESTAMP)
+            info.create_system = 3
+            info.create_version = info.extract_version = 20
+            info.compress_type = ZIP_STORED
+            info.flag_bits = info.internal_attr = 0
+            info.external_attr = (stat.S_IFREG | 0o644) << 16
+            info.extra = info.comment = b""
+            package.writestr(info, value, compress_type=ZIP_STORED)
+    value = output.getvalue()
+    if len(value) > MAX_ARCHIVE_BYTES:
+        fail("E-PACKAGE-ARCHIVE-LIMIT", "archive byte budget exceeded")
+    return value
+
+def read_archive(raw: bytes) -> list[tuple[str, bytes]]:
+    if len(raw) > MAX_ARCHIVE_BYTES:
+        fail("E-PACKAGE-ARCHIVE-LIMIT", "archive byte budget exceeded")
+    expected_attr = (stat.S_IFREG | 0o644) << 16
+    try:
+        with ZipFile(io.BytesIO(raw), "r") as package:
+            infos = package.infolist()
+            if not infos or len(infos) > MAX_PACKAGE_FILES:
+                fail("E-PACKAGE-ARCHIVE-LIMIT", "archive member budget exceeded")
+            names = release_paths([info.filename for info in infos])
+            if names != [info.filename for info in infos] or package.comment:
+                fail("E-PACKAGE-ARCHIVE", "archive order or comment is not canonical")
+            files: list[tuple[str, bytes]] = []
+            total = 0
+            for info in infos:
+                if (info.date_time != ZIP_TIMESTAMP or info.create_system != 3
+                        or info.create_version != 20 or info.extract_version != 20
+                        or info.compress_type != ZIP_STORED or info.flag_bits != 0
+                        or info.internal_attr != 0 or info.external_attr != expected_attr
+                        or info.extra or info.comment or info.is_dir()
+                        or info.compress_size != info.file_size):
+                    fail("E-PACKAGE-ARCHIVE", "archive member metadata is not canonical")
+                value = bytearray()
+                with package.open(info, "r") as stream:
+                    while chunk := stream.read(min(
+                            READ_CHUNK_BYTES, info.file_size - len(value) + 1)):
+                        value.extend(chunk)
+                        if len(value) > info.file_size:
+                            fail("E-PACKAGE-ARCHIVE", "archive member exceeds declared size")
+                if len(value) != info.file_size:
+                    fail("E-PACKAGE-ARCHIVE", "archive member length is invalid")
+                total += len(value)
+                if total > MAX_RELEASE_BYTES:
+                    fail("E-PACKAGE-ARCHIVE-LIMIT", "archive release budget exceeded")
+                files.append((info.filename, bytes(value)))
+    except BadZipFile:
+        fail("E-PACKAGE-ARCHIVE", "archive is not a valid ZIP")
+    if build_archive(files) != raw:
+        fail("E-PACKAGE-ARCHIVE", "archive bytes are not canonical")
+    return files
+
+def ledger_tail(archive: bytes, manifest: bytes) -> bytes:
+    return (f"{sha256(archive)}  {FINAL_ARCHIVE.as_posix()}\n"
+            f"{sha256(manifest)}  {FINAL_MANIFEST.as_posix()}\n").encode("ascii")
+
+def candidate(source_commit: str) -> dict[str, object]:
+    source = require_source_evidence(source_commit)
+    files = scan_dist()
+    require_package_ignore_policy(source_commit, [name for name, _ in files])
+    parent = require_parent_ledger()
+    manifest = build_release_manifest(source_commit, files)
+    if len(manifest) > MAX_RELEASE_MANIFEST_BYTES:
+        fail("E-PACKAGE-MANIFEST-LIMIT", "release manifest byte budget exceeded")
+    archive = build_archive(files)
+    ledger = parent + ledger_tail(archive, manifest)
+    if len(ledger) > MAX_LEDGER_BYTES:
+        fail("E-PACKAGE-LEDGER", "staged ledger byte budget exceeded")
+    if (require_source_evidence(source_commit) != source or scan_dist() != files
+            or require_parent_ledger() != parent):
+        fail("E-PACKAGE-DRIFT", "package inputs changed during construction")
+    return {"source": source, "files": files, "parent": parent,
+            "manifest": manifest, "archive": archive, "ledger": ledger}
+
+def exact_directory(path: Path, expected: list[str], code: str) -> None:
+    if directory_names(path, code) != sorted(expected):
+        fail(code, "directory has an unexpected entry")
+
+def stage_snapshot() -> dict[str, bytes]:
+    root = Path.cwd()
+    require_directories(root, STAGE_ROOT.parts, create=False)
+    exact_directory(root / STAGE_ROOT, ["SHA256SUMS", "release"],
+                    "E-PACKAGE-STAGE-SHAPE")
+    exact_directory(root / STAGE_ROOT / "release", [ARCHIVE_NAME, MANIFEST_NAME],
+                    "E-PACKAGE-STAGE-SHAPE")
+    return {"archive": read_regular(root / STAGE_ARCHIVE, MAX_ARCHIVE_BYTES,
+                                    "E-PACKAGE-STAGE-FILE"),
+            "manifest": read_regular(root / STAGE_MANIFEST, MAX_RELEASE_MANIFEST_BYTES,
+                                     "E-PACKAGE-STAGE-FILE"),
+            "ledger": read_regular(root / STAGE_LEDGER, MAX_LEDGER_BYTES,
+                                   "E-PACKAGE-STAGE-FILE")}
+
+def write_exclusive(path: Path, value: bytes, code: str) -> None:
+    root = Path.cwd()
+    require_directories(root, path.parent.parts, create=False)
+    try:
+        with (root / path).open("xb") as stream:
+            if stream.write(value) != len(value):
+                raise OSError("short write")
+            stream.flush()
+            os.fsync(stream.fileno())
+    except (FileExistsError, OSError):
+        fail(code, "exclusive write failed; partial output was retained")
+    require_directories(root, path.parent.parts, create=False)
+    if read_regular(root / path, len(value), code) != value:
+        fail(code, "written bytes changed; partial output was retained")
+
+def require_fresh_final() -> None:
+    root = Path.cwd()
+    require_directories(root, FINAL_ARCHIVE.parent.parts, create=False)
+    if path_entry_exists(root / FINAL_ARCHIVE) or path_entry_exists(root / FINAL_MANIFEST):
+        fail("E-PACKAGE-FINAL-EXISTS", "Preview 3 final output already exists")
+
+def verify_package_stage(source_commit: str) -> dict[str, object]:
+    require_fresh_final()
+    expected = candidate(source_commit)
+    staged = stage_snapshot()
+    archive, manifest, ledger = (staged[key] for key in ("archive", "manifest", "ledger"))
+    files = read_archive(archive)
+    if (files != expected["files"] or archive != expected["archive"]
+            or manifest != build_release_manifest(source_commit, files)
+            or manifest != expected["manifest"] or ledger != expected["ledger"]):
+        fail("E-PACKAGE-STAGE-MISMATCH", "staged bytes do not match package inputs")
+    if (stage_snapshot() != staged
+            or require_source_evidence(source_commit) != expected["source"]
+            or scan_dist() != files or require_parent_ledger() != expected["parent"]):
+        fail("E-PACKAGE-DRIFT", "package inputs changed during verification")
+    expected.update({"archive": archive, "manifest": manifest, "ledger": ledger})
+    return expected
+
+def package_report(status_text: str, source_commit: str,
+                   values: dict[str, object]) -> None:
+    def record(path: Path, key: str) -> dict[str, object]:
+        value = values[key]
+        assert isinstance(value, bytes)
+        return {"path": path.as_posix(), "bytes": len(value), "sha256": sha256(value)}
+    result = {"status": status_text, "sourceCommit": source_commit,
+              "sourceManifest": record(SOURCE_MANIFEST, "source"),
+              "archive": record(STAGE_ARCHIVE, "archive"),
+              "releaseManifest": record(STAGE_MANIFEST, "manifest"),
+              "checksums": record(STAGE_LEDGER, "ledger")}
+    sys.stdout.write(json.dumps(result, separators=(",", ":"), sort_keys=True) + "\n")
+
+def stage_package(source_commit: str) -> None:
+    require_fresh_final()
+    values = candidate(source_commit)
+    root = Path.cwd()
+    require_directories(root, STAGE_ROOT.parent.parts, create=False)
+    if path_entry_exists(root / STAGE_ROOT):
+        fail("E-PACKAGE-STAGE-EXISTS", "package stage already exists")
+    try:
+        (root / STAGE_ROOT).mkdir()
+        (root / STAGE_ROOT / "release").mkdir()
+    except OSError:
+        fail("E-PACKAGE-STAGE-WRITE", "stage creation failed; partial output was retained")
+    for path, key in ((STAGE_ARCHIVE, "archive"), (STAGE_MANIFEST, "manifest"),
+                      (STAGE_LEDGER, "ledger")):
+        value = values[key]
+        assert isinstance(value, bytes)
+        write_exclusive(path, value, "E-PACKAGE-STAGE-WRITE")
+    verified = verify_package_stage(source_commit)
+    package_report("staged", source_commit, verified)
+
+def verify_package(source_commit: str) -> None:
+    package_report("verified", source_commit, verify_package_stage(source_commit))
+
+def ledger_metadata(parent: bytes) -> os.stat_result:
+    path = Path.cwd() / CHECKSUM_LEDGER
+    metadata = path.lstat()
+    if (not stat.S_ISREG(metadata.st_mode) or is_reparse(metadata)
+            or metadata.st_nlink != 1
+            or read_regular(path, MAX_LEDGER_BYTES, "E-PACKAGE-LEDGER") != parent):
+        fail("E-PACKAGE-PROMOTION-WRITE", "source ledger changed before promotion")
+    return metadata
+
+def append_ledger(parent: bytes, tail: bytes) -> None:
+    path = Path.cwd() / CHECKSUM_LEDGER
+    metadata = ledger_metadata(parent)
+    descriptor = -1
+    try:
+        descriptor = os.open(path, os.O_WRONLY | os.O_APPEND | getattr(os, "O_BINARY", 0))
+        opened = os.fstat(descriptor)
+        if (not stat.S_ISREG(opened.st_mode) or opened.st_nlink != 1
+                or (opened.st_dev, opened.st_ino) != (metadata.st_dev, metadata.st_ino)
+                or opened.st_size != len(parent) or os.write(descriptor, tail) != len(tail)):
+            raise OSError("ledger identity or write length changed")
+        os.fsync(descriptor)
+    except OSError:
+        fail("E-PACKAGE-PROMOTION-WRITE", "ledger append failed; partial output was retained")
+    finally:
+        if descriptor >= 0:
+            os.close(descriptor)
+
+def promote_package(source_commit: str) -> None:
+    values = verify_package_stage(source_commit)
+    archive = values["archive"]
+    manifest = values["manifest"]
+    ledger = values["ledger"]
+    parent = values["parent"]
+    assert all(isinstance(value, bytes) for value in (archive, manifest, ledger, parent))
+    staged = {key: values[key] for key in ("archive", "manifest", "ledger")}
+    if stage_snapshot() != staged:
+        fail("E-PACKAGE-STAGE-DRIFT", "stage changed before promotion")
+    ledger_metadata(parent)
+    write_exclusive(FINAL_ARCHIVE, archive, "E-PACKAGE-PROMOTION-WRITE")
+    write_exclusive(FINAL_MANIFEST, manifest, "E-PACKAGE-PROMOTION-WRITE")
+    append_ledger(parent, ledger[len(parent):])
+    root = Path.cwd()
+    head, _ = git(["rev-parse", "--verify", "HEAD"], 64)
+    if (stage_snapshot() != staged or source_evidence_file() != values["source"]
+            or scan_dist() != values["files"] or head != f"{source_commit}\n".encode("ascii")
+            or read_regular(root / FINAL_ARCHIVE, MAX_ARCHIVE_BYTES,
+                     "E-PACKAGE-PROMOTION-WRITE") != archive
+            or read_regular(root / FINAL_MANIFEST, MAX_RELEASE_MANIFEST_BYTES,
+                            "E-PACKAGE-PROMOTION-WRITE") != manifest
+            or read_regular(root / CHECKSUM_LEDGER, MAX_LEDGER_BYTES,
+                            "E-PACKAGE-PROMOTION-WRITE") != ledger):
+        fail("E-PACKAGE-PROMOTION-WRITE", "promoted bytes changed; partial output retained")
+    package_report("promoted", source_commit, values)
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("freeze-source", "verify-source"):
+    for name in ("freeze-source", "verify-source", "stage-package",
+                 "verify-package", "promote-package"):
         command = commands.add_parser(name, allow_abbrev=False)
         command.add_argument("--source-commit", required=True)
     arguments = parser.parse_args()
     try:
         if arguments.command == "freeze-source":
             freeze_source(arguments.source_commit)
-        else:
+        elif arguments.command == "verify-source":
             verify_source(arguments.source_commit)
+        elif arguments.command == "stage-package":
+            stage_package(arguments.source_commit)
+        elif arguments.command == "verify-package":
+            verify_package(arguments.source_commit)
+        else:
+            promote_package(arguments.source_commit)
     except ToolError as error:
         sys.stderr.write(f"{error.code}: {error}\n")
         return 1
