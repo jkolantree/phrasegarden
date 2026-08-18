@@ -1,20 +1,20 @@
 # PhraseGarden project state
 
-Updated: 2026-08-17
+Updated: 2026-08-18
 
 ## Resume cursor
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-PAGES-POLICY` |
+| `activePackage` | `PREVIEW-3-CLAIMS-ACCESSIBILITY` |
 | `state` | `COMPLETED_LOCAL_CHECKPOINT` |
-| `candidateFingerprint` | this nine-path Pages-policy checkpoint; exact bytes received an independent PASS with zero open P1/P2/P3 |
-| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, `GLC-01`–`GLC-10`, `BJ-01`–`BJ-12`, and `PP-01`–`PP-10` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
-| `nextKnownBlocker` | public-claim and accessibility-evidence drift, then deterministic source-manifest and package-generation tooling before one clean combined source qualification |
-| `lastCompletedCheck` | exact nine-path Pages policy: independent PASS after 22/22 focused, 20/20 archive, 309/309 full Vitest, dual typechecks, Vite build, current-dist audit, workflow/boundary scans, nine historical checksums, and an adversarial canonical-document mutation matrix |
-| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2 |
+| `candidateFingerprint` | this seven-path claims/accessibility checkpoint; unchanged substantive documents retain bound semantic and UX/accessibility PASS verdicts, and the final status-only closure received a separate administrative rebind |
+| `closedAcceptanceIds` | `PC-01`–`PC-10`, Interpreter, `G3-ADV-01`–`G3-ADV-09`, `P3-02`, `P3-AR-01`–`P3-AR-08`, `GLC-01`–`GLC-10`, `BJ-01`–`BJ-12`, `PP-01`–`PP-10`, `AO-01`–`AO-05`, `MSC-01`–`MSC-05`, and `CA-01`–`CA-08` verified; `P3-01` and `P3-03`–`P3-12` require combined qualification |
+| `nextKnownBlocker` | deterministic source-manifest and package-generation tooling before one clean source qualification |
+| `lastCompletedCheck` | mobile/claims source: 4/4 focused, 311/311 full Vitest, dual typechecks, 23/23 release audit, 20/20 archive tests, one development build, pre/post audit equality, zero domain matches, 12/12 Edge/axe, and direct inspection of the fresh 320 px closed-Advanced capture passed |
+| `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2; mobile select: two fixture-driven repairs, now development-only |
 | `frozenManifestHash` | not frozen; Preview 3 source and distributable manifests do not yet exist |
-| `exactNextAction` | correct bounded public claims and accessibility evidence, then define deterministic source-manifest and package generation; do not freeze or build the release candidate yet |
+| `exactNextAction` | implement separately reviewed deterministic source-manifest construction, then package staging/promotion; do not freeze the release candidate yet |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -30,11 +30,13 @@ Advanced settings at `e96f4b5`, and the independently reviewed Preview 3
 source claims at `aa75e60`, returned archive checkpoint `83558bd`, and archive
 repair at `70858f1`. Generic catalog checkpoint `db85ed4` adds five
 identity-only profiles; beginner-journey checkpoint `3c2a606` clarifies their
-presentation. This checkpoint hardens the exact Pages deployment policy and
-receives an independent PASS. The proposed identity remains
-`0.1.0-preview.3`; its source is not frozen,
-packaged, published, or deployed. PhraseGarden remote/public state has not been
-freshly read.
+presentation. Pages checkpoint `4d9002f` hardens deployment policy; validator
+checkpoint `d6cb448` removes an asset-order assumption; mobile checkpoint
+`7fb32c7` makes complete default choices visible at 320 px. The proposed
+identity remains `0.1.0-preview.3`. This checkpoint aligns its bounded public
+claims and accessibility evidence. The source is not frozen, packaged,
+published, or deployed. PhraseGarden remote/public state has not been freshly
+read.
 
 Detailed proof is preserved outside this cursor:
 
@@ -94,7 +96,10 @@ Detailed proof is preserved outside this cursor:
 | Preview 3 archive repair | completed locally | checkpoint `70858f1`; 20/20 focused plus full checks and independent PASS |
 | Five-language Generic catalog | completed locally | checkpoint `db85ed4`; `de`, `es`, `fr`, `it`, region-unspecified `pt`; 396 matrix and independent PASS |
 | Beginner-facing language journey | completed locally | checkpoint `3c2a606`; 3/3 focused UI, 287/287 Vitest, 12/12 Edge/axe, screenshots, independent PASS |
-| Preview 3 Pages policy | completed locally | this checkpoint; five immutable pins, main-only least privilege, strict bounded audit, full local gates, adversarial mutation matrix, independent PASS |
+| Preview 3 Pages policy | completed locally | checkpoint `4d9002f`; five immutable pins, main-only least privilege, strict bounded audit, full local gates, adversarial mutation matrix, independent PASS |
+| Release-audit asset order | completed locally | checkpoint `d6cb448`; exact CSS/JavaScript path-shape binding, JS-first regression, 23/23 focused, independent PASS |
+| Mobile select clarity | completed locally | checkpoint `7fb32c7`; two complete default labels at 320 px, 4/4 focused, 311/311 full, 12/12 Edge/axe, independent visual PASS |
+| Preview 3 claims and accessibility | completed locally | this seven-path checkpoint; four substantive documents retain semantic/UX PASSes; final PROJECT/TRACE/contract status closure separately rebound |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -130,8 +135,7 @@ evidence is reused only where its exact bytes remain bound.
 
 ## Exact next eligible action
 
-Correct the bounded Preview 3 public claims and accessibility evidence, including
-a current 320 px closed-Advanced screenshot. Then define deterministic source-
-manifest and package generation before one clean combined source qualification.
-Do not build or freeze that candidate yet, begin Gate 4, or claim stable release
-readiness.
+Implement and independently review deterministic source-manifest construction,
+then deterministic package staging/promotion, before one clean combined source
+qualification. Do not freeze that candidate yet, begin Gate 4, or claim stable
+release readiness.

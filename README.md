@@ -18,10 +18,11 @@ Open the public Prompt Studio at
 The versioned source and release evidence are available in the
 [`0.1.0-preview.2` release](https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2).
 That deployed release contains Written Translator and Live Voice Coach. The
-current `0.1.0-preview.3` source candidate adds the reviewed one-way
-Interpreter and puts uncommon controls behind one Advanced settings
-disclosure; it is not published until its exact package and public bytes pass
-the release protocol.
+current `0.1.0-preview.3` source candidate adds the independently code-reviewed
+one-way Interpreter; identity-only Generic profiles for French, German,
+Italian, Spanish, and region-unspecified Portuguese; clearer language choices;
+and one Advanced settings disclosure for uncommon controls. It is not
+published until its exact package and public bytes pass the release protocol.
 
 ## Run locally
 
@@ -48,8 +49,11 @@ there.
 
 - English→Japanese and Japanese→English Preview guidance
 - Conservative Generic generation for all other bundled directions
+- Identity-only profiles for French, German, Italian, Spanish, and
+  region-unspecified Portuguese; these add no language-specific guidance
 - Written Translator, Live Voice Coach, and one-way Interpreter recipes
-- Direct creation with safe defaults and an optional settings path
+- Plain-language direct creation with safe defaults, autonyms, and an optional
+  settings path
 - One progressive Advanced settings disclosure for uncommon controls
 - Relationship, hierarchy, register, ambiguity, name, teaching, correction,
   pronunciation, pace, Interpreter turn, and clarification controls

@@ -1,8 +1,9 @@
 # Product limitations
 
 The deployed public release is PhraseGarden `0.1.0-preview.2`. The current
-workspace contains the committed Interpreter and Advanced-settings source for
-the proposed `0.1.0-preview.3` prerelease; it is not yet packaged or published.
+workspace contains the committed Interpreter, Advanced-settings, five-language
+Generic catalog, and beginner-facing presentation for the proposed
+`0.1.0-preview.3` prerelease; it is not yet packaged or published.
 
 ## Language and support
 
@@ -11,6 +12,10 @@ the proposed `0.1.0-preview.3` prerelease; it is not yet packaged or published.
   linguistic review has not been completed.
 - All other bundled directions are **Generic**. They intentionally omit every
   endpoint- and pair-specific linguistic clause.
+- French, German, Italian, Spanish, and region-unspecified Portuguese are
+  bundled as identity-only Generic profiles. `pt` does not mean Brazilian,
+  European, neutral, or dialect-reviewed Portuguese; `pt-BR` and `pt-PT` are
+  not supported identities in this candidate.
 - The bundled canonical registry is a small supported set, not a claim of
   universal language coverage. A valid BCP 47 tag that is not in the exact
   registry is unsupported.

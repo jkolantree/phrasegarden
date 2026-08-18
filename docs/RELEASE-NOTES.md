@@ -1,6 +1,6 @@
 # Release notes
 
-## 0.1.0-preview.3 — Interpreter and simpler settings
+## 0.1.0-preview.3 — Interpreter, more language choices, and simpler setup
 
 Status: proposed public prerelease
 
@@ -18,13 +18,25 @@ Status: proposed public prerelease
 - Reorganizes existing uncommon relationship, ambiguity, name/title, and
   destination-capability controls behind one native **Advanced settings**
   disclosure. Defaults and effective prompt behavior are unchanged.
+- Adds identity-only profiles for French, German, Italian, Spanish, and
+  region-unspecified Portuguese. Every direction using them remains Generic;
+  they add no endpoint-specific guidance, regional variety, or review claim.
+- Explains up front that PhraseGarden makes reusable instructions rather than
+  translating text itself, keeps direct creation prominent, and presents
+  language names with autonyms instead of visible codes or flags.
 
 ### Deterministic compiler
 
 - Adds Interpreter recipe `1.0.0`.
 - Advances compiler policy to `1.1.0`, English prompt surface to `1.1.0`, and
   English summary catalog to `1.2.0`; the compiler implementation/version,
-  profiles, pair pack, support resolution, and provenance shape are unchanged.
+  English↔Japanese pair-pack authored clauses and version, and provenance
+  schema are unchanged.
+- Adds five identity-only language profiles at profile version `1.0.0` and
+  advances the canonical registry to `2026-08-17.1`, SHA-256
+  `498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5`.
+  Provenance records that exact registry identity, and all new directions
+  deterministically resolve to Generic.
 - Preserves the published sample files and locks exact current Interpreter
   prompt hashes for both Preview directions and a Generic direction.
 - Makes pair-specific name and honorific guidance defer to the active name and
@@ -32,14 +44,17 @@ Status: proposed public prerelease
 
 ### Publication state
 
-- Interpreter and Advanced settings are committed and independently reviewed.
-  Exact package, remote, release, deployment, and production claims remain
-  pending until their named qualification stages pass.
+- Interpreter and Advanced settings are committed and independently reviewed as
+  product code. Exact package, remote, release, deployment, and production
+  claims remain pending until their named qualification stages pass.
 
 ### Tests and QA
 
 - Adds axe checks for Advanced-open Written and Voice Builder states and Voice
   Review, plus a 320 px Voice-open overflow regression.
+- Runs twelve sequential Microsoft Edge journeys and captures a current 320 px
+  Written Builder with Advanced settings closed alongside the open-state
+  coverage.
 - Pages extracts, verifies, tests, and deploys the exact checked-in qualified
   archive instead of rebuilding a second deployment artifact.
 
