@@ -151,6 +151,18 @@ Detected mutation fails closed; hostile concurrent filesystem mutation outside t
 | `PB-06` | A synthetic stage-to-promotion seven-path commit passes the existing archive/package verifier; all fixtures remain development/regression evidence. |
 | `PB-07` | Focused tests, all Python release tests, full Vitest, both typechecks, build/audit, historical checksums, domain scan, diff/cache hygiene, budget, and independent review pass. |
 
+### B2 returned-failure regressions
+
+B2 starts at `cc61a60205c04bd34709acb0fa6b071802de0526` and may change only this
+contract and `tests/release/test_preview3_package.py`; production bytes stay
+unchanged. Permanent development/regression cases cover the exact structural
+statement, archive/manifest path case variants, a hardlinked root ledger,
+prewrite stage drift, and postwrite stage/source-input drift. They must prove
+fail-closed timing and retained blocking evidence, not claim hostile-filesystem
+security beyond the declared barriers. Focused/full deterministic checks,
+diff/cache hygiene, exact path/line accounting, and independent review must
+pass before its local checkpoint.
+
 Run no real stage/promotion during development. Stop on identity ambiguity, schema 2/eighth-path need, ledger
 preservation failure, unsupported `dist`, drift, baseline failure, or net change at/above 650. Closure is separate.
 

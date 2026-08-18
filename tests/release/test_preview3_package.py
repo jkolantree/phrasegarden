@@ -572,6 +572,8 @@ class SameBytePackageTest(unittest.TestCase):
             self.assertEqual(json.loads(verified.stdout)["status"], "verified")
             raw_manifest = initial[STAGE_MANIFEST]
             parsed = json.loads(raw_manifest)
+            self.assertEqual(parsed["sourceProvenance"]["statement"],
+                "Records the declared source commit and distributable byte inventory; this manifest does not establish build qualification or a packaging commit.")
             self.assertEqual(
                 raw_manifest,
                 (json.dumps(parsed, ensure_ascii=True, indent=2,
@@ -674,6 +676,77 @@ class SameBytePackageTest(unittest.TestCase):
             self.assertEqual(tool(root, "freeze-source", head).returncode, 0)
             self.assert_package_failure(root, head, "stage-package",
                                         "E-PACKAGE-OUTPUT-IGNORE")
+
+    def test_future_path_case_variants_fail_before_staging(self) -> None:
+        for future in (FINAL_ARCHIVE, FINAL_MANIFEST):
+            with self.subTest(future=future), package_repository() as (root, _):
+                (root / SOURCE_MANIFEST).unlink()
+                with (root / "SHA256SUMS").open("ab") as ledger:
+                    ledger.write(f"{'A' * 64}  {future.as_posix().upper()}\n".encode())
+                git(root, "add", "SHA256SUMS")
+                head = commit(root, "case-variant future path")
+                self.assertEqual(tool(root, "freeze-source", head).returncode, 0)
+                self.assert_package_failure(root, head, "stage-package",
+                                            "E-PACKAGE-LEDGER")
+                self.assertFalse((root / STAGE_ROOT).exists())
+
+    def test_hardlinked_ledger_fails_before_final_writes(self) -> None:
+        with package_repository() as (root, head), tempfile.TemporaryDirectory() as outside:
+            self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+            linked = Path(outside) / "linked-ledger"
+            os.link(root / "SHA256SUMS", linked)
+            original = linked.read_bytes()
+            self.assert_package_failure(root, head, "promote-package",
+                                        "E-PACKAGE-PROMOTION-WRITE")
+            self.assertEqual(linked.read_bytes(), original)
+            self.assertFalse((root / FINAL_ARCHIVE).exists())
+            self.assertFalse((root / FINAL_MANIFEST).exists())
+
+    def test_prewrite_and_postwrite_drift_fail_closed(self) -> None:
+        with package_repository() as (root, head):
+            self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+            parent = (root / "SHA256SUMS").read_bytes()
+            original_verify = promote_package.__globals__["verify_package_stage"]
+            def drift_after_verify(source: str):
+                values = original_verify(source)
+                (root / STAGE_ARCHIVE).write_bytes(values["archive"] + b"x")
+                return values
+            cwd = Path.cwd()
+            os.chdir(root)
+            try:
+                with mock.patch.dict(promote_package.__globals__,
+                                     {"verify_package_stage": drift_after_verify}), \
+                        self.assertRaises(ToolError) as raised:
+                    promote_package(head)
+                self.assertEqual(raised.exception.code, "E-PACKAGE-STAGE-DRIFT")
+                self.assertFalse((root / FINAL_ARCHIVE).exists())
+                self.assertFalse((root / FINAL_MANIFEST).exists())
+                self.assertEqual((root / "SHA256SUMS").read_bytes(), parent)
+            finally:
+                os.chdir(cwd)
+        for target in (STAGE_ARCHIVE, Path("dist/index.html")):
+            with self.subTest(target=target), package_repository() as (root, head):
+                self.assertEqual(tool(root, "stage-package", head).returncode, 0)
+                append = promote_package.__globals__["append_ledger"]
+                def append_then_drift(parent: bytes, tail: bytes) -> None:
+                    append(parent, tail)
+                    path = root / target
+                    path.write_bytes(path.read_bytes() + b"x")
+                cwd = Path.cwd()
+                os.chdir(root)
+                try:
+                    with mock.patch.dict(promote_package.__globals__,
+                                         {"append_ledger": append_then_drift}), \
+                            self.assertRaises(ToolError) as raised:
+                        promote_package(head)
+                    self.assertEqual(raised.exception.code,
+                                     "E-PACKAGE-PROMOTION-WRITE")
+                    self.assertTrue((root / FINAL_ARCHIVE).is_file())
+                    self.assertTrue((root / FINAL_MANIFEST).is_file())
+                    self.assertEqual((root / "SHA256SUMS").read_bytes(),
+                                     (root / STAGE_LEDGER).read_bytes())
+                finally:
+                    os.chdir(cwd)
 
     def test_promotion_copies_stage_and_appends_ledger_once(self) -> None:
         with package_repository() as (root, head):
