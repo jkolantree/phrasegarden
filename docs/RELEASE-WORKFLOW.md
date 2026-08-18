@@ -142,8 +142,12 @@ profiles, packs, recipes, authored surfaces, catalogs, builder, validators,
 tests, fixtures and ledger snapshot, rubric/configuration, and model settings
 if any. The complete-tree source manifest is that source inventory;
 hand-maintained path lists are not. Qualification records reference its hash. A
-release manifest then hashes distributable bytes and qualification records
-while explicitly excluding itself.
+schema-1 release manifest records declared source `S` and hashes distributable
+bytes only. The exact seven-path packaging commit has sole parent `S`; its
+release-evidence record binds the source-manifest hash and qualification
+results alongside that manifest, archive, and checksum append. Tool stdout is
+diagnostic, not qualification evidence. No deterministic layer thereby proves
+that a human review occurred or that a linguistic conclusion is true.
 
 The release build happens once. Tests, archive creation, checksum generation,
 independent review, draft-asset capture, and promotion all consume those exact

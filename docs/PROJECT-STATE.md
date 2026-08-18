@@ -6,15 +6,15 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER` Child A |
+| `activePackage` | `PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER` |
 | `state` | `COMPLETED_LOCAL_CHECKPOINT` |
-| `candidateFingerprint` | source-manifest core `e421e0a3248d9d7c1730929697920f8b757b8792` plus regressions `06cc7cb032ec7798accb8757d10a21df75fcefdb`; exact implementation and test bytes received separate independent PASS verdicts |
-| `closedAcceptanceIds` | prior IDs plus `SM-01`–`SM-05` verified for deterministic construction tooling; `P3-01` and `P3-03`–`P3-12` still require combined qualification, packaging, or publication as named |
-| `nextKnownBlocker` | separately reviewed same-byte package staging and promotion tooling before one clean source qualification |
-| `lastCompletedCheck` | source tooling: 16/16 focused within 36/36 Python release tests, 311/311 Vitest, dual typechecks, Vite build, 23/23 release audit, current-dist audit, 9/9 historical checksums, zero domain matches, diff/cache hygiene, and independent semantic/security PASSes for both A1a and A1b |
+| `candidateFingerprint` | package core `cc61a60205c04bd34709acb0fa6b071802de0526` plus regressions `7a58f7cff087e49bce73ce827bff7ce8cbbbb11c`; the prior six-document B3 content freeze received exact-byte semantic/security PASSes, and this completion delta changes administrative text only |
+| `closedAcceptanceIds` | prior IDs plus `SM-01`–`SM-05`, implementation/test evidence for `PB-01`–`PB-07`, and B3 administrative alignment |
+| `nextKnownBlocker` | exclusive source-manifest creation from the resulting clean checkpoint and one exact source qualification |
+| `lastCompletedCheck` | package tooling: 25/25 focused within 45/45 Python release tests; 311/311 Vitest, dual typechecks, Vite build/current-dist audit, 23/23 release audit, 9/9 historical checksums, zero domain matches, diff/cache hygiene, independent B1/B2 PASSes, and two B3 content PASSes |
 | `retryCounters` | Preview 3: archive returns 2 and consolidated redesign 1; Generic cohort: snapshot transition repair 1; beginner journey: viewport repair 1 and semantic-language repair 1; Pages policy: scanner repair 1, review returns 6, assertion repair 1, line-counter repair 1, CSP redesign 2; mobile select: two fixture-driven repairs, now development-only |
 | `frozenManifestHash` | not frozen; tooling exists, but no Preview 3 source or distributable manifest has been generated |
-| `exactNextAction` | implement Child B same-byte package staging and exact promotion; then exclusively create one manifest from the clean source commit and qualify that exact commit/manifest once |
+| `exactNextAction` | exclusively create one source manifest from the clean checkpoint, qualify that exact source once, build once, and stage those exact distributable bytes |
 | `forbiddenUntil` | no Gate 4+ work; publication must use the exact qualified Preview 3 source, tag, assets, Pages target, and rollback artifact |
 
 ## Current product state
@@ -37,8 +37,12 @@ identity remains `0.1.0-preview.3`. This checkpoint aligns its bounded public
 claims and accessibility evidence. Source-manifest core checkpoint
 `e421e0a3248d9d7c1730929697920f8b757b8792` and regression checkpoint
 `06cc7cb032ec7798accb8757d10a21df75fcefdb` add complete-tree identity tooling
-without creating evidence bytes. The source is not frozen, packaged,
-published, or deployed. PhraseGarden remote/public state has not been freshly
+without creating evidence bytes. Package core
+`cc61a60205c04bd34709acb0fa6b071802de0526` and regression checkpoint
+`7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` add deterministic same-byte staging/promotion with the
+returned failures preserved. The source is not frozen, packaged,
+published, or deployed. B3 claim alignment received independent exact-byte
+semantic and security PASSes. PhraseGarden remote/public state has not been freshly
 read.
 
 Detailed proof is preserved outside this cursor:
@@ -104,6 +108,7 @@ Detailed proof is preserved outside this cursor:
 | Mobile select clarity | completed locally | checkpoint `7fb32c7`; two complete default labels at 320 px, 4/4 focused, 311/311 full, 12/12 Edge/axe, independent visual PASS |
 | Preview 3 claims and accessibility | completed locally | checkpoint `fde72854c7c0d0439f0ac71e1c69a6b23a2052b9`; four substantive documents retain semantic/UX PASSes; final PROJECT/TRACE/contract status closure separately rebound |
 | Preview 3 source-manifest tooling | completed locally | `e421e0a3248d9d7c1730929697920f8b757b8792` core plus `06cc7cb032ec7798accb8757d10a21df75fcefdb` regressions; 16/16 focused, full local gates, and independent A1a/A1b PASSes; no manifest generated |
+| Preview 3 same-byte packager | completed locally | `cc61a60205c04bd34709acb0fa6b071802de0526` core plus `7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` regressions; 25/25 focused within 45/45 Python release tests, independent B1/B2 PASSes, and two B3 content PASSes |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -140,7 +145,6 @@ manifest or release package was generated during tooling development.
 
 ## Exact next eligible action
 
-Implement and independently review Child B same-byte package staging and exact
-promotion. Then exclusively create one manifest from the clean source commit
-and qualify that exact commit/manifest once. Do not begin Gate 4 or claim stable
-release readiness.
+Exclusively create one source manifest from the clean checkpoint, qualify that
+exact source once, build once, and stage those exact distributable bytes. Do
+not begin Gate 4 or claim stable release readiness.

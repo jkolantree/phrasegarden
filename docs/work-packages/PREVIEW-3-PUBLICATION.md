@@ -22,7 +22,7 @@ Gate 3 exit, stable readiness, linguistic review, or accessibility conformance.
   `docs/PUBLICATION-MANIFEST.md`
 - `.github/workflows/pages.yml`, `scripts/release-audit.mjs`, and
   `tests/e2e/preview.spec.ts`
-- ADR-028 through ADR-033
+- ADR-028 through ADR-034
 
 ## In scope
 
@@ -37,7 +37,8 @@ The source work is intentionally split at the accepted 700-net-line boundary:
 5. `PREVIEW-3-BEGINNER-JOURNEY` owns plain-language presentation only.
 6. `PREVIEW-3-PAGES-POLICY` owns main-only, immutable same-byte deployment.
 7. `PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER` Child A owns complete-tree source
-   identity; Child B later owns same-byte staging and promotion.
+   identity; Child B owns same-byte staging, promotion, regressions, and claim
+   alignment.
 
 Each package has exact owned paths, acceptance, checks, independent review, and
 a local checkpoint. Only their clean combined descendant after Pages policy
@@ -54,9 +55,12 @@ Beginner-journey checkpoint
 None is a freeze after the authorized expansion. Source-manifest core
 checkpoint `e421e0a3248d9d7c1730929697920f8b757b8792` and regression checkpoint
 `06cc7cb032ec7798accb8757d10a21df75fcefdb` add reviewed construction tooling
-without generating evidence bytes.
-Same-byte package staging/promotion is the next separate package. The combined
-source is not frozen.
+without generating evidence bytes. Same-byte package core checkpoint
+`cc61a60205c04bd34709acb0fa6b071802de0526` and regression checkpoint
+`7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` add reviewed staging/promotion
+tooling and permanent returned-failure coverage. Child B3 governing-claim
+alignment received independent exact-byte administrative PASSes. No real source manifest,
+release package, source freeze, or publication exists for Preview 3.
 
 Source-freeze phase:
 

@@ -1,7 +1,7 @@
 # PhraseGarden release traceability
 
 Status: active matrix
-Updated: 2026-08-17
+Updated: 2026-08-18
 
 No acceptance requirement may exist only in narrative prose. Each active
 package gives every observable requirement one stable ID and one responsible
@@ -411,11 +411,40 @@ manifest, release package, remote write, or public evidence was created.
 
 | ID | Outcome and owner | Maximum claim | State / next blocker |
 |---|---|---|---|
-| `SM-01` | Exact HEAD/tree and every regular source blob bind one closed canonical manifest. | deterministic local source construction | verified / package staging |
-| `SM-02` | Rehashed Git objects are authority; index/raw checkout are repeated equality gates under closed ambient inputs. | source-identity procedure | verified / package staging |
-| `SM-03` | Dirty state, unsupported modes/paths, indirection, and every fixed budget fail closed. | bounded validator behavior | verified / package staging |
-| `SM-04` | Freeze creates exclusively; verify never rewrites; physical-prefix and file-identity drift checks preserve blocking evidence. | quiescent local file boundary | verified / package staging |
-| `SM-05` | Focused/full/type/build/release/domain/hygiene checks and exact-byte independent reviews pass. | reviewed local tooling | verified / package staging |
+| `SM-01` | Exact HEAD/tree and every regular source blob bind one closed canonical manifest. | deterministic local source construction | verified / source qualification |
+| `SM-02` | Rehashed Git objects are authority; index/raw checkout are repeated equality gates under closed ambient inputs. | source-identity procedure | verified / source qualification |
+| `SM-03` | Dirty state, unsupported modes/paths, indirection, and every fixed budget fail closed. | bounded validator behavior | verified / source qualification |
+| `SM-04` | Freeze creates exclusively; verify never rewrites; physical-prefix and file-identity drift checks preserve blocking evidence. | quiescent local file boundary | verified / source qualification |
+| `SM-05` | Focused/full/type/build/release/domain/hygiene checks and exact-byte independent reviews pass. | reviewed local tooling | verified / source qualification |
+
+### Preview 3 same-byte package tooling
+
+Source: `PREVIEW-3-SOURCE-MANIFEST-AND-PACKAGER.md`. Core checkpoint
+`cc61a60205c04bd34709acb0fa6b071802de0526` deterministically constructs,
+stages, verifies, and promotes one schema-1 manifest, canonical stored ZIP, and
+exact ledger append. Independent adversarial review returned an external
+hardlink mutation, future-path case variants, stage drift, and overclaiming
+manifest prose; the repaired exact core received semantic and security PASSes.
+
+Regression checkpoint `7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` permanently preserves those failures as
+development-only cases. Its final bytes passed 25/25 focused within 45/45
+Python release tests and independent semantic/security review. The unchanged
+product baseline passed 311/311 Vitest, both typechecks, Vite build, 23/23
+release-audit tests, current-dist audit, nine historical checksums, zero domain
+matches, and diff/cache hygiene during this package. Neither checkpoint created
+a real source manifest, package, qualification record, or public byte.
+
+The six-document B3 claim-alignment content freeze received independent
+semantic and security PASSes on its exact bytes. This completion-only state
+update creates no source manifest, package, qualification record, or public
+evidence.
+
+| ID | Outcome and owner | Maximum claim | State / next blocker |
+|---|---|---|---|
+| `PB-01`–`PB-03` | Exact source evidence, committed ignores, three-file dist, canonical manifest/ZIP, and fixed budgets bind one candidate. | deterministic package construction | verified / source qualification |
+| `PB-04`–`PB-05` | Exclusive stage/finals, single-link one-write ledger append, and pre/post drift barriers retain partial failure evidence. | bounded same-byte promotion | verified / source qualification |
+| `PB-06` | Synthetic seven-path commit passes the existing archive/package verifier; returned attacks remain regression fixtures. | development compatibility evidence | verified / source qualification |
+| `PB-07` | Focused/full/release/product/hygiene checks and independent B1/B2 reviews pass. | reviewed local tooling | verified / source qualification |
 
 ### Preview 3 acceptance
 

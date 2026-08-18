@@ -1,7 +1,7 @@
 # PhraseGarden decision records
 
 Status: Gate 0 source of durable decisions  
-Updated: 2026-07-24
+Updated: 2026-08-18
 
 Changes supersede an ADR by adding a new record and linking both records. Existing rationale is not rewritten.
 
@@ -711,3 +711,28 @@ trees stop this Preview 3 procedure. Checkpoints
 No real source manifest, package, freeze,
 linguistic claim, or publication is created by those checkpoints; same-byte
 staging and promotion remain a separately reviewed package.
+
+## ADR-034 — Release bytes and qualification evidence have separate bindings
+
+Status: Accepted
+Date: 2026-08-18
+
+**Context:** Preview 3 keeps the reviewed closed schema-1 release manifest,
+which can name source commit `S` and hash distributable files but has no field
+for a source-manifest hash or qualification records. Treating tool output or a
+free-form statement as that evidence would overclaim what deterministic
+packaging established.
+
+**Decision:** The schema-1 release manifest is structural: it binds declared
+`S`, fixed build declaration, and exact distributable paths, lengths, and
+SHA-256 values. The exact seven-path packaging commit `P` has sole parent `S`;
+its release-evidence document records the source-manifest hash and named
+qualification results. Git therefore binds that evidence document, manifest,
+archive, and checksum append in one immutable tree. Tool stdout is diagnostic,
+not release evidence. Human review occurrence, qualification, and linguistic
+truth remain governance/evidence claims rather than validator conclusions.
+
+**Consequences:** Preview 3 needs neither schema 2 nor an eighth packaging
+path. Any future embedded qualification schema is a separately versioned
+migration. Until `P` exists and its evidence record is complete, package bytes
+are structurally bound but not release-qualified or publication-ready.

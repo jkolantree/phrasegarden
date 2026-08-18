@@ -6,17 +6,17 @@ Create one deterministic, bounded path from an exact clean source commit to
 locally staged Preview 3 release bytes without letting worktree filters,
 ambient state, regeneration, or transport reinterpret the candidate.
 
-This umbrella is implemented as two separately reviewed checkpoints. Child A
-owns committed-source identity. Child B later owns archive staging and exact
-promotion. Neither child freezes a release candidate, creates public assets,
-or authorizes a remote write.
+This umbrella has two layers, each split into bounded reviewed checkpoints.
+Child A owns committed-source identity; Child B owns archive staging and exact
+promotion. Neither freezes a candidate, creates public assets, or authorizes a
+remote write.
 
 ## Source of truth
 
 - `docs/RELEASE-WORKFLOW.md`
 - `docs/work-packages/PREVIEW-3-PUBLICATION.md`
 - `docs/work-packages/PREVIEW-3-SAME-BYTE-PIPELINE.md`
-- ADR-029 and ADR-032
+- ADR-029 and ADR-032 through ADR-034
 - Archive verifier checkpoint `70858f1`
 - Pages-policy checkpoint `4d9002f`
 
@@ -162,6 +162,22 @@ fail-closed timing and retained blocking evidence, not claim hostile-filesystem
 security beyond the declared barriers. Focused/full deterministic checks,
 diff/cache hygiene, exact path/line accounting, and independent review must
 pass before its local checkpoint.
+
+### B3 administrative alignment
+
+B3 starts at `7a58f7cff087e49bce73ce827bff7ce8cbbbb11c` and owns only this contract,
+`docs/DECISIONS.md`, `docs/PROJECT-STATE.md`, `docs/RELEASE-WORKFLOW.md`,
+`docs/TRACEABILITY.md`, and `docs/work-packages/PREVIEW-3-PUBLICATION.md`. It
+records one interpretation: schema-1 release
+manifest bytes bind declared source `S` and exact distributable files only;
+the later exact seven-path packaging commit and its release-evidence record
+bind the source-manifest hash and qualification results. Tool stdout is not
+release evidence, and neither layer proves human or linguistic truth.
+
+Acceptance is exact agreement across all six documents, no stale Child A/B
+cursor, no source/package/publication claim, clean Markdown/diff/path checks,
+and independent read-only review. Stop on any need for schema 2, an eighth
+packaging path, production-code change, or broader release-governance choice.
 
 Run no real stage/promotion during development. Stop on identity ambiguity, schema 2/eighth-path need, ledger
 preservation failure, unsupported `dist`, drift, baseline failure, or net change at/above 650. Closure is separate.
