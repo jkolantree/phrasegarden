@@ -1,7 +1,7 @@
 # PhraseGarden release traceability
 
 Status: active matrix
-Updated: 2026-08-18
+Updated: 2026-08-19
 
 No acceptance requirement may exist only in narrative prose. Each active
 package gives every observable requirement one stable ID and one responsible
@@ -640,3 +640,24 @@ accessibility conformance, publication, deployment, or public-byte identity.
 | `P4-PKG-06` | Exact seven-path content receives independent frozen-byte review before checkpoint. | established only by an external exact-byte receipt; zero findings permit unchanged checkpointing without a status edit |
 | `P4-PKG-07` | Containing commit has sole parent `S4`, exact seven paths, and passes the pinned packaging-commit verifier plus fresh extraction comparison. | established only by Git identity and verifier output after such a commit exists |
 | `P4-PKG-08` | Remote preflight and user confirmation bind repository, commits, tag, asset bytes, Pages target, and rollback before public action. | established only by fresh confirmation and subsequent public evidence after local verification |
+
+### Preview 5 human-first journey and Pages package
+
+Source: exact `S5=16ad1fbf964e4ee6084457d27208c17ae5d413e9`, its
+31,497-byte complete-tree manifest, the reviewed three-file distributable, and
+`PREVIEW-5-PUBLICATION.md`. Deterministic structure cannot establish human
+linguistic truth, accessibility conformance, deployment, or public identity.
+
+| ID | Deterministic or evidence owner | State / next blocker |
+|---|---|---|
+| `P5-UX-01` | Home, Builder, and Review ordering plus human task labels make the choose → copy → paste action visually primary. | exact-source product/accessibility PASS |
+| `P5-UX-02` | Focus transfers across replaced Home panels, editor entry, and discard confirmation; Review actions keep a 44 px floor. | 324/324 Vitest, dual typechecks, 12/12 Edge/axe, visual PASS |
+| `P5-UX-03` | Compiler/prompt bytes remain unchanged; EN↔JA remains Preview, all other directions Generic, and `pt` region-unspecified. | exact-source language/product PASS |
+| `P5-PKG-01` | Complete-tree manifest binds 162 committed `100644` files and 1,894,747 bytes to exact `S5`. | verified repeatedly / `C22DC0C2…8772E` |
+| `P5-PKG-02` | One successful pnpm 11.9.0 build produces the exact three audited files; the earlier missing-Node-path launch produced no `dist` and supplies no evidence. | CSS `20F89F6D…F8C9`; JS `542AC0D8…0190`; HTML `8EB3C308…69FB` |
+| `P5-PKG-03` | Browser qualification consumes those bytes and pre/post audits remain identical. | 12/12 sequential Edge/axe; same three hashes |
+| `P5-PKG-04` | Canonical stage preserves the 1,480-byte P4 ledger and appends only P5 ZIP then manifest. | two independent stage PASSes; stage fingerprint `B25BAFEA…EF8B` |
+| `P5-PKG-05` | One promotion process copies the reviewed stage exactly to ZIP, manifest, and ledger. | promoted fingerprint `D2D2CCA1…E945`; direct stage equality |
+| `P5-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by an external exact-byte receipt |
+| `P5-PKG-07` | Containing commit has sole parent `S5`, exact seven paths, and passes the pinned verifier plus extraction comparison. | established only by Git and verifier evidence after `P5` exists |
+| `P5-PKG-08` | Main push, Pages run, and current public files are separately observed and byte-checked. | authorized successor action; no tag or GitHub release authorized |
