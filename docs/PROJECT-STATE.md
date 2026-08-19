@@ -4,72 +4,69 @@ Updated: 2026-08-19
 
 ## Current outcome
 
-PhraseGarden `0.1.0-preview.7` is the active local source candidate. It
-combines the already reviewed accessibility maintenance with a new closed
-release identity and official immutable Node 24 GitHub Action pins. It does not
-change compiler output, prompt snapshots, language identities, pair guidance,
-recipes, support tiers, or the privacy model.
+PhraseGarden `0.1.0-preview.7` is the active local source candidate and has an
+exact local package content record. Source checkpoint
+`S7=465f0516e58f1270529923027013565881be76e9` has tree
+`8fc64ad4edf9f941aa8b370b8777f28c200bf7af` and sole parent
+`d0922651db3bef58215ea130876d88bd54b8e3bc`.
 
-Preview 6 remains the immutable deployed predecessor. This source tree does
-not claim that Preview 7 is packaged, deployed, public, tagged, or published as
-a GitHub Release.
+Preview 6 remains the immutable deployed predecessor. Preview 7 changes
+accessibility semantics, browser regressions, release identity, and official
+immutable Node 24 GitHub Action pins. It does not change compiler output,
+prompt snapshots, language identities, pair guidance, recipes, support tiers,
+or the privacy model.
 
-## Immutable Preview 6 predecessor
+## Exact local Preview 7 package
 
 | Artifact | Bytes | SHA-256 |
 |---|---:|---|
-| `SHA256SUMS` | 1,952 | `82CBC32E5606F827765983271B248CD7C4788DFE57AB703FD1B94A55432B9C4E` |
-| Preview 6 Pages ZIP | 186,851 | `6A2DC1E364F42B64D54034E734233CB09A9166A01F9C6591D182AB40CA81EA55` |
-| Preview 6 release manifest | 976 | `B9753A9286D3C8E662ABB7A9244817BFA7EAA2382B262794816527C765074F7E` |
+| Source manifest | 34,329 | `674146B0F73C41321A7D4E47949ABA8643F2C038C1C48DDBB305766E1AEAA1DE` |
+| Pages ZIP | 187,305 | `715ED188561505D1531FA903EC85EE742A34AE0A6646C9E61190D0D79FFD9513` |
+| Release manifest | 976 | `87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA` |
+| `SHA256SUMS` | 2,188 | `FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A` |
 
-The version-bound Preview 6 Pages run `32288618754` completed deployment, and
-the recorded public-byte comparison matched its checked-in manifest. Preview 7
-uses these local bytes only as content-addressed predecessor bindings; it does
-not relabel or overwrite them.
+The ledger preserves the exact 1,952-byte Preview 6 ledger, SHA-256
+`82CBC32E5606F827765983271B248CD7C4788DFE57AB703FD1B94A55432B9C4E`,
+then appends only the Preview 7 ZIP row followed by its manifest row. One
+successful owner-context promotion copied the independently reviewed stage to
+the three final paths without regeneration; direct byte comparison passed.
 
-## Preview 7 source scope
+## Local evidence boundary
 
-- Builder guidance is exposed as a named region, matching Home and Review.
-- The generated complete prompt is exposed as a named document; edited mode
-  remains a labelled text area.
-- Forced-colors focus, checked selection, truth notices, action sizing, order,
-  axe, and narrow reflow have a permanent automated browser regression.
-- The Preview 7 Pages workflow candidate pins the five reviewed official Node
-  24 action commits.
-- Preview 7 has a closed package spec and pinned package/verifier adapters with
-  exact Preview 6 predecessor bindings.
-- Portuguese remains region-unspecified Generic; English↔Japanese remains
-  Preview with external linguistic review incomplete.
+The exact source passed 329 application tests, 58 Python release/security
+tests, 41 workflow and claim-policy tests, both TypeScript checks, a Node 24
+build, release audits, 14 sequential Edge/axe journeys, and two independent
+source reviews. The one release build and canonical stage then passed matching
+pre/post audits, all 14 browser journeys, package verification, and independent
+product/accessibility/language and security/archive reviews.
 
-## Evidence and open boundary
+These results establish local deterministic structure and reviewed bytes. They
+do not establish Preview 7's containing package commit, Actions run,
+deployment, current public bytes, tag, GitHub Release, WCAG conformance,
+manual assistive-technology behavior, or external linguistic review.
 
-The preceding maintenance bytes passed 329 application tests, 41 workflow and
-claim-policy tests, both TypeScript checks, a Node 24 build, 14 sequential Edge
-and axe journeys, and two independent reviews. The additional Preview 7 release
-identity requires its focused and full deterministic checks before source
-checkpointing. These are development results, not package, deployment,
-public-byte, WCAG, manual assistive-technology, or linguistic-review evidence.
-
-This source-state record alone establishes no Preview 7 checkpoint, source
-manifest, build, stage, final archive, release manifest, checksum append,
-evidence record, package commit, Pages run, tag, or GitHub Release.
+This source-state record alone establishes no Preview 7 checkpoint; Git
+identity separately establishes `S7`. Likewise, this package content record
+does not self-establish `P7` or any public state.
 
 ## Authority sequence
 
-1. If no source receipt exists, finish the Preview 7 deterministic checks and
-   two read-only source reviews.
-2. If those exact bytes pass and no Git checkpoint exists, commit the bounded
-   source checkpoint `S7`.
-3. From a clean qualified `S7`, freeze the source, build once with Node 24 and pnpm 11.9.0,
-   stage and review the same bytes, promote once, and commit the exact seven-path
-   package child `P7`.
-4. If remote `main` does not yet contain `P7`, reverify its expected baseline
-   and push the complete `S7 → P7` chain once. The no-build Pages run and public
-   HTML/CSS/JS comparison then establish deployment and public-byte authority.
+If no source receipt exists, source qualification must finish before any
+package content record; exact `S7` already has that separately bound receipt.
 
-Stop on scope drift, protected prompt/domain changes, a second release build,
-predecessor or byte mismatch, review finding, remote drift, CI/deployment
-failure, public-byte mismatch, or any need for a tag or GitHub Release.
+1. An external zero-finding review receipt for the exact seven package paths
+   permits those unchanged bytes to be checkpointed as the sole-parent child
+   of `S7`.
+2. Git identity plus the pinned committed-package verifier and fresh extraction
+   alone establish local package commit `P7`.
+3. A fresh remote baseline permits one `S7 → P7` main push. The no-build Pages
+   run and exact public HTML/CSS/JavaScript downloads separately establish
+   deployment and public-byte authority.
+4. No Preview 7 tag or GitHub Release is part of this cycle.
+
+Stop on byte or scope drift, another build or promotion, wrong parent or path,
+open review finding, verifier failure, remote drift, CI/deployment failure,
+public-byte mismatch, or any need to rewrite an earlier release.
 
 ## Deferred
 

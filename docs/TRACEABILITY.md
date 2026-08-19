@@ -679,3 +679,21 @@ accessibility conformance, linguistic truth, or public identity.
 | `P6-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by external exact-byte receipt |
 | `P6-PKG-07` | Containing commit has sole parent `S6`, exact seven paths, and passes the pinned verifier. | established only by Git and verifier evidence |
 | `P6-PKG-08` | Main push, Linux browser/axe, Pages deployment, and public-byte comparison are separately observed. | authorized successor action; no tag or GitHub Release authorized |
+
+### Preview 7 accessibility semantics, Node 24 actions, and Pages package
+
+Source: exact `S7=465f0516e58f1270529923027013565881be76e9`, its
+34,329-byte complete-tree manifest, the reviewed three-file distributable, and
+`PREVIEW-7-PUBLICATION.md`. Deterministic checks do not establish deployment,
+accessibility conformance, linguistic truth, or public identity.
+
+| ID | Deterministic or evidence owner | State / next boundary |
+|---|---|---|
+| `P7-PKG-01` | Complete-tree source manifest binds 176 committed `100644` files and 2,328,161 raw payload bytes to exact `S7`. | verified / `674146B0…A1DE` |
+| `P7-PKG-02` | Home, Builder, and Review expose named support regions; Review exposes a named prompt document; forced-colors and role/name browser regressions remain enabled. | 329/329 Vitest, dual typechecks, 14/14 Edge/axe, two exact-source PASSes |
+| `P7-PKG-03` | One Node 24/pnpm 11.9.0 build produces exactly three audited files. | JS `7675BA93…`, CSS `BCF9F0E9…`, HTML `175C9803…` |
+| `P7-PKG-04` | Canonical stage preserves the 1,952-byte Preview 6 ledger and appends only P7 ZIP then manifest. | two independent stage PASSes |
+| `P7-PKG-05` | One successful owner-context promotion copies reviewed stage exactly. | local ZIP `715ED188…9513`, manifest `87296B9F…E46BA`, ledger `FE11EEA9…241A` |
+| `P7-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by an external exact-byte receipt |
+| `P7-PKG-07` | Containing commit has sole parent `S7`, exact seven paths, and passes the pinned verifier. | established only by Git and verifier evidence |
+| `P7-PKG-08` | Main push, Linux browser/axe, Pages deployment, warning annotations, and public-byte comparison are separately observed. | authorized successor action; no tag or GitHub Release authorized |
