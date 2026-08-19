@@ -16,7 +16,7 @@ const PUBLIC_LANGUAGE_ENTRIES = [
   ["it", "Italian"],
   ["ja", "Japanese"],
   ["tlh", "Klingon"],
-  ["pt", "Portuguese"],
+  ["pt", "Portuguese (region not specified)"],
   ["es", "Spanish"],
   ["yi", "Yiddish"],
 ] as const;

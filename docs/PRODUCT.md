@@ -1,7 +1,7 @@
 # PhraseGarden product contract
 
 Status: Gate 0 source of truth  
-Updated: 2026-08-17
+Updated: 2026-08-19
 
 ## Thesis
 
@@ -17,8 +17,8 @@ availability never implies regional adequacy or linguistic review.
 
 ## People and jobs
 
-- A first-time user who wants a trustworthy translation prompt without learning prompt engineering.
-- A learner who wants a spoken practice prompt with humane correction, pacing, and teaching controls.
+- A first-time user who wants trustworthy AI translation instructions without learning prompt engineering.
+- A learner who wants spoken-practice instructions with humane correction, pacing, and teaching controls.
 - A multilingual user who needs ambiguity, hierarchy, affection, anger, consent, or code-switching preserved instead of normalized away.
 - A teacher, reviewer, or contributor who needs to inspect, edit, download, reproduce, and identify the exact recipe inputs and support label.
 
@@ -28,11 +28,11 @@ The product is usable without an account, API key, backend, analytics consent, o
 
 Within two minutes, a first-time visitor can:
 
-1. Choose a home language and a distinct target language. Interface language remains a separate setting.
-2. Choose Written Translator, Live Voice Coach, or Interpreter.
-3. Create the default prompt immediately, or first adjust optional controls relevant to that modality: relationship, register, correction, pronunciation support, teaching depth, pace, turn handling, or clarification.
-4. On Review, see the exact support tier and limitations before the handoff actions, plus a plain-language summary of what the prompt asks the destination tool to do.
-5. Copy or download the deterministic prompt, inspect its visible text, and optionally edit a clearly labeled local copy.
+1. Confirm a language direction and task using situation-based labels such as Translate writing, Practice speaking, or Translate a conversation.
+2. Make the default instructions immediately, or change the languages and task.
+3. Optionally adjust relationship, register, correction, pronunciation support, teaching depth, pace, turn handling, or clarification.
+4. On Review, see the exact support tier and limitations before Copy, plus a plain-language summary of what the instructions ask the destination tool to do.
+5. Copy or download the deterministic instructions, inspect their complete visible text, and optionally edit a clearly labeled local copy.
 
 Autonyms and searchable localized names identify languages. Flags are not primary language identifiers.
 
@@ -63,19 +63,21 @@ Users cannot select or upgrade a tier. The public Preview derives `Preview` only
 
 ## MVP
 
-The `0.1.0-preview.4` source contains Written Translator, Live Voice Coach, and
+The `0.1.0-preview.5` source contains Written Translator, Live Voice Coach, and
 one-way Interpreter for bundled language profiles, with Preview
 English↔Japanese guidance and conservative Generic fallback. It includes
 language swap, bounded settings, plain-language summaries, visible limitations
 and version provenance, prompt inspection, local editing, copy, and plain-text
 download. Source presence does not establish package, publication, or
 deployment status; those claims require the version-bound release evidence and
-corresponding public state. Preview 4 carries forward the one-way Interpreter,
-independently reviewed as product code, and progressive disclosure. It includes
-the locally reviewed short-desktop spacing correction without claiming Gate 3
-exit or stable readiness.
+corresponding public state. Preview 5 carries forward the one-way Interpreter,
+independently reviewed as product code, and progressive disclosure. It orders
+the interface around the human outcome: one default fast path, optional choices
+first in Builder, support and limitations before Copy, and complete instructions
+in a bounded reading and editing area. It does not claim Gate 3 exit or stable
+readiness.
 
-Preview 4 retains identity-only profiles for French, German,
+Preview 5 retains identity-only profiles for French, German,
 Italian, Spanish, and region-unspecified Portuguese. These profiles add no
 language-specific prompt clause, pair pack, pronunciation claim, dialect
 claim, or review tier.
@@ -86,7 +88,7 @@ reversible; Review is the informed-use handoff where support, limitations,
 destination compatibility, paste order, and destination privacy are visible
 before Copy and Download.
 
-PhraseGarden `0.1.0-preview.4` is memory-only and intentionally excludes bidirectional or
+PhraseGarden `0.1.0-preview.5` is memory-only and intentionally excludes bidirectional or
 simultaneous interpreting, local recipe storage, import/export, sharing, a
 Japanese interface, service-worker caching, accounts, telemetry, runtime model
 calls, public submissions, and evidence-qualified tier promotion.

@@ -77,7 +77,7 @@ describe("plain-language UI copy", () => {
       ["it", "Italian"],
       ["ja", "Japanese"],
       ["tlh", "Klingon"],
-      ["pt", "Portuguese"],
+      ["pt", "Portuguese (region not specified)"],
       ["es", "Spanish"],
       ["yi", "Yiddish"],
     ]);
@@ -98,7 +98,10 @@ describe("plain-language UI copy", () => {
       { id: "it", label: "Italian — ⁨italiano⁩" },
       { id: "ja", label: "Japanese — ⁨日本語⁩" },
       { id: "tlh", label: "Klingon — ⁨tlhIngan Hol⁩" },
-      { id: "pt", label: "Portuguese — ⁨português⁩" },
+      {
+        id: "pt",
+        label: "Portuguese (region not specified) — ⁨português⁩",
+      },
       { id: "es", label: "Spanish — ⁨español⁩" },
       { id: "yi", label: "Yiddish — ⁨ייִדיש⁩" },
     ]);

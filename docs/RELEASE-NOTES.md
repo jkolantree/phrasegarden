@@ -1,5 +1,41 @@
 # Release notes
 
+## 0.1.0-preview.5 — a clearer path from choice to copy
+
+Status: source target; package, publication, and deployment are version-bound
+
+### Product behavior
+
+- Leads with the outcome and one **Make my instructions** fast path instead of
+  requiring people to understand prompt terminology or open a Builder first.
+- Uses task-language labels for tools and language controls: Translate writing,
+  Practice speaking, Translate a conversation, Text is in, Translate to,
+  Explain in, Practice in, and Turn is in.
+- Places optional relationship, tone, and detail controls first in Builder;
+  complete protection detail remains available through progressive disclosure.
+- Keeps the honest support and limitation summary before Copy while fitting the
+  primary handoff into the first 320 × 900 Review viewport.
+- Keeps the complete generated instructions visible, focusable, editable, and
+  byte-identical for Copy and Download inside a bounded reading area.
+- Moves focus into the editor and deliberately manages the discard-edits
+  alertdialog.
+- Labels `pt` visibly as Portuguese with region unspecified; canonical identity
+  and generated instruction bytes are unchanged.
+
+### Deterministic boundary
+
+The compiler, profiles, pair pack, recipes, generated instruction surface,
+support resolution, and prompt snapshots are unchanged. The English behavior
+summary advances to `1.3.0` for plain-language task descriptions only. Preview 5 adds no
+runtime model detection, model chooser, new language, backend, persistence,
+telemetry, or linguistic-review claim.
+
+### Evidence boundary
+
+Source, package, Pages, accessibility, and public-byte outcomes are established
+only by their version-bound verification records. This note does not promote
+Preview English↔Japanese guidance to Reviewed or claim WCAG conformance.
+
 ## 0.1.0-preview.4 — desktop fold correction and closed release path
 
 Status: source target; package, publication, and deployment are version-bound

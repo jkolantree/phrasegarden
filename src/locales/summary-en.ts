@@ -1,6 +1,6 @@
 import type { SummaryCatalog } from "../domain";
 
-export const SUMMARY_EN_VERSION = "1.2.0";
+export const SUMMARY_EN_VERSION = "1.3.0";
 
 type Message = SummaryCatalog["messages"][number];
 
@@ -58,15 +58,15 @@ export const SUMMARY_EN_CATALOG: SummaryCatalog = {
     },
     message(
       "behavior.tool.written",
-      "Creates a Written Translator prompt to copy or download. You enter the text to translate only after using that prompt in another tool.",
+      "Tells the other tool to translate writing. Enter the text only after pasting these instructions into that tool.",
     ),
     message(
       "behavior.tool.voice",
-      "Creates a Live Voice Coach prompt for short spoken turns. It does not assume audio features that your other tool has not confirmed.",
+      "Sets up short spoken practice. It does not assume audio features that your other tool has not confirmed.",
     ),
     message(
       "behavior.tool.interpreter",
-      "Creates a one-way Interpreter prompt. Each complete turn goes from your home language into your target language; swap the languages to make the reverse prompt.",
+      "Sets up one-way conversation translation. Each complete turn goes from the selected source language into the target language; swap the languages to reverse it.",
     ),
     message(
       "behavior.interpreter.relay-only",

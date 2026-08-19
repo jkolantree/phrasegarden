@@ -1,9 +1,9 @@
 # Product limitations
 
-This source tree targets PhraseGarden `0.1.0-preview.4`. It carries forward the
-Interpreter, Advanced settings, expanded Generic catalog, and beginner-facing
-presentation from Preview 3, plus the locally reviewed short-desktop spacing
-correction. Source presence does not establish packaging, publication, or
+This source tree targets PhraseGarden `0.1.0-preview.5`. It carries forward the
+Interpreter, Advanced settings, expanded Generic catalog, and deterministic
+compiler from Preview 4. It changes information order and interaction copy,
+not generated instruction semantics. Source presence does not establish packaging, publication, or
 deployment. Those states are established only by version-bound release
 evidence and the corresponding public repository state.
 
@@ -17,7 +17,7 @@ evidence and the corresponding public repository state.
 - French, German, Italian, Spanish, and region-unspecified Portuguese are
   bundled as identity-only Generic profiles. `pt` does not mean Brazilian,
   European, neutral, or dialect-reviewed Portuguese; `pt-BR` and `pt-PT` are
-  not supported by the `0.1.0-preview.4` source.
+  not supported by the `0.1.0-preview.5` source.
 - The bundled canonical registry is a small supported set, not a claim of
   universal language coverage. A valid BCP 47 tag that is not in the exact
   registry is unsupported.

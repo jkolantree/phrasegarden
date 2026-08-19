@@ -35,30 +35,78 @@ function requestAudit(page: Page): {
 
 async function openBuilder(page: Page): Promise<void> {
   await page
-    .getByRole("button", { name: "Adjust optional settings" })
+    .getByRole("button", { name: "Adjust tone or context" })
+    .first()
     .click();
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Adjust how the prompt should work",
+      name: "Adjust tone and context",
+    }),
+  ).toBeFocused();
+}
+
+async function openHomeChoices(page: Page): Promise<void> {
+  await page
+    .getByRole("button", { name: "Change languages or task" })
+    .first()
+    .click();
+  await expect(
+    page.getByRole("heading", {
+      level: 2,
+      name: "Choose languages and task",
     }),
   ).toBeFocused();
 }
 
 async function generate(page: Page): Promise<void> {
   await page
-    .getByRole("button", { name: /^(Create my prompt|Update prompt)$/ })
+    .getByRole("button", {
+      name: /^(Make my instructions|Update instructions)$/,
+    })
     .click();
   await expect(
-    page.getByRole("heading", { level: 1, name: "Your prompt is ready" }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "Your instructions are ready",
+    }),
   ).toBeFocused();
 }
 
 test("direct creation and the unchanged optional-settings path compile identical bytes", async ({
   page,
 }) => {
+  for (const viewport of [
+    { width: 1280, height: 720 },
+    { width: 320, height: 900 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    if (viewport.width === 320) {
+      await openHomeChoices(page);
+      await page.getByRole("button", { name: "Use current choices" }).click();
+      await expect(
+        page.getByRole("heading", {
+          level: 2,
+          name: /Ready to start: English to Japanese/,
+        }),
+      ).toBeFocused();
+    }
+    const fastPath = page.getByRole("button", {
+      name: "Make my instructions",
+    });
+    await expect(fastPath).toHaveCount(1);
+    await expect(fastPath).toBeVisible();
+    const fastPathBox = await fastPath.boundingBox();
+    expect(fastPathBox).not.toBeNull();
+    expect(fastPathBox!.y + fastPathBox!.height).toBeLessThanOrEqual(
+      viewport.height,
+    );
+  }
+
+  await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
   const direct = {
     prompt: await page.getByTestId("canonical-prompt").textContent(),
     summary: await page.getByTestId("behavior-summary").textContent(),
@@ -67,8 +115,18 @@ test("direct creation and the unchanged optional-settings path compile identical
     provenance: await page.locator(".provenance").textContent(),
   };
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
+  await page.getByRole("button", { name: "Start another set" }).first().click();
   await openBuilder(page);
+  await expect(page.getByLabel("Relationship")).toBeVisible();
+  await expect(page.getByLabel("Tone and formality")).toBeVisible();
+  await expect(page.getByLabel("How much detail")).toBeVisible();
+  await expect(page.getByLabel("Text is in")).toHaveCount(0);
+  await expect(
+    page.getByRole("radio", { name: /Translate writing/ }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Change languages or task" }).first(),
+  ).toBeVisible();
   const advanced = page.locator(
     "main.builder-page details.advanced-settings",
   );
@@ -87,7 +145,7 @@ test("direct creation and the unchanged optional-settings path compile identical
     provenance: await page.locator(".provenance").textContent(),
   }).toEqual(direct);
   await expect(page.getByTestId("prompt-handoff")).toContainText(
-    "Paste the prompt first.",
+    "Paste the instructions first.",
   );
   await expect(page.getByTestId("destination-privacy")).toContainText(
     "the other tool's privacy policy applies",
@@ -144,9 +202,17 @@ test("one Advanced settings disclosure exposes the exact modality field map", as
   await expectNoAxeViolations(page, "Written advanced settings");
   await advancedSummary.click();
 
+  await openHomeChoices(page);
   await page
-    .getByRole("radio", { name: /Live Voice Coach/ })
+    .getByRole("radio", { name: /Practice speaking/ })
     .check();
+  await expect(page.locator("#home-language")).toHaveAccessibleName(
+    /^Explain in\b/,
+  );
+  await expect(page.locator("#target-language")).toHaveAccessibleName(
+    /^Practice in\b/,
+  );
+  await openBuilder(page);
   await expect(page.getByLabel("When to correct me")).toBeVisible();
   await expect(page.getByLabel("What to correct first")).toBeVisible();
   await expect(page.getByLabel("Pronunciation help")).toBeVisible();
@@ -191,7 +257,13 @@ test("one Advanced settings disclosure exposes the exact modality field map", as
   await page.setViewportSize({ width: 1280, height: 720 });
   await advancedSummary.click();
 
-  await page.getByRole("radio", { name: /^Interpreter/ }).check();
+  await openHomeChoices(page);
+  await page
+    .getByRole("radio", { name: /^Translate a conversation/ })
+    .check();
+  await expect(page.getByLabel("Turn is in")).toBeVisible();
+  await expect(page.getByLabel("Translate to")).toBeVisible();
+  await openBuilder(page);
   await expect(page.getByLabel("How much to interpret at once")).toBeVisible();
   await expect(page.getByLabel("If a turn is too unclear")).toBeVisible();
   await expect(page.getByLabel("Relative status")).toBeHidden();
@@ -220,22 +292,24 @@ test("internal navigation preserves an edited prompt and replacement requires co
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Create my prompt" }).click();
-  await page.getByRole("button", { name: "Edit this copy" }).click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
+  await page
+    .getByRole("button", { name: "Edit these instructions" })
+    .click();
   const textarea = page.getByRole("textbox", { name: "Your edited copy" });
   const edited = `${await textarea.inputValue()}\nDO NOT DISCARD THIS EDIT`;
   await textarea.fill(edited);
   await expect(page.getByText("Edited on this device")).toBeVisible();
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
+  await page.getByRole("button", { name: "Start another set" }).first().click();
   await expect(
-    page.getByRole("button", { name: "Return to current prompt" }),
+    page.getByRole("button", { name: "Return to current instructions" }),
   ).toBeVisible();
 
   await page.goBack();
   await expect(textarea).toHaveValue(edited);
   await page.goForward();
-  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
   await expect(page.getByTestId("replace-prompt-confirmation")).toContainText(
     "Replace your edited copy?",
   );
@@ -243,10 +317,10 @@ test("internal navigation preserves an edited prompt and replacement requires co
   await page.getByRole("button", { name: "Keep edited copy" }).click();
   await expect(textarea).toHaveValue(edited);
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
-  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await page.getByRole("button", { name: "Start another set" }).first().click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
   await page
-    .getByRole("button", { name: "Replace and create prompt" })
+    .getByRole("button", { name: "Replace and make instructions" })
     .click();
   await expect(page.getByTestId("canonical-prompt")).not.toContainText(
     "DO NOT DISCARD THIS EDIT",
@@ -257,8 +331,10 @@ test("refresh raises the browser's native leave warning for an edited prompt", a
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Create my prompt" }).click();
-  await page.getByRole("button", { name: "Edit this copy" }).click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
+  await page
+    .getByRole("button", { name: "Edit these instructions" })
+    .click();
   const textarea = page.getByRole("textbox", { name: "Your edited copy" });
   await textarea.fill(`${await textarea.inputValue()}\nKEEP ON REFRESH`);
 
@@ -272,7 +348,10 @@ test("refresh raises the browser's native leave warning for an edited prompt", a
   await reloadPromise;
 
   await expect(
-    page.getByRole("heading", { level: 1, name: /Make a better translation prompt/ }),
+    page.getByRole("heading", {
+      level: 1,
+      name: /Keep your meaning when AI translates/,
+    }),
   ).toBeVisible();
   await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
 });
@@ -281,7 +360,7 @@ test("copy and download failures remain visible with a manual fallback", async (
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
 
   await page.evaluate(() => {
     Object.defineProperty(navigator, "clipboard", {
@@ -291,7 +370,7 @@ test("copy and download failures remain visible with a manual fallback", async (
   });
   await page.getByTestId("copy-prompt").click();
   await expect(page.getByTestId("handoff-feedback")).toHaveText(
-    "Copy was not available. Select the visible prompt text and copy it manually.",
+    "Copy was not available. Select the visible instruction text and copy it manually.",
   );
 
   await page.evaluate(() => {
@@ -301,7 +380,7 @@ test("copy and download failures remain visible with a manual fallback", async (
   });
   await page.getByTestId("download-prompt").click();
   await expect(page.getByTestId("handoff-feedback")).toHaveText(
-    "Download could not start. Select the visible prompt text and copy it manually.",
+    "Download could not start. Select the visible instruction text and copy it manually.",
   );
 });
 
@@ -316,7 +395,7 @@ test("a fully loaded session creates, copies, and downloads while offline", asyn
   await page.waitForLoadState("networkidle");
   await context.setOffline(true);
   try {
-    await page.getByRole("button", { name: "Create my prompt" }).click();
+    await page.getByRole("button", { name: "Make my instructions" }).click();
     const canonical = await page.getByTestId("canonical-prompt").textContent();
 
     await page.getByTestId("copy-prompt").click();
@@ -346,21 +425,19 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   await page.goto("/");
   await page.waitForLoadState("networkidle");
 
-  const written = page.getByRole("radio", { name: /Written Translator/ });
+  await openHomeChoices(page);
+  const written = page.getByRole("radio", { name: /Translate writing/ });
   await written.focus();
   await page.keyboard.press("ArrowRight");
   await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("radio", { name: /^Interpreter/ })).toBeChecked();
+  await expect(
+    page.getByRole("radio", { name: /^Translate a conversation/ }),
+  ).toBeChecked();
   await expect(page.getByText("Translate from", { exact: true })).toBeVisible();
   await expect(page.getByText("Translate into", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Turn is in")).toBeVisible();
+  await expect(page.getByLabel("Translate to")).toBeVisible();
   await expect(page.getByText(/One direction at a time/)).toBeVisible();
-  const homeActionBox = await page
-    .getByRole("button", { name: "Create my prompt" })
-    .boundingBox();
-  expect(homeActionBox).not.toBeNull();
-  expect(homeActionBox!.y + homeActionBox!.height).toBeLessThanOrEqual(
-    page.viewportSize()!.height,
-  );
   await page.screenshot({
     path: "artifacts/screenshots/home-interpreter-desktop.png",
     fullPage: true,
@@ -370,7 +447,7 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   await context.setOffline(true);
   let direct: string | null = null;
   try {
-    await page.getByRole("button", { name: "Create my prompt" }).click();
+    await page.getByRole("button", { name: "Make my instructions" }).click();
     direct = await page.getByTestId("canonical-prompt").textContent();
     expect(direct).toContain("portable one-way Interpreter");
     expect(direct).toContain("For English→Japanese");
@@ -382,7 +459,7 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
       "one complete home-language turn or message at a time",
     );
     await expect(page.getByTestId("prompt-handoff")).toContainText(
-      "swap the languages and make another prompt for the reverse direction",
+      "swap the languages and make another set of instructions for the reverse direction",
     );
     await expect(page.getByTestId("destination-privacy")).toContainText(
       "any participant's text, transcript, or audio while interpreting",
@@ -413,7 +490,7 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   });
   await expectNoAxeViolations(page, "Interpreter review");
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
+  await page.getByRole("button", { name: "Start another set" }).first().click();
   await openBuilder(page);
   await expect(page.getByLabel("How much to interpret at once")).toHaveValue(
     "consecutive",
@@ -445,7 +522,8 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   expect(await page.getByTestId("canonical-prompt").textContent()).toBe(direct);
 
   await page
-    .getByRole("button", { name: "Adjust optional settings" })
+    .getByRole("button", { name: "Adjust tone or context" })
+    .first()
     .click();
   await page
     .getByLabel("How much to interpret at once")
@@ -453,6 +531,9 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   await page
     .getByLabel("If a turn is too unclear")
     .selectOption("mark-uncertainty");
+  await page
+    .getByText("See exactly what PhraseGarden will protect", { exact: true })
+    .click();
   await expect(page.getByTestId("behavior-summary")).toContainText(
     "Does not ask a question",
   );
@@ -470,8 +551,10 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   );
 
   await page
-    .getByRole("button", { name: "Adjust optional settings" })
+    .getByRole("button", { name: "Adjust tone or context" })
+    .first()
     .click();
+  await openHomeChoices(page);
   await page.getByRole("button", { name: "Swap languages" }).click();
   await generate(page);
   const reverse = await page.getByTestId("canonical-prompt").textContent();
@@ -479,9 +562,11 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
   expect(reverse).not.toContain("For English→Japanese");
 
   await page
-    .getByRole("button", { name: "Adjust optional settings" })
+    .getByRole("button", { name: "Adjust tone or context" })
+    .first()
     .click();
-  await page.getByLabel("Target language").selectOption("id");
+  await openHomeChoices(page);
+  await page.getByLabel("Translate to").selectOption("id");
   await expect(page.getByTestId("support-status")).toContainText("Generic");
   await generate(page);
   const generic = await page.getByTestId("canonical-prompt").textContent();
@@ -491,18 +576,16 @@ test("Interpreter stays one-way, exact, local, and accessible across Preview and
 
   await page.setViewportSize({ width: 320, height: 900 });
   await page.goto("/");
-  await page.getByRole("radio", { name: /^Interpreter/ }).check();
-  await expect(page.locator(".mobile-quick-start")).toContainText(
-    "Interpreter",
+  await openHomeChoices(page);
+  await page
+    .getByRole("radio", { name: /^Translate a conversation/ })
+    .check();
+  await expect(page.locator(".home-weave")).toContainText(
+    "Translate a conversation",
   );
-  const mobileQuickAction = page.getByRole("button", {
-    name: "Create with these choices",
-  });
-  const mobileQuickActionBox = await mobileQuickAction.boundingBox();
-  expect(mobileQuickActionBox).not.toBeNull();
-  expect(
-    mobileQuickActionBox!.y + mobileQuickActionBox!.height,
-  ).toBeLessThanOrEqual(page.viewportSize()!.height);
+  await expect(
+    page.getByRole("button", { name: "Make my instructions" }),
+  ).toHaveCount(1);
   await page.screenshot({
     path: "artifacts/screenshots/home-interpreter-mobile-320.png",
     fullPage: true,
@@ -554,17 +637,20 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
 
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { level: 1, name: /Make a better translation prompt/ }),
+    page.getByRole("heading", {
+      level: 1,
+      name: /Keep your meaning when AI translates/,
+    }),
   ).toBeVisible();
   await expect(
     page.getByText("Session only · not saved"),
   ).toBeVisible();
   await expect(page.getByTestId("support-status")).toContainText("Preview");
   await expect(
-    page.getByText(/Settings, prompts, and edits disappear/),
+    page.getByText(/Settings, instructions, and edits disappear/),
   ).toBeVisible();
   const homeActionBox = await page
-    .getByRole("button", { name: "Create my prompt" })
+    .getByRole("button", { name: "Make my instructions" })
     .boundingBox();
   expect(homeActionBox).not.toBeNull();
   expect(homeActionBox!.y + homeActionBox!.height).toBeLessThanOrEqual(
@@ -573,15 +659,16 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await expect(
     page.getByText("Reviewed instructions compile deterministically."),
   ).toHaveCount(0);
+  await openHomeChoices(page);
   expect(
     await page
-      .getByLabel("Home language")
+      .getByLabel("Text is in")
       .locator("option[value='ja']")
       .evaluate((option) => (option as HTMLOptionElement).disabled),
   ).toBe(true);
   expect(
     await page
-      .getByLabel("Target language")
+      .getByLabel("Translate to")
       .locator("option[value='en']")
       .evaluate((option) => (option as HTMLOptionElement).disabled),
   ).toBe(true);
@@ -594,6 +681,9 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await openBuilder(page);
   await page.getByLabel("Relationship").selectOption("friends");
   await page.getByLabel("Tone and formality").selectOption("polite");
+  await page
+    .getByText("See exactly what PhraseGarden will protect", { exact: true })
+    .click();
   await expect(page.getByTestId("behavior-summary")).toContainText(
     "Uses more polite language",
   );
@@ -606,7 +696,7 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await generate(page);
   await expect(page.getByTestId("support-status")).toContainText("Preview");
   await expect(page.getByTestId("support-status")).toContainText(
-    "Independent language review is not complete",
+    "External language review: incomplete.",
   );
   await expect(page.getByTestId("limitations")).toContainText(
     "Spelling alone is not enough to know how an unfamiliar Japanese name is pronounced.",
@@ -622,15 +712,55 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   const canonical = await page.getByTestId("canonical-prompt").textContent();
   expect(canonical).toContain("For English→Japanese");
   expect(canonical).toContain("support `preview`");
+  const canonicalRegion = await page.getByTestId("canonical-prompt").evaluate(
+    (element) => ({
+      clientHeight: element.clientHeight,
+      scrollHeight: element.scrollHeight,
+      text: element.textContent,
+    }),
+  );
+  expect(canonicalRegion.text).toBe(canonical);
+  expect(canonicalRegion.scrollHeight).toBeGreaterThan(
+    canonicalRegion.clientHeight,
+  );
   await page.screenshot({
     path: "artifacts/screenshots/review-written-desktop.png",
     fullPage: true,
   });
   await expectNoAxeViolations(page, "written review");
 
+  await page.setViewportSize({ width: 320, height: 900 });
+  const supportBox = await page.getByTestId("support-status").boundingBox();
+  const limitationBox = await page.getByTestId("limitations").boundingBox();
+  const mobileCopyBox = await page.getByTestId("copy-prompt").boundingBox();
+  expect(supportBox).not.toBeNull();
+  expect(limitationBox).not.toBeNull();
+  expect(mobileCopyBox).not.toBeNull();
+  expect(supportBox!.y + supportBox!.height).toBeLessThanOrEqual(
+    mobileCopyBox!.y,
+  );
+  expect(limitationBox!.y + limitationBox!.height).toBeLessThanOrEqual(
+    mobileCopyBox!.y,
+  );
+  expect(mobileCopyBox!.y + mobileCopyBox!.height).toBeLessThanOrEqual(900);
+  for (const name of ["Adjust tone or context", "Start another set"]) {
+    const actionBox = await page
+      .getByRole("button", { name })
+      .first()
+      .boundingBox();
+    expect(actionBox).not.toBeNull();
+    expect(actionBox!.height).toBeGreaterThanOrEqual(44);
+  }
+  await page.screenshot({
+    path: "artifacts/screenshots/review-written-mobile-320.png",
+    fullPage: true,
+  });
+  await expectNoAxeViolations(page, "written review mobile copy-first handoff");
+  await page.setViewportSize({ width: 1280, height: 720 });
+
   await page.getByTestId("copy-prompt").click();
   await expect(page.getByTestId("handoff-feedback")).toHaveText(
-    "Your prompt was copied.",
+    "Your instructions were copied.",
   );
   expect(
     normalizeClipboardText(
@@ -651,8 +781,10 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await expect(page.getByText("en-ja-preview@1.0.0-preview.1")).toBeVisible();
 
   await page
-    .getByRole("button", { name: "Adjust optional settings" })
+    .getByRole("button", { name: "Adjust tone or context" })
+    .first()
     .click();
+  await openHomeChoices(page);
   await page.getByRole("button", { name: "Swap languages" }).click();
   await generate(page);
   await expect(page.getByTestId("canonical-prompt")).toContainText(
@@ -660,14 +792,26 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   );
 
   await page
-    .getByRole("button", { name: "Adjust optional settings" })
+    .getByRole("button", { name: "Adjust tone or context" })
+    .first()
     .click();
+  await openHomeChoices(page);
   await page.getByRole("button", { name: "Swap languages" }).click();
   await page
-    .getByRole("radio", { name: /Live Voice Coach/ })
+    .getByRole("radio", { name: /Practice speaking/ })
     .check();
+  await expect(page.locator("#home-language")).toHaveAccessibleName(
+    /^Explain in\b/,
+  );
+  await expect(page.locator("#target-language")).toHaveAccessibleName(
+    /^Practice in\b/,
+  );
+  await openBuilder(page);
   await expect(page.getByLabel("When to correct me")).toBeVisible();
   await expect(page.getByLabel("Pronunciation help")).toBeVisible();
+  await page
+    .getByText("See exactly what PhraseGarden will protect", { exact: true })
+    .click();
   await expect(page.getByTestId("behavior-summary")).toContainText(
     "Balances meaning and tone with grammar and natural wording.",
   );
@@ -698,15 +842,17 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await expectNoAxeViolations(page, "Voice prompt review");
 
   await page
-    .getByRole("button", { name: "Adjust optional settings" })
+    .getByRole("button", { name: "Adjust tone or context" })
+    .first()
     .click();
-  await page.getByRole("radio", { name: /Written Translator/ }).check();
+  await openHomeChoices(page);
+  await page.getByRole("radio", { name: /Translate writing/ }).check();
   await page
-    .getByLabel("Target language")
+    .getByLabel("Translate to")
     .selectOption("id");
   await expect(page.getByTestId("support-status")).toContainText("Generic");
   await expect(page.getByTestId("support-status")).toContainText(
-    "Uses PhraseGarden's general meaning-and-tone rules",
+    "No pair-specific guidance or independent language review",
   );
   await generate(page);
   await expect(page.getByTestId("limitations")).toHaveCount(0);
@@ -741,17 +887,18 @@ test("expanded languages stay understandable, exact, and accessible", async ({
 
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page.locator(".hero-copy")).toContainText(
-    "PhraseGarden makes instructions you copy into another AI chat or language tool",
+    "PhraseGarden makes reusable instructions for another AI chat or language tool",
   );
   await expect(page.locator(".hero-copy")).toContainText(
-    "Put the words you want translated there—not here",
+    "Your text never comes here",
   );
+  await openHomeChoices(page);
   await expect(
-    page.getByRole("radio", { name: /Written Translator/ }).locator(".."),
-  ).toContainText("Make instructions for translating text");
+    page.getByRole("radio", { name: /Translate writing/ }).locator(".."),
+  ).toContainText("messages, emails, documents");
   await expect(
-    page.getByRole("radio", { name: /Live Voice Coach/ }).locator(".."),
-  ).toContainText("Audio depends on the other tool");
+    page.getByRole("radio", { name: /Practice speaking/ }).locator(".."),
+  ).toContainText("AI tool with voice features");
 
   const expectedOptionValues = [
     "zh-Hant-TW",
@@ -767,7 +914,7 @@ test("expanded languages stay understandable, exact, and accessible", async ({
     "es",
     "yi",
   ];
-  for (const label of ["Home language", "Target language"] as const) {
+  for (const label of ["Text is in", "Translate to"] as const) {
     const select = page.getByLabel(label);
     expect(await select.locator("option").evaluateAll((options) =>
       options.map((option) => (option as HTMLOptionElement).value),
@@ -775,7 +922,9 @@ test("expanded languages stay understandable, exact, and accessible", async ({
     const optionText = await select.locator("option").allTextContents();
     expect(optionText).toContain("French — ⁨français⁩");
     expect(optionText).toContain("German — ⁨Deutsch⁩");
-    expect(optionText).toContain("Portuguese — ⁨português⁩");
+    expect(optionText).toContain(
+      "Portuguese (region not specified) — ⁨português⁩",
+    );
     expect(optionText).toContain("Hebrew — ⁨עברית⁩");
     expect(optionText).toContain("Yiddish — ⁨ייִדיש⁩");
     expect(optionText.join(" ")).not.toMatch(/\((?:en|ja|fr|de|pt|es|it)\)/);
@@ -784,18 +933,19 @@ test("expanded languages stay understandable, exact, and accessible", async ({
 
   await expect(page.getByText("Translate from", { exact: true })).toBeVisible();
   await expect(page.getByText("Translate into", { exact: true })).toBeVisible();
-  await page.getByLabel("Target language").selectOption("fr");
+  await page.getByLabel("Translate to").selectOption("fr");
   await expect(page.locator(".sr-only[role='status']")).toHaveText(
     "Direction changed to English to French. Support level: Generic. General guidance only.",
   );
   await expect(page.getByTestId("support-status")).toContainText(
-    "This exact language direction has no pair-specific guidance or independent language review",
+    "No pair-specific guidance or independent language review for this exact direction",
   );
   await expect(page.locator(".target-rail bdi[lang='fr'][dir='ltr']")).toHaveText(
     "français",
   );
+  await page.getByRole("button", { name: "Use current choices" }).click();
   const desktopAction = await page
-    .getByRole("button", { name: "Create my prompt" })
+    .getByRole("button", { name: "Make my instructions" })
     .boundingBox();
   expect(desktopAction).not.toBeNull();
   const desktopActionBottom = desktopAction!.y + desktopAction!.height;
@@ -822,7 +972,7 @@ test("expanded languages stay understandable, exact, and accessible", async ({
     fullPage: true,
   });
   await page.setViewportSize({ width: 1280, height: 720 });
-  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
   await expect(page.getByTestId("review-direction")).toContainText(
     "English",
   );
@@ -830,7 +980,7 @@ test("expanded languages stay understandable, exact, and accessible", async ({
     "French (français)",
   );
   await expect(page.getByTestId("review-direction")).toContainText(
-    "Written Translator",
+    "Translate writing",
   );
   const genericPrompt = await page.getByTestId("canonical-prompt").textContent();
   expect(genericPrompt).toContain("Support tier: Generic");
@@ -861,9 +1011,10 @@ test("expanded languages stay understandable, exact, and accessible", async ({
   });
   await expectNoAxeViolations(page, "Generic language review");
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
-  await page.getByLabel("Home language").selectOption("de");
-  await page.getByLabel("Target language").selectOption("it");
+  await page.getByRole("button", { name: "Start another set" }).first().click();
+  await openHomeChoices(page);
+  await page.getByLabel("Text is in").selectOption("de");
+  await page.getByLabel("Translate to").selectOption("it");
   await expect(page.locator(".sr-only[role='status']")).toHaveText(
     "Direction changed to German to Italian. Support level: Generic. General guidance only.",
   );
@@ -871,7 +1022,7 @@ test("expanded languages stay understandable, exact, and accessible", async ({
   await expect(page.locator(".sr-only[role='status']")).toHaveText(
     "Direction changed to Italian to German. Support level: Generic. General guidance only.",
   );
-  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await page.getByRole("button", { name: "Make my instructions" }).click();
   await expect(
     page.getByTestId("review-direction").locator("span[lang='en'][dir='ltr']").first(),
   ).toHaveText("Italian");
@@ -879,23 +1030,39 @@ test("expanded languages stay understandable, exact, and accessible", async ({
     page.getByTestId("review-direction").locator("bdi[lang='de'][dir='ltr']"),
   ).toHaveText("Deutsch");
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
-  await page.getByLabel("Home language").selectOption("en");
-  await page.getByLabel("Target language").selectOption("pt");
-  await page.getByRole("button", { name: "Create my prompt" }).click();
+  await page.getByRole("button", { name: "Start another set" }).first().click();
+  await openHomeChoices(page);
+  await page.getByLabel("Text is in").selectOption("en");
+  await page.getByLabel("Translate to").selectOption("pt");
+  await expect(page.getByLabel("Translate to")).toHaveValue("pt");
+  await page.getByRole("button", { name: "Make my instructions" }).click();
+  await expect(page.getByTestId("review-direction")).toContainText(
+    "Portuguese (region not specified)",
+  );
   const portuguesePrompt = await page.getByTestId("canonical-prompt").textContent();
   expect(portuguesePrompt).toContain("pt@1.0.0");
   expect(portuguesePrompt).not.toMatch(/Brazil|Portugal|pt-BR|pt-PT/i);
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
-  await page.getByLabel("Target language").selectOption("es");
+  await page.getByRole("button", { name: "Start another set" }).first().click();
+  await openHomeChoices(page);
+  await page.getByLabel("Translate to").selectOption("es");
   await expect(page.locator(".target-rail bdi[lang='es'][dir='ltr']")).toHaveText(
     "español",
   );
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
-  await page.getByRole("radio", { name: /Live Voice Coach/ }).check();
-  await expect(page.getByText("Explain in", { exact: true })).toBeVisible();
-  await expect(page.getByText("Practice in", { exact: true })).toBeVisible();
+  await page.getByRole("radio", { name: /Practice speaking/ }).check();
+  await expect(
+    page.getByText("Explain in", { exact: true }).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Practice in", { exact: true }).first(),
+  ).toBeVisible();
+  await expect(page.locator("#home-language")).toHaveAccessibleName(
+    /^Explain in\b/,
+  );
+  await expect(page.locator("#target-language")).toHaveAccessibleName(
+    /^Practice in\b/,
+  );
 });
 
 test("edited copy is explicit, IME-safe, downloadable, and regenerates only after confirmation", async ({
@@ -909,11 +1076,14 @@ test("edited copy is explicit, IME-safe, downloadable, and regenerates only afte
   await openBuilder(page);
   await generate(page);
 
-  await page.getByRole("button", { name: "Edit this copy" }).click();
+  await page
+    .getByRole("button", { name: "Edit these instructions" })
+    .click();
   const textarea = page.getByRole("textbox", {
     name: "Your edited copy",
   });
   await expect(textarea).toBeVisible();
+  await expect(textarea).toBeFocused();
   await expect(page.getByText("Edited on this device")).toHaveCount(0);
 
   await textarea.evaluate((element) => {
@@ -968,7 +1138,7 @@ test("edited copy is explicit, IME-safe, downloadable, and regenerates only afte
 
   await page.getByTestId("copy-prompt").click();
   await expect(page.getByTestId("handoff-feedback")).toHaveText(
-    "Your edited prompt was copied.",
+    "Your edited instructions were copied.",
   );
   expect(
     normalizeClipboardText(
@@ -985,21 +1155,28 @@ test("edited copy is explicit, IME-safe, downloadable, and regenerates only afte
   expect(readFileSync(path!, "utf8")).toBe(edited);
 
   await page
-    .getByRole("button", { name: "Restore generated original" })
+    .getByRole("button", { name: "Restore generated instructions" })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Discard your edits?" }),
+    page.getByRole("alertdialog", { name: "Discard your edits?" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Keep my edits" }).click();
+  const keepEdits = page.getByRole("button", { name: "Keep my edits" });
+  await expect(keepEdits).toBeFocused();
+  await keepEdits.click();
   await expect(textarea).toHaveValue(edited);
+  await expect(
+    page.getByRole("button", { name: "Restore generated instructions" }),
+  ).toBeFocused();
 
   await page
-    .getByRole("button", { name: "Restore generated original" })
+    .getByRole("button", { name: "Restore generated instructions" })
     .click();
+  await expect(keepEdits).toBeFocused();
   await page
     .getByRole("button", { name: "Discard edits and restore" })
     .click();
   await expect(page.getByTestId("canonical-prompt")).toBeVisible();
+  await expect(page.getByTestId("canonical-prompt")).toBeFocused();
   await expect(page.getByText("Edited on this device")).toHaveCount(0);
   await expectNoAxeViolations(page, "regenerated canonical review");
 });
@@ -1018,8 +1195,9 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
     fullPage: true,
   });
   const mobileQuickAction = page.getByRole("button", {
-    name: "Create with these choices",
+    name: "Make my instructions",
   });
+  await expect(mobileQuickAction).toHaveCount(1);
   const mobileQuickActionBox = await mobileQuickAction.boundingBox();
   expect(mobileQuickActionBox).not.toBeNull();
   expect(
@@ -1029,38 +1207,32 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
   await expect(page.getByRole("link", { name: "Skip to main content" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(
-    page.getByRole("heading", { level: 1, name: /Make a better translation prompt/ }),
+    page.getByRole("heading", {
+      level: 1,
+      name: /Keep your meaning when AI translates/,
+    }),
   ).toBeFocused();
 
   await page.keyboard.press("Tab");
   await expect(mobileQuickAction).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Home language")).toBeFocused();
-  await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("button", { name: "Swap languages" }),
-  ).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Target language")).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("radio", { name: /Written Translator/ }),
-  ).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("button", { name: "Create my prompt" }),
-  ).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("button", { name: "Adjust optional settings" }),
+    page.getByRole("button", { name: "Adjust tone or context" }).first(),
   ).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Adjust how the prompt should work",
+      name: "Adjust tone and context",
     }),
   ).toBeFocused();
+  await expect(page.getByLabel("Text is in")).toHaveCount(0);
+  await expect(
+    page.getByRole("radio", { name: /Translate writing/ }),
+  ).toHaveCount(0);
+  await expect(page.getByLabel("Relationship")).toBeVisible();
+  await expect(page.getByLabel("Tone and formality")).toBeVisible();
+  await expect(page.getByLabel("How much detail")).toBeVisible();
   const closedBuilderDimensions = await page.evaluate(() => ({
     client: document.documentElement.clientWidth,
     scroll: document.documentElement.scrollWidth,
@@ -1074,16 +1246,8 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
   });
 
   await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Home language")).toBeFocused();
-  await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("button", { name: "Swap languages" }),
-  ).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Target language")).toBeFocused();
-  await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("radio", { name: /Written Translator/ }),
+    page.getByRole("button", { name: "Change languages or task" }).first(),
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(page.getByLabel("Relationship")).toBeFocused();
@@ -1109,15 +1273,18 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("button", { name: "Back to languages and tool" }),
+    page.getByRole("button", { name: "Change languages or task" }).last(),
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("button", { name: "Create my prompt" }),
+    page.getByRole("button", { name: "Make my instructions" }),
   ).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(
-    page.getByRole("heading", { level: 1, name: "Your prompt is ready" }),
+    page.getByRole("heading", {
+      level: 1,
+      name: "Your instructions are ready",
+    }),
   ).toBeFocused();
 
   const overflow = await page.evaluate(() => ({
@@ -1151,18 +1318,29 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
     keyboardCanonical,
   );
   await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", { name: "Adjust tone or context" }).first(),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", { name: "Start another set" }).first(),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByText("Step-by-step", { exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
   await expect(page.getByTestId("canonical-prompt")).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("button", { name: "Edit this copy" }),
+    page.getByRole("button", { name: "Edit these instructions" }),
   ).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(
     page.getByRole("textbox", { name: "Your edited copy" }),
-  ).toBeVisible();
+  ).toBeFocused();
 
-  await page.getByRole("button", { name: "Start another prompt" }).click();
-  await page.getByLabel("Home language").selectOption("he");
+  await page.getByRole("button", { name: "Start another set" }).first().click();
+  await openHomeChoices(page);
+  await page.getByLabel("Text is in").selectOption("he");
   const rtlLabel = page.locator(".home-rail bdi[lang='he'][dir='rtl']");
   await expect(rtlLabel).toContainText("עברית");
   const labelBox = await rtlLabel.boundingBox();
@@ -1171,7 +1349,7 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
 
   await page.emulateMedia({ reducedMotion: "reduce" });
   const transitionDuration = await page
-    .getByRole("button", { name: "Create my prompt" })
+    .getByRole("button", { name: "Make my instructions" })
     .evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(transitionDuration).not.toContain("0.14s");
 });
@@ -1185,7 +1363,8 @@ test("200% and 400% equivalent layout widths do not create page overflow", async
   ] as const) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/");
-    await page.getByLabel("Home language").selectOption("zh-Hant-TW");
+    await openHomeChoices(page);
+    await page.getByLabel("Text is in").selectOption("zh-Hant-TW");
     await openBuilder(page);
     await page.getByText("Advanced settings", { exact: true }).click();
     const dimensions = await page.evaluate(() => ({

@@ -27,7 +27,7 @@ function SummaryList({
 
 export function BehaviorSummary({
   summary,
-  title = "Your prompt asks the tool to",
+  title = "These instructions ask the tool to",
   review = false,
 }: BehaviorSummaryProps) {
   const preserves = summary.items.filter((item) =>

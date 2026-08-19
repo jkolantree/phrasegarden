@@ -112,19 +112,19 @@ increased are not progress by themselves.
 
 ## Freeze, build, and same-byte promotion
 
-The active Preview 4 procedure derives complete committed-source identity with
-the pinned ADR-033 adapter. The Preview 3 adapter remains available only for
-historical verification:
+The active Preview 5 procedure derives complete committed-source identity with
+the pinned release adapter. Preview 3 and Preview 4 adapters remain available
+for historical verification:
 
 ```text
-python -B scripts/preview4-package.py freeze-source --source-commit <S4>
-python -B scripts/preview4-package.py verify-source --source-commit <S4>
+python -B scripts/preview5-package.py freeze-source --source-commit <S5>
+python -B scripts/preview5-package.py verify-source --source-commit <S5>
 ```
 
-`S4` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
+`S5` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
 The first command exclusively creates the fixed ignored
-`artifacts/release/preview4-source-manifest.json`; the second reconstructs and
-byte-compares it without rewriting. The canonical closed JSON binds `S4`, its
+`artifacts/release/preview5-source-manifest.json`; the second reconstructs and
+byte-compares it without rewriting. The canonical closed JSON binds `S5`, its
 tree, and every regular `100644` blob by portable path, mode, length, and
 SHA-256. It is derived from size/type-preflighted and typed-rehashed Git
 objects. Exact index and bounded raw-worktree checks are equality gates only.
@@ -143,8 +143,8 @@ profiles, packs, recipes, authored surfaces, catalogs, builder, validators,
 tests, fixtures and ledger snapshot, rubric/configuration, and model settings
 if any. The complete-tree source manifest is that source inventory;
 hand-maintained path lists are not. Qualification records reference its hash. A
-schema-1 release manifest records declared source `S4` and hashes distributable
-bytes only. The exact seven-path packaging commit has sole parent `S4`; its
+schema-1 release manifest records declared source `S5` and hashes distributable
+bytes only. The exact seven-path packaging commit has sole parent `S5`; its
 release-evidence record binds the source-manifest hash and qualification
 results alongside that manifest, archive, and checksum append. Tool stdout is
 diagnostic, not qualification evidence. No deterministic layer thereby proves

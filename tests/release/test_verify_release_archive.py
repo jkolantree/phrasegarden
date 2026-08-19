@@ -24,6 +24,7 @@ MODULE = runpy.run_path(str(ROOT / "scripts" / "release_archive_verifier.py"))
 RELEASE_SPECS = MODULE["RELEASE_SPECS"]
 PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
 PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
+PREVIEW5_SPEC = RELEASE_SPECS["preview5"]
 verify_checksums = MODULE["verify_checksums"]
 require_checksum = MODULE["require_checksum"]
 load_manifest = MODULE["load_manifest"]
@@ -93,32 +94,41 @@ def fixture_regular_bytes(path: Path) -> bytes:
     return path.read_bytes()
 
 
-def preview4_parent_ledger(value: bytes | None = None) -> bytes:
+def release_parent_ledger(spec, value: bytes | None = None) -> bytes:
     raw = (ROOT / CHECKSUM_PATH).read_bytes() if value is None else value
-    binding = PREVIEW4_SPEC.parent_ledger_binding
+    binding = spec.parent_ledger_binding
     if binding is None:
-        raise AssertionError("Preview 4 predecessor binding is missing")
+        raise AssertionError(f"{spec.id} predecessor binding is missing")
     length, expected_digest = binding
     parent = raw[:length]
     if (len(parent), digest(parent)) != (length, expected_digest) or not parent.endswith(b"\n"):
-        raise AssertionError("Preview 4 predecessor ledger bytes do not match")
+        raise AssertionError(f"{spec.id} predecessor ledger bytes do not match")
     fixture_ledger_rows(parent)
     return parent
 
 
-def preview4_append_rows() -> tuple[bytes, bytes]:
+def release_append_rows(spec) -> tuple[bytes, bytes] | None:
+    paths = (ROOT / spec.final_archive, ROOT / spec.final_manifest)
+    present = tuple(path.exists() for path in paths)
+    if present == (False, False):
+        return None
+    if present != (True, True):
+        raise AssertionError(f"{spec.id} release outputs are partial")
     rows = []
-    for path in (PREVIEW4_SPEC.final_archive, PREVIEW4_SPEC.final_manifest):
-        value = fixture_regular_bytes(ROOT / path)
-        rows.append(f"{digest(value)}  {path.as_posix()}\n".encode("ascii"))
+    for release_path, path in zip(
+        (spec.final_archive, spec.final_manifest), paths, strict=True
+    ):
+        value = fixture_regular_bytes(path)
+        rows.append(f"{digest(value)}  {release_path.as_posix()}\n".encode("ascii"))
     return rows[0], rows[1]
 
 
-def validate_preview4_ledger_state(value: bytes) -> list[tuple[str, str]]:
-    parent = preview4_parent_ledger(value)
-    archive, manifest = preview4_append_rows()
-    if value not in (parent, parent + archive + manifest):
-        raise AssertionError("Preview 4 ledger state is not exact")
+def validate_release_ledger_state(spec, value: bytes) -> list[tuple[str, str]]:
+    parent = release_parent_ledger(spec, value)
+    appended = release_append_rows(spec)
+    valid = (parent,) if appended is None else (parent, parent + b"".join(appended))
+    if value not in valid:
+        raise AssertionError(f"{spec.id} ledger state is not exact")
     return fixture_ledger_rows(value)
 
 
@@ -169,8 +179,8 @@ def build_package(
     run_git(root, "init", "--object-format=sha1", "--template=")
     run_git(root, "config", "user.name", "Synthetic test")
     run_git(root, "config", "user.email", "test@example.invalid")
-    if spec.id == "preview4":
-        parent_ledger = preview4_parent_ledger()
+    if spec.parent_ledger_binding is not None:
+        parent_ledger = release_parent_ledger(spec)
         source_paths = [CHECKSUM_PATH, "package.json"]
         for expected_digest, name in fixture_ledger_rows(parent_ledger):
             value = fixture_regular_bytes(ROOT.joinpath(*name.split("/")))
@@ -261,10 +271,13 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
             manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
             unrelated = root / PREVIEW4_SPEC.final_manifest
             unrelated.write_bytes(b"x" * (MAX_MANIFEST_BYTES + 1))
+            unrelated_p5 = root / PREVIEW5_SPEC.final_manifest
+            unrelated_p5.write_bytes(b"x" * (MAX_MANIFEST_BYTES + 1))
             (root / CHECKSUM_PATH).write_text(
                 f"{digest(archive.read_bytes())}  {archive.relative_to(root).as_posix()}\n"
                 f"{digest(manifest_path.read_bytes())}  {manifest_path.relative_to(root).as_posix()}\n"
-                f"{digest(unrelated.read_bytes())}  {PREVIEW4_SPEC.final_manifest.as_posix()}\n",
+                f"{digest(unrelated.read_bytes())}  {PREVIEW4_SPEC.final_manifest.as_posix()}\n"
+                f"{digest(unrelated_p5.read_bytes())}  {PREVIEW5_SPEC.final_manifest.as_posix()}\n",
                 encoding="utf-8",
             )
             arguments = [
@@ -280,12 +293,16 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
                              (old.returncode, old.stdout, old.stderr))
             self.assertEqual((root / "dist" / "index.html").read_bytes(), old_output)
             shutil.rmtree(root / "dist")
-            preview4 = self.invoke(
-                ROOT / "scripts" / "preview4-verify-release-archive.py", arguments, root
-            )
-            self.assertEqual(preview4.returncode, 1)
-            self.assertIn(b"input byte budget exceeded", preview4.stderr)
-            self.assertFalse((root / "dist").exists())
+            for spec_id in ("preview4", "preview5"):
+                with self.subTest(spec_id=spec_id):
+                    strict = self.invoke(
+                        ROOT / "scripts" / f"{spec_id}-verify-release-archive.py",
+                        arguments,
+                        root,
+                    )
+                    self.assertEqual(strict.returncode, 1)
+                    self.assertIn(b"input byte budget exceeded", strict.stderr)
+                    self.assertFalse((root / "dist").exists())
 
     def test_preview3_qualifying_success_and_order_match_the_base(self) -> None:
         cases = [
@@ -332,12 +349,16 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
         self.assertEqual(core.returncode, 1)
         self.assertEqual(core.stderr.replace(b"\r\n", b"\n"),
                          b"release verifier core requires a pinned adapter\n")
-        preview4 = self.invoke(
-            ROOT / "scripts" / "preview4-verify-release-archive.py", ["--help"], ROOT
-        )
-        self.assertEqual(preview4.returncode, 0)
-        self.assertNotIn(b"--release", preview4.stdout)
-        self.assertNotIn(b"--version", preview4.stdout)
+        for spec_id in ("preview4", "preview5"):
+            with self.subTest(spec_id=spec_id):
+                strict = self.invoke(
+                    ROOT / "scripts" / f"{spec_id}-verify-release-archive.py",
+                    ["--help"],
+                    ROOT,
+                )
+                self.assertEqual(strict.returncode, 0)
+                self.assertNotIn(b"--release", strict.stdout)
+                self.assertNotIn(b"--version", strict.stdout)
         documented = subprocess.run(
             [sys.executable, "-B", "-c", "import runpy;from pathlib import Path;"
              "m=runpy.run_path('scripts/verify-release-archive.py');"
@@ -351,7 +372,7 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
         )
         error = io.StringIO()
         with mock.patch.object(sys, "stderr", error):
-            self.assertEqual(run_for("Preview4"), 1)
+            self.assertEqual(run_for("Preview5"), 1)
         self.assertEqual(error.getvalue(), "release specification ID is unsupported\n")
 
 
@@ -636,11 +657,16 @@ class PackagingCommitValidationTest(unittest.TestCase):
         preview4_exact = (Path(CHECKSUM_PATH), PREVIEW4_SPEC.final_archive,
                           PREVIEW4_SPEC.final_manifest)
         validate_packaging_arguments(PREVIEW4_SPEC, *preview4_exact)
+        preview5_exact = (Path(CHECKSUM_PATH), PREVIEW5_SPEC.final_archive,
+                          PREVIEW5_SPEC.final_manifest)
+        validate_packaging_arguments(PREVIEW5_SPEC, *preview5_exact)
         for changed in [
             (exact[0], Path("other/archive.zip"), exact[2]),
             (exact[0], exact[1], Path("other/manifest.json")),
             (exact[0], PREVIEW4_SPEC.final_archive, exact[2]),
             (exact[0], exact[1], PREVIEW4_SPEC.final_manifest),
+            (exact[0], PREVIEW5_SPEC.final_archive, exact[2]),
+            (exact[0], exact[1], PREVIEW5_SPEC.final_manifest),
             ("./SHA256SUMS", ARCHIVE_PATH, MANIFEST_PATH),
             (CHECKSUM_PATH, ARCHIVE_PATH.replace("/", "\\"), MANIFEST_PATH),
             (CHECKSUM_PATH, ARCHIVE_PATH, MANIFEST_PATH.replace("/", "//", 1)),
@@ -658,18 +684,20 @@ class PackagingCommitValidationTest(unittest.TestCase):
     def test_packaging_manifest_identity_is_exact_for_each_spec(self) -> None:
         preview3 = manifest_for("index.html", b"fixture")
         validate_manifest_identity(PREVIEW3_SPEC, preview3)
-        with self.assertRaisesRegex(ValueError, "releaseVersion"):
-            validate_manifest_identity(PREVIEW4_SPEC, preview3)
-        preview4 = {
-            **preview3,
-            "releaseVersion": PREVIEW4_SPEC.release_version,
-            "artifactName": PREVIEW4_SPEC.archive_name,
-        }
-        validate_manifest_identity(PREVIEW4_SPEC, preview4)
-        with self.assertRaisesRegex(ValueError, "artifactName"):
-            validate_manifest_identity(
-                PREVIEW4_SPEC, {**preview4, "artifactName": PREVIEW3_SPEC.archive_name}
-            )
+        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC):
+            with self.subTest(spec=spec.id):
+                with self.assertRaisesRegex(ValueError, "releaseVersion"):
+                    validate_manifest_identity(spec, preview3)
+                strict = {
+                    **preview3,
+                    "releaseVersion": spec.release_version,
+                    "artifactName": spec.archive_name,
+                }
+                validate_manifest_identity(spec, strict)
+                with self.assertRaisesRegex(ValueError, "artifactName"):
+                    validate_manifest_identity(
+                        spec, {**strict, "artifactName": PREVIEW3_SPEC.archive_name}
+                    )
 
     def test_checksum_budget_is_scoped_to_the_pinned_adapter(self) -> None:
         preview4_manifest = PREVIEW4_SPEC.final_manifest.as_posix()
@@ -679,6 +707,14 @@ class PackagingCommitValidationTest(unittest.TestCase):
         )
         self.assertEqual(
             release_input_limit(PREVIEW4_SPEC, preview4_manifest), MAX_MANIFEST_BYTES
+        )
+        preview5_manifest = PREVIEW5_SPEC.final_manifest.as_posix()
+        self.assertEqual(
+            release_input_limit(PREVIEW4_SPEC, preview5_manifest),
+            MAX_CHECKSUM_TARGET_BYTES,
+        )
+        self.assertEqual(
+            release_input_limit(PREVIEW5_SPEC, preview5_manifest), MAX_MANIFEST_BYTES
         )
     def test_exact_parent_and_path_set_are_required(self) -> None:
         source = "0" * 40
@@ -730,69 +766,82 @@ class PackagingCommitValidationTest(unittest.TestCase):
                 )
         nonregular.assert_called_once()
 
-    def test_preview4_source_identity_is_strict_and_predecessor_bound(self) -> None:
-        ledger = preview4_parent_ledger()
-        values = {
-            "package.json": b'{"version":"0.1.0-preview.4"}\n',
-            **{
-                path.as_posix(): (ROOT / path).read_bytes()
-                for path, _, _ in PREVIEW4_SPEC.predecessor_bindings
-            },
-        }
+    def test_strict_source_identities_are_predecessor_bound(self) -> None:
+        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC):
+            with self.subTest(spec=spec.id):
+                ledger = release_parent_ledger(spec)
+                version = spec.required_package_version
+                values = {
+                    "package.json": f'{{"version":"{version}"}}\n'.encode("ascii"),
+                    **{
+                        path.as_posix(): (ROOT / path).read_bytes()
+                        for path, _, _ in spec.predecessor_bindings
+                    },
+                }
 
-        def reader(_: str, name: str, __: str, ___: int) -> bytes:
-            return values[name]
+                def reader(_: str, name: str, __: str, ___: int) -> bytes:
+                    return values[name]
 
-        with mock.patch.dict(
-            validate_source_release_identity.__globals__,
-            {"read_commit_blob_bounded": reader},
-        ):
-            validate_source_release_identity(PREVIEW4_SPEC, "0" * 40, ledger)
-            for package in [
-                b"{}\n",
-                b'{"version":true}\n',
-                b'{"version":"0.1.0-preview.3"}\n',
-                b'{"version":"0.1.0-preview.4","version":"0.1.0-preview.4"}\n',
-                b'{"version":"0.1.0-preview.4","x":NaN}\n',
-            ]:
-                with self.subTest(package=package):
-                    values["package.json"] = package
-                    with self.assertRaises(ValueError):
-                        validate_source_release_identity(
-                            PREVIEW4_SPEC, "0" * 40, ledger
-                        )
-            values["package.json"] = b'{"version":"0.1.0-preview.4"}\n'
-            with self.assertRaisesRegex(ValueError, "qualified predecessor ledger"):
-                validate_source_release_identity(
-                    PREVIEW4_SPEC, "0" * 40, ledger + b"x"
-                )
-            predecessor = PREVIEW4_SPEC.predecessor_bindings[0][0].as_posix()
-            values[predecessor] += b"x"
-            with self.assertRaisesRegex(ValueError, "byte identity mismatch"):
-                validate_source_release_identity(PREVIEW4_SPEC, "0" * 40, ledger)
+                with mock.patch.dict(
+                    validate_source_release_identity.__globals__,
+                    {"read_commit_blob_bounded": reader},
+                ):
+                    validate_source_release_identity(spec, "0" * 40, ledger)
+                    for package in [
+                        b"{}\n",
+                        b'{"version":true}\n',
+                        b'{"version":"0.1.0-preview.3"}\n',
+                        f'{{"version":"{version}","version":"{version}"}}\n'.encode("ascii"),
+                        f'{{"version":"{version}","x":NaN}}\n'.encode("ascii"),
+                    ]:
+                        with self.subTest(spec=spec.id, package=package):
+                            values["package.json"] = package
+                            with self.assertRaises(ValueError):
+                                validate_source_release_identity(spec, "0" * 40, ledger)
+                    values["package.json"] = f'{{"version":"{version}"}}\n'.encode("ascii")
+                    with self.assertRaisesRegex(ValueError, "qualified predecessor ledger"):
+                        validate_source_release_identity(spec, "0" * 40, ledger + b"x")
+                    predecessor = spec.predecessor_bindings[0][0].as_posix()
+                    values[predecessor] += b"x"
+                    with self.assertRaisesRegex(ValueError, "byte identity mismatch"):
+                        validate_source_release_identity(spec, "0" * 40, ledger)
 
-    def test_preview4_parent_ledger_and_append_states_are_exact(self) -> None:
-        parent = preview4_parent_ledger()
-        archive, manifest = preview4_append_rows()
+    def test_strict_parent_ledgers_accept_only_lifecycle_states(self) -> None:
         current = (ROOT / CHECKSUM_PATH).read_bytes()
-        for valid in (parent, parent + archive + manifest, current):
-            self.assertEqual(validate_preview4_ledger_state(valid), fixture_ledger_rows(valid))
-        invalid = [
-            parent + archive,
-            parent + manifest,
-            parent + manifest + archive,
-            parent + archive + manifest + b"x",
-            parent + b"0" * 64 + archive[64:] + manifest,
-            parent + archive.replace(b"preview.4", b"Preview.4") + manifest,
-            parent + archive.replace(b"pages.zip", b"other.zip") + manifest,
-        ]
-        for value in invalid:
-            with self.subTest(value=value[-120:]), self.assertRaisesRegex(
-                AssertionError, "state is not exact"
-            ):
-                validate_preview4_ledger_state(value)
-        with self.assertRaisesRegex(AssertionError, "do not match"):
-            preview4_parent_ledger(b"x" + parent[1:])
+        self.assertEqual(
+            validate_release_ledger_state(PREVIEW5_SPEC, current),
+            fixture_ledger_rows(current),
+        )
+        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC):
+            with self.subTest(spec=spec.id):
+                parent = release_parent_ledger(spec)
+                self.assertEqual(
+                    validate_release_ledger_state(spec, parent),
+                    fixture_ledger_rows(parent),
+                )
+                appended = release_append_rows(spec)
+                if appended is not None:
+                    archive, manifest = appended
+                    final = parent + archive + manifest
+                    self.assertEqual(
+                        validate_release_ledger_state(spec, final),
+                        fixture_ledger_rows(final),
+                    )
+                    invalid = [
+                        parent + archive,
+                        parent + manifest,
+                        parent + manifest + archive,
+                        final + b"x",
+                        parent + b"0" * 64 + archive[64:] + manifest,
+                        parent + archive.replace(b"preview.", b"Preview.") + manifest,
+                        parent + archive.replace(b"pages.zip", b"other.zip") + manifest,
+                    ]
+                    for value in invalid:
+                        with self.subTest(spec=spec.id, value=value[-120:]), \
+                                self.assertRaisesRegex(AssertionError, "state is not exact"):
+                            validate_release_ledger_state(spec, value)
+                with self.assertRaisesRegex(AssertionError, "do not match"):
+                    release_parent_ledger(spec, b"x" + parent[1:])
 
     def test_fixture_ledger_parser_fails_closed(self) -> None:
         row = b"A" * 64 + b"  release/a.zip\n"
@@ -900,34 +949,38 @@ class PackagingCommitValidationTest(unittest.TestCase):
             finally:
                 os.chdir(original)
 
-    def test_preview4_packaging_commit_binds_the_qualified_predecessor(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="phrasegarden-preview4-package-") as directory:
-            root = Path(directory)
-            _, arguments = build_package(root, PREVIEW4_SPEC)
+    def test_strict_packaging_commits_bind_qualified_predecessors(self) -> None:
+        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC):
+            with self.subTest(spec=spec.id), tempfile.TemporaryDirectory(
+                prefix=f"phrasegarden-{spec.id}-package-"
+            ) as directory:
+                root = Path(directory)
+                _, arguments = build_package(root, spec)
 
-            original = Path.cwd()
-            try:
-                os.chdir(root)
-                result = subprocess.run(
-                    [sys.executable, "-B", str(ROOT / "scripts" /
-                     "preview4-verify-release-archive.py"),
-                     *arguments],
-                    capture_output=True, env=fixture_git_environment())
-                self.assertEqual((result.returncode, result.stderr), (0, b""))
-                self.assertEqual((root / "dist" / "index.html").read_bytes(),
-                                 b"qualified preview4 extraction\n")
-                crossed = subprocess.run(
-                    [sys.executable, "-B", str(ROOT / "scripts" / "verify-release-archive.py"),
-                     *["cross-dist" if item == "dist" else item for item in arguments]],
-                    capture_output=True, env=fixture_git_environment())
-                self.assertEqual(crossed.returncode, 1)
-                self.assertEqual(
-                    crossed.stderr.replace(b"\r\n", b"\n"),
-                    b"packaging arguments do not equal the exact release paths\n",
-                )
-                self.assertFalse((root / "cross-dist").exists())
-            finally:
-                os.chdir(original)
+                original = Path.cwd()
+                try:
+                    os.chdir(root)
+                    result = subprocess.run(
+                        [sys.executable, "-B", str(ROOT / "scripts" /
+                         f"{spec.id}-verify-release-archive.py"), *arguments],
+                        capture_output=True, env=fixture_git_environment())
+                    self.assertEqual((result.returncode, result.stderr), (0, b""))
+                    self.assertEqual((root / "dist" / "index.html").read_bytes(),
+                                     f"qualified {spec.id} extraction\n".encode("ascii"))
+                    crossed = subprocess.run(
+                        [sys.executable, "-B", str(ROOT / "scripts" /
+                         "verify-release-archive.py"),
+                         *["cross-dist" if item == "dist" else item
+                           for item in arguments]],
+                        capture_output=True, env=fixture_git_environment())
+                    self.assertEqual(crossed.returncode, 1)
+                    self.assertEqual(
+                        crossed.stderr.replace(b"\r\n", b"\n"),
+                        b"packaging arguments do not equal the exact release paths\n",
+                    )
+                    self.assertFalse((root / "cross-dist").exists())
+                finally:
+                    os.chdir(original)
 
 
 if __name__ == "__main__":

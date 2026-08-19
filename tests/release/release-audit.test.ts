@@ -89,9 +89,9 @@ describe("release filesystem audit", () => {
         stable: [
           "Versioned release status, evidence, and downloadable assets",
           "Source presence does not\nestablish packaging, publication, or deployment",
-          "## What Preview 4 includes",
-          "The Preview 4 interface and generated instruction surface are English-only.",
-          "Preview 4 cannot assign them",
+          "## What Preview 5 includes",
+          "The Preview 5 interface and generated instruction surface are English-only.",
+          "Preview 5 cannot assign them",
           "Exact Preview 3\nInterpreter regression hashes",
         ],
       },
@@ -105,9 +105,9 @@ describe("release filesystem audit", () => {
         stable: [
           "Checks recorded for Preview 3",
           "Preview 3\nevidence does not include an independent screen-reader matrix",
-          "local Preview 3 build because that surface",
-          "## Preview 4 development delta",
-          "does not establish a Preview 4\nsource freeze, release, deployment",
+          "## Preview 5 development delta",
+          "truthful support and limitation\nnotices precede Copy",
+          "does not establish an independent\nscreen-reader matrix",
         ],
       },
       {
@@ -122,9 +122,9 @@ describe("release filesystem audit", () => {
           "has not yet been packaged",
         ],
         stable: [
-          "This source tree targets PhraseGarden `0.1.0-preview.4`",
+          "This source tree targets PhraseGarden `0.1.0-preview.5`",
           "Source presence does not establish packaging, publication, or\ndeployment.",
-          "not supported by the `0.1.0-preview.4` source",
+          "not supported by the `0.1.0-preview.5` source",
           "Recorded local development evidence includes synthetic IME coverage",
           "code review does not itself establish package, publication, deployment, or",
           "version-bound release\n  evidence for those separate claims",
@@ -146,11 +146,11 @@ describe("release filesystem audit", () => {
           "carries forward the reviewed one-way",
         ],
         stable: [
-          "The `0.1.0-preview.4` source contains",
+          "The `0.1.0-preview.5` source contains",
           "Source presence does not establish package, publication, or\ndeployment status",
           "one-way Interpreter,\nindependently reviewed as product code",
-          "Preview 4 retains identity-only profiles",
-          "PhraseGarden `0.1.0-preview.4` is memory-only",
+          "Preview 5 retains identity-only profiles",
+          "PhraseGarden `0.1.0-preview.5` is memory-only",
         ],
       },
       {
@@ -166,13 +166,12 @@ describe("release filesystem audit", () => {
           "push, tag, release, Pages, and CI-write state must be established from version-bound public evidence",
         ],
         stable: [
-          "PhraseGarden `0.1.0-preview.3` is now a public GitHub prerelease",
-          "Its exact three assets passed final unauthenticated byte verification",
-          "The workflow performed no deployment",
-          "current live serving bytes require a fresh direct check",
-          "source target\nis now `0.1.0-preview.4`",
-          "This repair checkpoint itself establishes no\nreplacement source freeze, package, publication, or deployment",
-          "Preview 3 main, tag, prerelease, and asset bytes established; Pages did not deploy",
+          "PhraseGarden is preparing `0.1.0-preview.5`",
+          "The immutable Preview 4 tag and release assets remain bound to",
+          "failed before upload or deployment",
+          "## Preview 5 source candidate",
+          "No runtime model call",
+          "the already authorized Pages update",
         ],
       },
       {
@@ -190,12 +189,13 @@ describe("release filesystem audit", () => {
           "Actual package,\npublication, and deployment status is established only by version-bound\nrelease evidence",
           "- Preview 2 rollback release:",
           "- Preview 3 public prerelease:",
-          "- Preview 4 target tag: `v0.1.0-preview.4`",
+          "- Preview 4 public prerelease:",
+          "- Preview 5 has no authorized tag or GitHub release",
           "- Preview 1 historical release:",
-          "## Preview 4 publication boundary",
-          "Source: exact source commit `S4`",
-          "Package: exact seven-path child commit `P4`",
-          "Preview 3 did not deploy",
+          "## Preview 5 Pages boundary",
+          "Source: one exact source checkpoint `S5`",
+          "Package: one exact seven-path child `P5`",
+          "Preview 4 tag, prerelease record, and three public release assets were",
         ],
       },
       {
@@ -216,6 +216,9 @@ describe("release filesystem audit", () => {
           "Status: source target; package, publication, and deployment are version-bound",
           "No Preview 4 source freeze, release package, tag, GitHub release, Pages\ndeployment",
           "Preview 3 release assets are byte-qualified",
+          "## 0.1.0-preview.5 — a clearer path from choice to copy",
+          "Status: source target; package, publication, and deployment are version-bound",
+          "Preview 5 adds no\nruntime model detection",
         ],
       },
       {
@@ -228,13 +231,13 @@ describe("release filesystem audit", () => {
           "sole parent `S`",
         ],
         stable: [
-          "python -B scripts/preview4-package.py freeze-source --source-commit <S4>",
-          "python -B scripts/preview4-package.py verify-source --source-commit <S4>",
-          "artifacts/release/preview4-source-manifest.json",
-          "binds `S4`, its",
-          "declared source `S4`",
-          "sole parent `S4`",
-          "Preview 3 adapter remains available only for\nhistorical verification",
+          "python -B scripts/preview5-package.py freeze-source --source-commit <S5>",
+          "python -B scripts/preview5-package.py verify-source --source-commit <S5>",
+          "artifacts/release/preview5-source-manifest.json",
+          "binds `S5`, its",
+          "declared source `S5`",
+          "sole parent `S5`",
+          "Preview 3 and Preview 4 adapters remain available",
         ],
       },
       {
@@ -260,12 +263,12 @@ describe("release filesystem audit", () => {
     }
     const combinedClaims = [...publicClaims.values()].join("\n");
     for (const prohibited of [
-      /Preview 4 (?:assigns|is) (?:Community|Reviewed|Flagship)\b/i,
+      /Preview 5 (?:assigns|is) (?:Community|Reviewed|Flagship)\b/i,
       /English↔Japanese (?:has completed|completed|passed) external linguistic review/i,
-      /Preview 4 (?:is|has been) WCAG conformant/i,
-      /Preview 4 (?:passed|completed) an independent screen-reader matrix/i,
-      /Preview 4 (?:is|has been) (?:published|deployed)\b/i,
-      /Current Pages (?:serves|runs) Preview 4/i,
+      /Preview 5 (?:is|has been) WCAG conformant/i,
+      /Preview 5 (?:passed|completed) an independent screen-reader matrix/i,
+      /Preview 5 (?:is|has been) (?:published|deployed)\b/i,
+      /Current Pages (?:serves|runs) Preview 5/i,
     ]) expect(combinedClaims).not.toMatch(prohibited);
   });
 
@@ -390,12 +393,12 @@ describe("Pages workflow policy", () => {
   const workflow = readFileSync(workflowPath, "utf8").replaceAll("\r\n", "\n");
   const commands = [...workflow.matchAll(/^\s+(?:-\s+)?run:\s*(?:>-\n((?: {10}.+\n?)+)|([^\n]+))/gm)]
     .map((match) => (match[2] ?? match[1]?.trim() ?? "").replace(/\n\s+/g, " "));
-  const p3Manifest = "release/phrasegarden-0.1.0-preview.3-pages-manifest.json";
-  const p3Archive = "release/phrasegarden-0.1.0-preview.3-pages.zip";
   const p4Manifest = "release/phrasegarden-0.1.0-preview.4-pages-manifest.json";
   const p4Archive = "release/phrasegarden-0.1.0-preview.4-pages.zip";
+  const p5Manifest = "release/phrasegarden-0.1.0-preview.5-pages-manifest.json";
+  const p5Archive = "release/phrasegarden-0.1.0-preview.5-pages.zip";
   const occurrences = (value: string): number => workflow.split(value).length - 1;
-  const workflowPolicyHash = "9D07A5D81633AF33FBBAD2251930DF24C9EEE14793D4FB3BB6EE2B7DADF4E98F";
+  const workflowPolicyHash = "EA17BA65FAF116775B4CDCC1DB5143CEF50889CB96B39F3E61A284CA6FF12AA3";
   const packageDocument = JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
     version: string; scripts: Record<string, string>;
   };
@@ -424,11 +427,11 @@ describe("Pages workflow policy", () => {
       "      - name: Confirm browser checks did not alter the qualified bytes\n        run:",
       "      - name: Confirm browser checks did not alter the qualified bytes\n        continue-on-error: true\n        run:")],
     ["alternate checkout", (source) => source.replace(
-      "        with:\n          fetch-depth: 0", "        with:\n          repository: another/public-repository\n          ref: main\n          fetch-depth: 0")],
-    ["recovery bypass", (source) => source.replace("    needs: recovery-harness\n", "")],
-    ["changed qualified commit", (source) => source.replace(
-      "          ref: ed89c07a23526adc99f498eaaa05b7d10c144633",
-      "          ref: 115d71fc8830357d6a57037de446947cf9d7c99d")],
+      "        with:\n          fetch-depth: 2", "        with:\n          repository: another/public-repository\n          ref: main\n          fetch-depth: 2")],
+    ["packaging identity bypass", (source) => source.replace(
+      "          --require-packaging-commit", "          ")],
+    ["changed active archive", (source) => source.replace(
+      p5Archive, p4Archive)],
     ["elevated verify permission", (source) => source.replace(
       "    permissions:\n      contents: read", "    permissions:\n      contents: read\n      issues: write")],
     ["added schedule", (source) => source.replace(
@@ -454,15 +457,12 @@ describe("Pages workflow policy", () => {
     })).toThrow();
   });
 
-  it("pins authority and the complete Preview 4 command chain", () => {
+  it("pins authority and the complete Preview 5 command chain", () => {
     exactWorkflow(workflow);
-    expect(packageDocument.version).toBe("0.1.0-preview.4");
+    expect(packageDocument.version).toBe("0.1.0-preview.5");
     exactPackageScripts(packageScripts);
     const uses = [...workflow.matchAll(/^\s+(?:-\s+)?uses:\s+([^\s#]+)/gm)].map((match) => match[1]);
     expect(uses).toEqual([
-      "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
-      "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1",
-      "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
       "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
       "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1",
       "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
@@ -470,37 +470,35 @@ describe("Pages workflow policy", () => {
       "actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
     ]);
     expect(uses.every((value) => /@[0-9a-f]{40}$/.test(value ?? ""))).toBe(true);
-    expect(workflow.match(/if: github\.ref == 'refs\/heads\/main'/g)).toHaveLength(3);
+    expect(workflow.match(/if: github\.ref == 'refs\/heads\/main'/g)).toHaveLength(2);
     expect(workflow).toContain("permissions: {}");
-    expect(workflow).toMatch(/recovery-harness:\n\s+if:.*\n\s+permissions:\n\s+contents: read/);
-    expect(workflow).toMatch(/verify:\n\s+if:.*\n\s+needs: recovery-harness\n\s+permissions:\n\s+contents: read/);
+    expect(workflow).not.toContain("recovery-harness:");
+    expect(workflow).toMatch(/verify:\n\s+if:.*\n\s+permissions:\n\s+contents: read/);
     expect(workflow).toMatch(/deploy:\n\s+if:.*\n\s+permissions:\n\s+pages: write\n\s+id-token: write/);
-    expect(workflow.match(/fetch-depth:/g)).toHaveLength(2);
-    expect(workflow.match(/fetch-depth: 0/g)).toHaveLength(1);
+    expect(workflow.match(/fetch-depth:/g)).toHaveLength(1);
     expect(workflow.match(/fetch-depth: 2/g)).toHaveLength(1);
-    expect(workflow.match(/persist-credentials: false/g)).toHaveLength(2);
+    expect(workflow.match(/persist-credentials: false/g)).toHaveLength(1);
+    expect(workflow).not.toMatch(/^\s+ref:/m);
     expect(workflow).not.toMatch(/(?:filter|sparse-checkout):/);
     expect(commands).toEqual([
       "pnpm install --frozen-lockfile",
       "python3 -m unittest discover -s tests/release -p 'test_*.py'",
-      "pnpm exec vitest run tests/release/release-audit.test.ts",
-      "test \"$(git rev-parse HEAD)\" = \"ed89c07a23526adc99f498eaaa05b7d10c144633\" && test \"$(git rev-list --parents -n 1 HEAD)\" = \"ed89c07a23526adc99f498eaaa05b7d10c144633 115d71fc8830357d6a57037de446947cf9d7c99d\"",
-      "pnpm install --frozen-lockfile", "pnpm test", "pnpm typecheck",
-      `python3 scripts/preview4-verify-release-archive.py --archive ${p4Archive} --manifest ${p4Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
-      `node scripts/release-audit.mjs ${p4Manifest}`,
+      "pnpm test", "pnpm typecheck",
+      `python3 scripts/preview5-verify-release-archive.py --archive ${p5Archive} --manifest ${p5Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
+      `node scripts/release-audit.mjs ${p5Manifest}`,
       "pnpm exec playwright install --with-deps chromium", "pnpm test:e2e:dist",
-      `node scripts/release-audit.mjs ${p4Manifest}`,
+      `node scripts/release-audit.mjs ${p5Manifest}`,
     ]);
     const extractionStep = workflow.split(/\n(?=      - )/).find((step) => step.includes("Extract the exact qualified Pages archive"));
     expect(extractionStep).toBe([
       "      - name: Extract the exact qualified Pages archive", "        run: >-",
-      "          python3 scripts/preview4-verify-release-archive.py",
-      `          --archive ${p4Archive}`, `          --manifest ${p4Manifest}`,
+      "          python3 scripts/preview5-verify-release-archive.py",
+      `          --archive ${p5Archive}`, `          --manifest ${p5Manifest}`,
       "          --checksums SHA256SUMS", "          --output dist",
       "          --require-packaging-commit",
     ].join("\n"));
     const active = commands.join("\n");
-    expect(active).not.toMatch(/preview\.3|scripts\/verify-release-archive\.py|scripts\/release_archive_verifier\.py|--(?:release|version|spec)\b/);
+    expect(active).not.toMatch(/preview\.[34]|scripts\/verify-release-archive\.py|scripts\/release_archive_verifier\.py|--(?:release|version|spec)\b/);
     const extract = workflow.indexOf("--require-packaging-commit");
     const firstAudit = workflow.indexOf("node scripts/release-audit.mjs");
     const browser = workflow.indexOf("pnpm test:e2e:dist");
@@ -509,8 +507,6 @@ describe("Pages workflow policy", () => {
     expect([extract, firstAudit, browser, secondAudit, upload].every((index) => index >= 0)).toBe(true);
     expect([extract, firstAudit, browser, secondAudit, upload]).toEqual([...[extract, firstAudit, browser, secondAudit, upload]].sort((left, right) => left - right));
     expect(workflow.indexOf("Confirm browser checks")).toBeLessThan(upload);
-    expect(workflow).toContain("ref: ed89c07a23526adc99f498eaaa05b7d10c144633");
-    expect(workflow).toContain("ed89c07a23526adc99f498eaaa05b7d10c144633 115d71fc8830357d6a57037de446947cf9d7c99d");
     expect(workflow).toContain("needs: verify");
     expect(workflow.match(/\n\s+path: dist\n/g)).toHaveLength(1);
   });
@@ -520,11 +516,11 @@ describe("Pages workflow policy", () => {
     expect(paths).toEqual([
       ".github/workflows/pages.yml", "SHA256SUMS", "index.html",
       "package.json", "pnpm-lock.yaml", "playwright.config.ts",
-      p3Manifest, p3Archive, p4Manifest, p4Archive, "scripts/**",
+      p4Manifest, p4Archive, p5Manifest, p5Archive, "scripts/**",
       "src/**", "tests/**", "tsconfig.json", "tsconfig.domain.json",
       "vite.config.ts", "vitest.config.ts",
     ]);
-    expect([occurrences(p3Manifest), occurrences(p3Archive)]).toEqual([1, 1]);
-    expect([occurrences(p4Manifest), occurrences(p4Archive)]).toEqual([4, 2]);
+    expect([occurrences(p4Manifest), occurrences(p4Archive)]).toEqual([1, 1]);
+    expect([occurrences(p5Manifest), occurrences(p5Archive)]).toEqual([4, 2]);
   });
 });

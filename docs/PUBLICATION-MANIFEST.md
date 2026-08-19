@@ -1,7 +1,7 @@
 # Publication manifest
 
 This manifest defines the authorized public repository contents and target
-identity for PhraseGarden `0.1.0-preview.4`. Preview 1 and Preview 2 repository,
+identity for PhraseGarden `0.1.0-preview.5`. Earlier repository,
 release, license, and Pages evidence remains immutable. Actual package,
 publication, and deployment status is established only by version-bound
 release evidence and corresponding public state.
@@ -14,7 +14,8 @@ release evidence and corresponding public state.
 - Repository: <https://github.com/jkolantree/phrasegarden>
 - Preview 2 rollback release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
 - Preview 3 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.3>
-- Preview 4 target tag: `v0.1.0-preview.4`
+- Preview 4 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.4>
+- Preview 5 has no authorized tag or GitHub release in the current Pages plan
 - Preview 1 historical release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place
@@ -36,6 +37,8 @@ release evidence and corresponding public state.
 - `release/phrasegarden-0.1.0-preview.3-pages-manifest.json`
 - `release/phrasegarden-0.1.0-preview.4-pages.zip`
 - `release/phrasegarden-0.1.0-preview.4-pages-manifest.json`
+- `release/phrasegarden-0.1.0-preview.5-pages.zip`
+- `release/phrasegarden-0.1.0-preview.5-pages-manifest.json`
 - `samples/0.1.0-preview.1/**`
 - `scripts/**`
 - `src/**`
@@ -68,10 +71,25 @@ samples. An archive is not by itself evidence of hosted release-download
 identity or UI-mediated download identity. Repository refs, release assets,
 and production responses require separate remote verification.
 
+## Preview 5 Pages boundary
+
+- Version: `0.1.0-preview.5`
+- Source: one exact source checkpoint `S5` and its complete-tree source manifest
+- Package: one exact seven-path child `P5` with sole parent `S5`
+- Immutable predecessor: qualified Preview 4 archive, manifest, and 1,480-byte
+  checksum-ledger prefix
+- Pages target: <https://jkolantree.github.io/phrasegarden/>
+- Git tag and GitHub release: not part of the authorized Pages update
+
+The source target does not establish a Preview 5 source checkpoint, package,
+deployment, production bytes, accessibility conformance, or linguistic review.
+Each claim requires its named version-bound verification evidence.
+
 ## Preview 4 publication boundary
 
 - Version: `0.1.0-preview.4`
-- Target tag: `v0.1.0-preview.4`
+- Public annotated tag: `v0.1.0-preview.4`, targeting exact package commit
+  `ed89c07a23526adc99f498eaaa05b7d10c144633`
 - Source: exact source commit `S4`; qualification requires its exact Preview 4
   source manifest
 - Package: exact seven-path child commit `P4` with sole parent `S4`;
@@ -80,10 +98,9 @@ and production responses require separate remote verification.
 - Pages rollback: the qualified Preview 2 archive; Preview 3 did not deploy
 - Pages target: <https://jkolantree.github.io/phrasegarden/>
 
-This source target does not establish the Preview 4 source freeze, package,
-tag, release, deployment, production bytes, accessibility conformance, or
-linguistic review. Each requires its own version-bound evidence and applicable
-public verification.
+The Preview 4 tag, prerelease record, and three public release assets were
+verified separately. Its captured Pages attempts stopped before deployment;
+that history does not establish current production bytes.
 
 ## Preview 3 publication boundary
 

@@ -149,11 +149,11 @@ function humanize(value: string): string {
 function toolName(recipeId: ActiveRecipeId): string {
   switch (recipeId) {
     case "written-translator":
-      return "Written Translator";
+      return "Translate writing";
     case "live-voice-coach":
-      return "Live Voice Coach";
+      return "Practice speaking";
     case "interpreter":
-      return "Interpreter";
+      return "Translate a conversation";
   }
 }
 
@@ -162,22 +162,28 @@ function pairRailCopy(modality: ActiveModality) {
     case "written":
       return {
         homeKicker: "Translate from",
+        homeLabel: "Text is in",
         homeHelp: "The language of the text you will give the other tool.",
         targetKicker: "Translate into",
+        targetLabel: "Translate to",
         targetHelp: "The language you want the other tool to produce.",
       } as const;
     case "live-voice":
       return {
         homeKicker: "Explain in",
+        homeLabel: "Explain in",
         homeHelp: "The language you want explanations and teaching in.",
         targetKicker: "Practice in",
+        targetLabel: "Practice in",
         targetHelp: "The language you want to practice speaking.",
       } as const;
     case "interpreting":
       return {
         homeKicker: "Translate from",
+        homeLabel: "Turn is in",
         homeHelp: "The language of each turn you give the other tool.",
         targetKicker: "Translate into",
+        targetLabel: "Translate to",
         targetHelp: "The one language the other tool should produce.",
       } as const;
   }
@@ -186,15 +192,15 @@ function pairRailCopy(modality: ActiveModality) {
 function reviewUseInstruction(settings: ActiveSettings): string {
   switch (settings.modality) {
     case "written":
-      return "Paste the prompt first. Send the text you want translated as your next message.";
+      return "Paste the instructions first. Send the text you want translated as your next message.";
     case "live-voice":
-      return "Paste the prompt before practice begins. Voice features still depend on the other tool.";
+      return "Paste the instructions before practice begins. Voice features still depend on the other tool.";
     case "interpreting": {
       const sourceUnit =
         settings.turnMode === "short-relay"
           ? "one short, complete home-language chunk at a time"
           : "one complete home-language turn or message at a time";
-      return `Paste the prompt before interpreting starts. Then give the tool ${sourceUnit}. It translates only into the target language; swap the languages and make another prompt for the reverse direction.`;
+      return `Paste the instructions before interpreting starts. Then give the tool ${sourceUnit}. It translates only into the target language; swap the languages and make another set of instructions for the reverse direction.`;
     }
   }
 }
@@ -324,7 +330,7 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
     <fieldset class="tool-chooser">
       <legend>What do you want help with?</legend>
       <div class="segmented-options">
-        <label for={`${prefix}-written`}>
+        <label class="recommended-tool" for={`${prefix}-written`}>
           <input
             id={`${prefix}-written`}
             type="radio"
@@ -334,46 +340,49 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
             onChange={() => onChange("written-translator")}
           />
           <span>
-            <strong>Written Translator</strong>
+            <strong>
+              Translate writing <small class="recommended-label">Recommended</small>
+            </strong>
             <small>
-              Make instructions for translating text while keeping meaning and
-              tone.
+              For messages, emails, documents, and other written text.
             </small>
           </span>
         </label>
-        <label for={`${prefix}-voice`}>
-          <input
-            id={`${prefix}-voice`}
-            type="radio"
-            name={`${prefix}-tool`}
-            value="live-voice-coach"
-            checked={value === "live-voice-coach"}
-            onChange={() => onChange("live-voice-coach")}
-          />
-          <span>
-            <strong>Live Voice Coach</strong>
-            <small>
-              Make instructions for speaking practice. Audio depends on the
-              other tool.
-            </small>
-          </span>
-        </label>
-        <label for={`${prefix}-interpreter`}>
-          <input
-            id={`${prefix}-interpreter`}
-            type="radio"
-            name={`${prefix}-tool`}
-            value="interpreter"
-            checked={value === "interpreter"}
-            onChange={() => onChange("interpreter")}
-          />
-          <span>
-            <strong>Interpreter</strong>
-            <small>
-              Make one-way instructions for translating each complete turn.
-            </small>
-          </span>
-        </label>
+        <p class="other-tools-label">Other ways to use PhraseGarden</p>
+        <div class="other-tool-options">
+          <label for={`${prefix}-voice`}>
+            <input
+              id={`${prefix}-voice`}
+              type="radio"
+              name={`${prefix}-tool`}
+              value="live-voice-coach"
+              checked={value === "live-voice-coach"}
+              onChange={() => onChange("live-voice-coach")}
+            />
+            <span>
+              <strong>Practice speaking</strong>
+              <small>
+                For conversation practice in an AI tool with voice features.
+              </small>
+            </span>
+          </label>
+          <label for={`${prefix}-interpreter`}>
+            <input
+              id={`${prefix}-interpreter`}
+              type="radio"
+              name={`${prefix}-tool`}
+              value="interpreter"
+              checked={value === "interpreter"}
+              onChange={() => onChange("interpreter")}
+            />
+            <span>
+              <strong>Translate a conversation</strong>
+              <small>
+                For translating each complete turn in one direction.
+              </small>
+            </span>
+          </label>
+        </div>
       </div>
     </fieldset>
   );
@@ -487,7 +496,7 @@ function PairRails({
         <LanguageLabel profile={home} showCode={false} />
         <LanguageSelect
           id={compact ? "builder-home-language" : "home-language"}
-          label="Home language"
+          label={copy.homeLabel}
           help={copy.homeHelp}
           value={home.ref.id}
           excludedId={target.ref.id}
@@ -510,7 +519,7 @@ function PairRails({
         <LanguageLabel profile={target} showCode={false} />
         <LanguageSelect
           id={compact ? "builder-target-language" : "target-language"}
-          label="Target language"
+          label={copy.targetLabel}
           help={copy.targetHelp}
           value={target.ref.id}
           excludedId={home.ref.id}
@@ -558,10 +567,9 @@ function ReviewDirection({
 function CompilerErrors({ issues }: { readonly issues: readonly ValidationIssue[] }) {
   return (
     <section class="error-summary" role="alert" aria-labelledby="error-title">
-      <h2 id="error-title">PhraseGarden couldn't build this prompt</h2>
+      <h2 id="error-title">PhraseGarden couldn't make these instructions</h2>
       <p>
-        Your settings are still here, and no prompt was generated. Please go
-        back and try again.
+        Your settings are still here. Please go back and try again.
       </p>
       <details>
         <summary>Technical error details</summary>
@@ -594,7 +602,7 @@ function ReplacePromptConfirmation({
     >
       <h2 id="replace-prompt-title">Replace your edited copy?</h2>
       <p id="replace-prompt-description">
-        Creating a prompt from these settings will replace the edited copy
+        Making new instructions from these settings will replace the edited copy
         currently in this tab. Copy or download it first if you want to keep
         it.
       </p>
@@ -608,7 +616,7 @@ function ReplacePromptConfirmation({
           Keep edited copy
         </button>
         <button type="button" class="primary-action" onClick={onReplace}>
-          Replace and create prompt
+          Replace and make instructions
         </button>
       </div>
     </section>
@@ -617,18 +625,26 @@ function ReplacePromptConfirmation({
 
 export function App() {
   const [view, setView] = useState<View>("home");
+  const [homeChoicesOpen, setHomeChoicesOpen] = useState(false);
   const [configuration, setConfiguration] = useState<RecipeConfiguration>(
     DEFAULT_WRITTEN_CONFIGURATION,
   );
   const [artifact, setArtifact] = useState<ReviewArtifact | null>(null);
   const [announcement, setAnnouncement] = useState(
-    "English to Japanese Written Translator selected.",
+    "English to Japanese Translate writing selected.",
   );
   const [confirmRegenerate, setConfirmRegenerate] = useState(false);
   const [confirmReplacePrompt, setConfirmReplacePrompt] = useState(false);
   const [actionFeedback, setActionFeedback] =
     useState<ActionFeedback | null>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const homeReadyHeadingRef = useRef<HTMLHeadingElement>(null);
+  const homeChoicesHeadingRef = useRef<HTMLHeadingElement>(null);
+  const homeChoicesFocusTargetRef = useRef<"ready" | "choices" | null>(null);
+  const editorRef = useRef<HTMLTextAreaElement>(null);
+  const promptSurfaceRef = useRef<HTMLPreElement>(null);
+  const keepEditsRef = useRef<HTMLButtonElement>(null);
+  const restoreButtonRef = useRef<HTMLButtonElement>(null);
   const composingRef = useRef(false);
   const initialViewRef = useRef(true);
 
@@ -641,9 +657,9 @@ export function App() {
 
   useEffect(() => {
     const titles: Readonly<Record<View, string>> = {
-      home: "PhraseGarden · Portable language prompts",
-      builder: "Build your prompt · PhraseGarden",
-      review: "Review your prompt · PhraseGarden",
+      home: "PhraseGarden · Better instructions for language tools",
+      builder: "Adjust your instructions · PhraseGarden",
+      review: "Use your instructions · PhraseGarden",
     };
     document.title = titles[view];
     if (initialViewRef.current) {
@@ -687,6 +703,30 @@ export function App() {
       globalThis.removeEventListener("beforeunload", protectEditedPrompt);
   }, [artifact?.draft.modified]);
 
+  useEffect(() => {
+    if (artifact?.editing === true) {
+      editorRef.current?.focus();
+    }
+  }, [artifact?.editing]);
+
+  useEffect(() => {
+    if (view !== "home" || homeChoicesFocusTargetRef.current === null) {
+      return;
+    }
+    const target = homeChoicesFocusTargetRef.current;
+    homeChoicesFocusTargetRef.current = null;
+    (target === "choices"
+      ? homeChoicesHeadingRef.current
+      : homeReadyHeadingRef.current
+    )?.focus();
+  }, [homeChoicesOpen, view]);
+
+  useEffect(() => {
+    if (confirmRegenerate) {
+      keepEditsRef.current?.focus();
+    }
+  }, [confirmRegenerate]);
+
   function navigateTo(nextView: View): void {
     setConfirmReplacePrompt(false);
     setActionFeedback(null);
@@ -699,6 +739,17 @@ export function App() {
       globalThis.location.href,
     );
     setView(nextView);
+  }
+
+  function openHomeChoices(): void {
+    homeChoicesFocusTargetRef.current = "choices";
+    setHomeChoicesOpen(true);
+    navigateTo("home");
+  }
+
+  function closeHomeChoices(): void {
+    homeChoicesFocusTargetRef.current = "ready";
+    setHomeChoicesOpen(false);
   }
 
   function announceConfiguration(message: string): void {
@@ -735,11 +786,11 @@ export function App() {
       ),
     );
     const message: Readonly<Record<ActiveRecipeId, string>> = {
-      "written-translator": "Written Translator selected.",
+      "written-translator": "Translate writing selected.",
       "live-voice-coach":
-        "Live Voice Coach selected. Voice-tool abilities reset to I don't know.",
+        "Practice speaking selected. Voice-tool abilities reset to I don't know.",
       interpreter:
-        "Interpreter selected. It translates one way from the home language into the target language.",
+        "Translate a conversation selected. It works in one direction at a time.",
     };
     setAnnouncement(message[recipeId]);
   }
@@ -756,14 +807,14 @@ export function App() {
     if (artifact?.draft.modified === true && !replaceEdited) {
       setConfirmReplacePrompt(true);
       setAnnouncement(
-        "Creating a new prompt would replace your edited copy. Confirmation is required.",
+        "Making new instructions would replace your edited copy. Confirmation is required.",
       );
       return;
     }
     const current = compilePresentation(configuration);
     if (!current.ok) {
       setAnnouncement(
-        "PhraseGarden couldn't create this prompt. Your settings are still here.",
+        "PhraseGarden couldn't make these instructions. Your settings are still here.",
       );
       return;
     }
@@ -777,7 +828,6 @@ export function App() {
     setConfirmReplacePrompt(false);
     setActionFeedback(null);
     navigateTo("review");
-    setAnnouncement("Your prompt is ready.");
   }
 
   async function copyPrompt(): Promise<void> {
@@ -793,14 +843,14 @@ export function App() {
       setActionFeedback({
         kind: "success",
         message: artifact.draft.modified
-          ? "Your edited prompt was copied."
-          : "Your prompt was copied.",
+          ? "Your edited instructions were copied."
+          : "Your instructions were copied.",
       });
     } catch {
       setActionFeedback({
         kind: "error",
         message:
-          "Copy was not available. Select the visible prompt text and copy it manually.",
+          "Copy was not available. Select the visible instruction text and copy it manually.",
       });
     }
   }
@@ -840,7 +890,7 @@ export function App() {
       setActionFeedback({
         kind: "error",
         message:
-          "Download could not start. Select the visible prompt text and copy it manually.",
+          "Download could not start. Select the visible instruction text and copy it manually.",
       });
     }
   }
@@ -878,12 +928,15 @@ export function App() {
     setConfirmRegenerate(false);
     setConfirmReplacePrompt(false);
     setActionFeedback(null);
-    setAnnouncement("The original generated prompt was restored.");
+    setAnnouncement("The original generated instructions were restored.");
+    globalThis.requestAnimationFrame(() => promptSurfaceRef.current?.focus());
   }
 
-  const currentStatus = presentation.ok ? (
-    <SupportStatus provenance={presentation.result.provenance} />
-  ) : null;
+  function keepEditedCopy(): void {
+    setConfirmRegenerate(false);
+    globalThis.requestAnimationFrame(() => restoreButtonRef.current?.focus());
+  }
+
   const visibleLimitations =
     artifact === null ? [] : reviewLimitations(artifact.result);
   const visibleWarnings =
@@ -908,15 +961,18 @@ export function App() {
           <button
             class="wordmark"
             type="button"
-            onClick={() => navigateTo("home")}
+            onClick={() => {
+              setHomeChoicesOpen(false);
+              navigateTo("home");
+            }}
             aria-label="PhraseGarden home"
           >
             <span aria-hidden="true" class="wordmark-weave" />
             PhraseGarden
           </button>
-          <p class="privacy-status">
+          <p class="privacy-status" aria-label="Session only; not saved">
             <span class="privacy-dot" aria-hidden="true" />
-            Session only · not saved
+            <span class="privacy-long">Session only · </span>not saved
           </p>
         </div>
       </header>
@@ -928,93 +984,64 @@ export function App() {
         <main id="main-content" class="page home-page">
           <section class="hero">
             <h1 id="page-title" ref={headingRef} tabIndex={-1}>
-              Make a better translation prompt.
+              Keep your meaning when AI translates.
             </h1>
             <p class="hero-copy">
-              <strong>No prompt skills needed.</strong> Choose two languages and
-              what you want to do. PhraseGarden makes instructions you copy
-              into another AI chat or language tool. Put the words you want
-              translated there—not here.
+              Choose languages and what you want to do. PhraseGarden makes
+              reusable instructions for another AI chat or language tool.
+              Copy the instructions there, then send the words you want
+              translated. <strong>Your text never comes here.</strong>
             </p>
           </section>
 
-          {artifact === null && (
+          {!homeChoicesOpen && (
             <section
-              class="mobile-quick-start"
-              aria-labelledby="mobile-quick-start-title"
+              class="home-start-card"
+              aria-labelledby="ready-choices-title"
             >
-              <p class="eyebrow">Quick start</p>
-              <h2 id="mobile-quick-start-title">
-                {publicLanguageName(configuration.languages.home.id)}
-                {" to "}
-                {publicLanguageName(configuration.languages.target.id)}
-                {" · "}
-                {toolName(configuration.recipe.id)}
-              </h2>
-              <p>These choices are ready. You can change them below.</p>
-              <button
-                type="button"
-                class="primary-action"
-                onClick={() => generatePrompt()}
-                disabled={!presentation.ok}
-              >
-                Create with these choices
-              </button>
-            </section>
-          )}
-
-          <section class="home-weave" aria-labelledby="choose-direction">
-            <h2 id="choose-direction" class="section-title">
-              Choose your languages
-            </h2>
-            <PairRails
-              configuration={configuration}
-              onHome={(id) =>
-                selectLanguages(
-                  id,
-                  configuration.languages.target.id,
-                )
-              }
-              onTarget={(id) =>
-                selectLanguages(
-                  configuration.languages.home.id,
-                  id,
-                )
-              }
-              onSwap={() =>
-                selectLanguages(
-                  configuration.languages.target.id,
-                  configuration.languages.home.id,
-                )
-              }
-            />
-            <div class="home-task-panel">
-              {presentation.ok ? (
-                <SupportStatus
-                  compact
-                  provenance={presentation.result.provenance}
-                />
-              ) : null}
-              <ToolChooser
-                prefix="home"
-                value={configuration.recipe.id}
-                onChange={chooseTool}
-              />
-              <div class="home-actions">
+              <div class="home-start-summary">
+                <p class="eyebrow" aria-hidden="true">Ready to start</p>
+                <h2
+                  id="ready-choices-title"
+                  ref={homeReadyHeadingRef}
+                  tabIndex={-1}
+                >
+                  <span class="sr-only">Ready to start: </span>
+                  {publicLanguageName(configuration.languages.home.id)}
+                  <span aria-hidden="true"> → </span>
+                  <span class="sr-only"> to </span>
+                  {publicLanguageName(configuration.languages.target.id)}
+                </h2>
+                <p class="ready-tool">{toolName(configuration.recipe.id)}</p>
+                {presentation.ok ? (
+                  <SupportStatus
+                    compact
+                    provenance={presentation.result.provenance}
+                  />
+                ) : null}
+              </div>
+              <div class="home-start-actions">
                 <button
                   type="button"
                   class="primary-action primary-action-large"
                   onClick={() => generatePrompt()}
                   disabled={!presentation.ok}
                 >
-                  Create my prompt
+                  Make my instructions
                 </button>
                 <button
                   type="button"
                   class="secondary-action"
                   onClick={() => navigateTo("builder")}
                 >
-                  Adjust optional settings
+                  Adjust tone or context
+                </button>
+                <button
+                  type="button"
+                  class="text-action"
+                  onClick={openHomeChoices}
+                >
+                  Change languages or task
                 </button>
                 {artifact !== null && (
                   <button
@@ -1022,23 +1049,105 @@ export function App() {
                     class="text-action"
                     onClick={() => navigateTo("review")}
                   >
-                    Return to current prompt
+                    Return to current instructions
                   </button>
                 )}
               </div>
-              <p class="quick-start-note">
-                {configuration.settings.modality === "interpreting"
-                  ? "One direction at a time. Swap the languages and create another prompt for the reverse direction."
-                  : "The defaults work for most people. Optional settings are there if tone or teaching details matter."}
-              </p>
               {confirmReplacePrompt && (
                 <ReplacePromptConfirmation
                   onKeep={() => navigateTo("review")}
                   onReplace={() => generatePrompt(true)}
                 />
               )}
-            </div>
-          </section>
+            </section>
+          )}
+
+          {homeChoicesOpen && (
+            <section class="home-weave" aria-labelledby="choose-direction">
+              <div class="home-choices-heading">
+                <div>
+                  <p class="eyebrow">Change choices</p>
+                  <h2
+                    id="choose-direction"
+                    class="section-title"
+                    ref={homeChoicesHeadingRef}
+                    tabIndex={-1}
+                  >
+                    Choose languages and task
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  class="text-action"
+                  onClick={closeHomeChoices}
+                >
+                  Use current choices
+                </button>
+              </div>
+              <PairRails
+                configuration={configuration}
+                onHome={(id) =>
+                  selectLanguages(
+                    id,
+                    configuration.languages.target.id,
+                  )
+                }
+                onTarget={(id) =>
+                  selectLanguages(
+                    configuration.languages.home.id,
+                    id,
+                  )
+                }
+                onSwap={() =>
+                  selectLanguages(
+                    configuration.languages.target.id,
+                    configuration.languages.home.id,
+                  )
+                }
+              />
+              <div class="home-task-panel">
+                {presentation.ok ? (
+                  <SupportStatus
+                    compact
+                    provenance={presentation.result.provenance}
+                  />
+                ) : null}
+                <ToolChooser
+                  prefix="home"
+                  value={configuration.recipe.id}
+                  onChange={chooseTool}
+                />
+                <div class="home-actions">
+                  <button
+                    type="button"
+                    class="primary-action primary-action-large"
+                    onClick={() => generatePrompt()}
+                    disabled={!presentation.ok}
+                  >
+                    Make my instructions
+                  </button>
+                  <button
+                    type="button"
+                    class="secondary-action"
+                    onClick={() => navigateTo("builder")}
+                  >
+                    Adjust tone or context
+                  </button>
+                </div>
+                <p class="quick-start-note">
+                  {configuration.settings.modality === "interpreting"
+                    ? "One direction at a time. Swap the languages and make another set of instructions for the reverse direction."
+                    : "The defaults work for most people. Adjust tone or context only when it matters."}
+                </p>
+                {confirmReplacePrompt && (
+                  <ReplacePromptConfirmation
+                    onKeep={() => navigateTo("review")}
+                    onReplace={() => generatePrompt(true)}
+                  />
+                )}
+              </div>
+            </section>
+          )}
 
           <section class="proof-strip" aria-label="PhraseGarden promises">
             <p>
@@ -1050,15 +1159,14 @@ export function App() {
             <p>
               <strong>Session only</strong>
               <span>
-                Settings, prompts, and edits disappear when you refresh or
+                Settings, instructions, and edits disappear when you refresh or
                 close this tab.
               </span>
             </p>
             <p>
               <strong>Take it with you</strong>
               <span>
-                Copy or download plain text for a compatible AI or language
-                tool.
+                Copy or download plain text for a compatible AI or language tool.
               </span>
             </p>
           </section>
@@ -1070,38 +1178,36 @@ export function App() {
           <div class="page-heading">
             <p class="eyebrow">Optional settings</p>
             <h1 id="page-title" ref={headingRef} tabIndex={-1}>
-              Adjust how the prompt should work
+              Adjust tone and context
             </h1>
             <p>
-              Most people can use the defaults. Change only what matters for
-              tone, corrections, turn handling, or teaching; your source text
-              stays outside PhraseGarden.
+              The defaults work for most people. Change only what matters for
+              this situation; your source text stays outside PhraseGarden.
             </p>
           </div>
 
-          <PairRails
-            compact
-            configuration={configuration}
-            onHome={(id) =>
-              selectLanguages(
-                id,
-                configuration.languages.target.id,
-              )
-            }
-            onTarget={(id) =>
-              selectLanguages(
-                configuration.languages.home.id,
-                id,
-              )
-            }
-            onSwap={() =>
-              selectLanguages(
-                configuration.languages.target.id,
-                configuration.languages.home.id,
-              )
-            }
-          />
-          {currentStatus}
+          <section class="builder-setup" aria-labelledby="current-setup-title">
+            <div>
+              <p class="eyebrow">Current setup</p>
+              <h2 id="current-setup-title">
+                {publicLanguageName(configuration.languages.home.id)}
+                <span aria-hidden="true"> → </span>
+                <span class="sr-only"> to </span>
+                {publicLanguageName(configuration.languages.target.id)}
+                <span class="setup-tool">
+                  <span aria-hidden="true"> · </span>
+                  {toolName(configuration.recipe.id)}
+                </span>
+              </h2>
+            </div>
+            <button
+              type="button"
+              class="text-action"
+              onClick={openHomeChoices}
+            >
+              Change languages or task
+            </button>
+          </section>
 
           <form
             class="builder-form"
@@ -1110,12 +1216,6 @@ export function App() {
               generatePrompt();
             }}
           >
-            <ToolChooser
-              prefix="builder"
-              value={configuration.recipe.id}
-              onChange={chooseTool}
-            />
-
             <div class="settings-weave">
               <fieldset class="settings-side settings-home">
                 <legend>
@@ -1301,7 +1401,7 @@ export function App() {
                       label="How much to interpret at once"
                       value={configuration.settings.turnMode}
                       values={INTERPRETER_TURN_MODES}
-                      help="The other tool must receive the complete turn or chunk. This prompt cannot detect where it ends."
+                      help="The other tool must receive the complete turn or chunk. These instructions cannot detect where it ends."
                       onChange={(value) =>
                         setCommon(
                           (current) =>
@@ -1530,30 +1630,30 @@ export function App() {
               )}
             </details>
 
-            {presentation.ok ? (
-              <BehaviorSummary summary={presentation.summary} />
-            ) : (
-              <CompilerErrors issues={presentation.issues} />
-            )}
+            {!presentation.ok && <CompilerErrors issues={presentation.issues} />}
 
             <div class="form-actions">
               <button
                 type="button"
                 class="text-action"
-                onClick={() =>
-                  navigateTo(artifact === null ? "home" : "review")
-                }
+                onClick={() => {
+                  if (artifact === null) {
+                    openHomeChoices();
+                  } else {
+                    navigateTo("review");
+                  }
+                }}
               >
                 {artifact === null
-                  ? "Back to languages and tool"
-                  : "Back to current prompt"}
+                  ? "Change languages or task"
+                  : "Back to current instructions"}
               </button>
               <button
                 type="submit"
                 class="primary-action"
                 disabled={!presentation.ok}
               >
-                {artifact === null ? "Create my prompt" : "Update prompt"}
+                {artifact === null ? "Make my instructions" : "Update instructions"}
               </button>
             </div>
             {confirmReplacePrompt && (
@@ -1561,6 +1661,12 @@ export function App() {
                 onKeep={() => navigateTo("review")}
                 onReplace={() => generatePrompt(true)}
               />
+            )}
+            {presentation.ok && (
+              <details class="builder-protection">
+                <summary>See exactly what PhraseGarden will protect</summary>
+                <BehaviorSummary summary={presentation.summary} />
+              </details>
             )}
           </form>
         </main>
@@ -1571,11 +1677,11 @@ export function App() {
           <div class="page-heading review-heading">
             <p class="eyebrow">Ready to use</p>
             <h1 id="page-title" ref={headingRef} tabIndex={-1}>
-              Your prompt is ready
+              Your instructions are ready
             </h1>
             <p>
-              Use this prompt in another AI or language tool that accepts
-              instructions. PhraseGarden does not send or run it.
+              Copy these instructions into another AI or language tool.
+              PhraseGarden does not send or run them.
             </p>
           </div>
 
@@ -1585,16 +1691,18 @@ export function App() {
 
           <div class="review-handoff-grid">
             <div class="review-notices">
-              <SupportStatus provenance={artifact.result.provenance} />
+              <SupportStatus compact provenance={artifact.result.provenance} />
 
               {hasReviewNotices && (
                 <section
-                  class="limitations"
+                  class="limitations limitations-compact"
                   aria-labelledby="limitations-title"
                   data-testid="limitations"
                 >
-                  <p class="eyebrow">Good to know</p>
-                  <h2 id="limitations-title">Before you use this prompt</h2>
+                  <p class="eyebrow">Before you copy</p>
+                  <h2 id="limitations-title" class="sr-only">
+                    Known limitations
+                  </h2>
                   <ul>
                     {visibleLimitations.map((code) => (
                       <li key={code}>
@@ -1616,30 +1724,20 @@ export function App() {
               aria-labelledby="handoff-title"
               data-testid="prompt-handoff"
             >
-              <p class="eyebrow">What to do next</p>
-              <h2 id="handoff-title">Copy it, then use it elsewhere</h2>
-              <ol>
-                <li>
-                  <strong>Copy or download this prompt.</strong>
-                </li>
-                <li>
-                  Open a new conversation or instruction field in a compatible
-                  AI chat or language tool.
-                </li>
-                <li>
-                  {reviewUseInstruction(
-                    artifact.result.normalizedConfiguration.settings,
-                  )}
-                </li>
-              </ol>
-              <div class="prompt-actions" aria-label="Prompt actions">
+              <p class="eyebrow">Next step</p>
+              <h2 id="handoff-title">Copy, then paste elsewhere</h2>
+              <p class="handoff-lead">
+                Paste these instructions into a new AI chat or language tool
+                before you begin.
+              </p>
+              <div class="prompt-actions" aria-label="Instruction actions">
                 <button
                   type="button"
                   class="primary-action"
                   onClick={() => void copyPrompt()}
                   data-testid="copy-prompt"
                 >
-                  Copy prompt
+                  Copy instructions
                 </button>
                 <button
                   type="button"
@@ -1650,6 +1748,40 @@ export function App() {
                   Download text file
                 </button>
               </div>
+              <div class="handoff-secondary-actions">
+                <button
+                  type="button"
+                  class="text-action"
+                  onClick={() => navigateTo("builder")}
+                >
+                  Adjust tone or context
+                </button>
+                <button
+                  type="button"
+                  class="text-action"
+                  onClick={() => {
+                    setHomeChoicesOpen(false);
+                    navigateTo("home");
+                  }}
+                >
+                  Start another set
+                </button>
+              </div>
+              <details class="handoff-steps">
+                <summary>Step-by-step</summary>
+                <ol>
+                  <li>Copy or download these instructions.</li>
+                  <li>
+                    Open a new conversation or instruction field in a
+                    compatible AI chat or language tool.
+                  </li>
+                  <li>
+                    {reviewUseInstruction(
+                      artifact.result.normalizedConfiguration.settings,
+                    )}
+                  </li>
+                </ol>
+              </details>
               {actionFeedback !== null && (
                 <p
                   class={`handoff-feedback handoff-feedback-${actionFeedback.kind}`}
@@ -1676,18 +1808,18 @@ export function App() {
 
           <BehaviorSummary
             summary={artifact.summary}
-            title="What this prompt asks the tool to do"
+            title="What these instructions ask the tool to do"
             review
           />
 
           <section class="prompt-review" aria-labelledby="prompt-title">
             <div class="prompt-toolbar">
               <div>
-                <p class="eyebrow">Prompt text · English</p>
+                <p class="eyebrow">Instruction text · English</p>
                 <h2 id="prompt-title">
                   {artifact.draft.modified
                     ? "Your edited copy"
-                    : "Original generated prompt"}
+                    : "Complete generated instructions"}
                 </h2>
                 {artifact.draft.modified && (
                   <p class="modified-status" role="status">
@@ -1698,14 +1830,21 @@ export function App() {
               </div>
             </div>
 
+            <p id="complete-text-note" class="prompt-visibility-note">
+              Every line is present in the reading area below. Copy and
+              download include the complete text.
+            </p>
+
             {artifact.editing ? (
               <label class="edited-prompt-label" for="edited-prompt">
                 <span>Your edited copy</span>
                 <textarea
+                  ref={editorRef}
                   id="edited-prompt"
                   lang="en"
                   dir="ltr"
                   spellcheck={false}
+                  aria-describedby="complete-text-note"
                   value={artifact.draft.editedText}
                   onCompositionStart={() => {
                     composingRef.current = true;
@@ -1726,10 +1865,12 @@ export function App() {
               </label>
             ) : (
               <pre
+                ref={promptSurfaceRef}
                 class="prompt-surface"
                 lang="en"
                 dir="ltr"
                 tabIndex={0}
+                aria-describedby="complete-text-note"
                 data-testid="canonical-prompt"
               >
                 {artifact.draft.canonicalText}
@@ -1749,10 +1890,11 @@ export function App() {
                     )
                   }
                 >
-                  Edit this copy
+                  Edit these instructions
                 </button>
               )}
               <button
+                ref={restoreButtonRef}
                 type="button"
                 class="text-action"
                 onClick={() => {
@@ -1763,27 +1905,28 @@ export function App() {
                   }
                 }}
               >
-                Restore generated original
+                Restore generated instructions
               </button>
             </div>
 
             {confirmRegenerate && (
               <div
                 class="regenerate-confirmation"
-                role="group"
+                role="alertdialog"
                 aria-labelledby="regenerate-title"
                 aria-describedby="regenerate-description"
               >
                 <h3 id="regenerate-title">Discard your edits?</h3>
                 <p id="regenerate-description">
                   This will discard your edits and restore the original
-                  generated prompt for this session.
+                  generated instructions for this session.
                 </p>
                 <div>
                   <button
+                    ref={keepEditsRef}
                     type="button"
                     class="secondary-action"
-                    onClick={() => setConfirmRegenerate(false)}
+                    onClick={keepEditedCopy}
                   >
                     Keep my edits
                   </button>
@@ -1802,8 +1945,8 @@ export function App() {
           <details class="provenance">
             <summary>Technical details and versions</summary>
             <p>
-              These details identify exactly how the original prompt was made.
-              If you edit the prompt, they do not verify your changes.
+              These details identify exactly how the original instructions were
+              made. If you edit them, the details do not verify your changes.
             </p>
             <dl>
               <div>
@@ -1901,17 +2044,27 @@ export function App() {
           <div class="review-footer-actions">
             <button
               type="button"
-              class="text-action"
-              onClick={() => navigateTo("builder")}
+              class="primary-action"
+              onClick={() => void copyPrompt()}
             >
-              Adjust optional settings
+              Copy instructions
             </button>
             <button
               type="button"
               class="text-action"
-              onClick={() => navigateTo("home")}
+              onClick={() => navigateTo("builder")}
             >
-              Start another prompt
+              Adjust tone or context
+            </button>
+            <button
+              type="button"
+              class="text-action"
+              onClick={() => {
+                setHomeChoicesOpen(false);
+                navigateTo("home");
+              }}
+            >
+              Start another set
             </button>
           </div>
         </main>

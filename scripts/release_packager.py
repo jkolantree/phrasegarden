@@ -258,13 +258,20 @@ CLOSED_SPEC_PATHS = {
                  "release/phrasegarden-0.1.0-preview.4-pages-manifest.json",
                  "docs/evidence/releases/0.1.0-preview.4.md",
                  "docs/work-packages/PREVIEW-4-PUBLICATION.md"),
+    "preview5": ("artifacts/release/preview5-source-manifest.json",
+                 "artifacts/release/preview5-package-stage",
+                 "release/phrasegarden-0.1.0-preview.5-pages.zip",
+                 "release/phrasegarden-0.1.0-preview.5-pages-manifest.json",
+                 "docs/evidence/releases/0.1.0-preview.5.md",
+                 "docs/work-packages/PREVIEW-5-PUBLICATION.md"),
 }
 
 def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
-    if tuple(specs) != ("preview3", "preview4"):
+    if tuple(specs) != ("preview3", "preview4", "preview5"):
         fail("E-RELEASE-SPEC", "release specification IDs are not exact")
     expected = (("preview3", "0.1.0-preview.3"),
-                ("preview4", "0.1.0-preview.4"))
+                ("preview4", "0.1.0-preview.4"),
+                ("preview5", "0.1.0-preview.5"))
     identity_paths: list[str] = []
     for (spec_id, version), (key, spec) in zip(expected, specs.items(), strict=True):
         if (key != spec_id or spec.id != spec_id
@@ -289,7 +296,7 @@ def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
             fail("E-RELEASE-SPEC", "release specification path is invalid")
     if len({path.lower() for path in identity_paths}) != len(identity_paths):
         fail("E-RELEASE-SPEC", "release specification paths collide")
-    preview3, preview4 = specs.values()
+    preview3, preview4, preview5 = specs.values()
     if (preview3.parent_ledger_binding is not None or preview3.predecessor_bindings
             or preview4.parent_ledger_binding != (1244,
                 "E65D2D74EF7374B65E12B7898F54D83164093C267B090D0E4E7EC95B578DEA2A")
@@ -297,7 +304,14 @@ def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
                 (preview3.final_archive, 179217,
                  "48C2A6CE0233C1BE66018E4C8A3915040DB5ADCBCFF3C40BA33B534F8E21DAFA"),
                 (preview3.final_manifest, 976,
-                 "C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F"))):
+                 "C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F"))
+            or preview5.parent_ledger_binding != (1480,
+                "CB04A67C584205E12527C3FE3C5666B809BFD18CAE5F1E3ADCA51C5255E7FB7F")
+            or preview5.predecessor_bindings != (
+                (preview4.final_archive, 179438,
+                 "1797FE8289D44D8192EA5AFCE04A364B5F46A2E09A8F378598C4A71F1FE2A463"),
+                (preview4.final_manifest, 976,
+                 "3F89B96D42EFD4D39B0713BFC7058FB0065B6CAB96CCB3BB3785A7395CBB86C5"))):
         fail("E-RELEASE-SPEC", "release predecessor policy is invalid")
 
 _preview3 = make_release_spec("preview3", "0.1.0-preview.3")
@@ -311,13 +325,25 @@ _preview4 = make_release_spec(
         (_preview3.final_manifest, 976,
          "C72862B522305104CC135C00FC31CC47881D8F9DCC6232B77CE027738D9D3B5F")),
 )
+_preview5 = make_release_spec(
+    "preview5", "0.1.0-preview.5",
+    parent_ledger_binding=(1480,
+        "CB04A67C584205E12527C3FE3C5666B809BFD18CAE5F1E3ADCA51C5255E7FB7F"),
+    predecessor_bindings=(
+        (_preview4.final_archive, 179438,
+         "1797FE8289D44D8192EA5AFCE04A364B5F46A2E09A8F378598C4A71F1FE2A463"),
+        (_preview4.final_manifest, 976,
+         "3F89B96D42EFD4D39B0713BFC7058FB0065B6CAB96CCB3BB3785A7395CBB86C5")),
+)
 RELEASE_SPECS: Mapping[str, ReleaseSpec] = MappingProxyType({
     _preview3.id: _preview3,
     _preview4.id: _preview4,
+    _preview5.id: _preview5,
 })
 validate_release_specs(RELEASE_SPECS)
 PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
 PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
+PREVIEW5_SPEC = RELEASE_SPECS["preview5"]
 
 def resolve_release_spec(spec_id: str) -> ReleaseSpec:
     if type(spec_id) is not str or spec_id not in RELEASE_SPECS:
@@ -953,8 +979,8 @@ def require_fresh_final(spec: ReleaseSpec) -> None:
     require_directories(root, spec.final_archive.parent.parts, create=False)
     if (path_entry_exists(root / spec.final_archive)
             or path_entry_exists(root / spec.final_manifest)):
-        message = ("Preview 3 final output already exists" if spec.id == "preview3"
-                   else "Preview 4 final output already exists")
+        message = ("Preview " + spec.id.removeprefix("preview")
+                   + " final output already exists")
         fail("E-PACKAGE-FINAL-EXISTS", message)
 
 def verify_package_stage(spec: ReleaseSpec, source_commit: str) -> dict[str, object]:

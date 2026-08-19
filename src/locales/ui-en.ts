@@ -6,7 +6,7 @@ export const LIMITATION_MESSAGES_EN: Readonly<Record<string, string>> = {
   "L-PREVIEW-EXTERNAL-REVIEW":
     "This language direction uses guidance built into PhraseGarden. Independent language review is not complete.",
   "L-GENERIC-NO-PAIR-GUIDANCE":
-    "PhraseGarden has no built-in guide for this language direction. This prompt uses general guidance only.",
+    "PhraseGarden has no built-in guide for this language direction. These instructions use general guidance only.",
   "L-EN-JA-UNKNOWN-NAME-READING":
     "Spelling alone is not enough to know how an unfamiliar Japanese name is pronounced.",
   "L-JA-EN-UNKNOWN-NAME-READING":
@@ -35,7 +35,7 @@ export const WARNING_MESSAGES_EN: Readonly<
   Record<CompilerWarningCode, string>
 > = {
   "W-GENERIC-LIMITED":
-    "This Generic prompt uses general guidance only. It has no guidance written for this exact language direction.",
+    "These Generic instructions use general guidance only. They have no guidance written for this exact language direction.",
   "W-PREVIEW-EXTERNAL-REVIEW":
     "This Preview guidance has not completed independent language review.",
   "W-USER-EVIDENCE-UNKNOWN":
@@ -57,7 +57,7 @@ export const WARNING_MESSAGES_EN: Readonly<
   "W-PRONUNCIATION-TRANSCRIPT":
     "A transcript cannot show what you actually pronounced.",
   "W-PROMPT-BUDGET":
-    "This prompt is close to PhraseGarden's maximum prompt size.",
+    "These instructions are close to PhraseGarden's maximum size.",
 };
 
 export const OPTION_LABELS_EN: Readonly<Record<string, string>> = {

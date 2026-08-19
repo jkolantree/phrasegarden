@@ -27,6 +27,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 BASE = "3a2cfd0f81a6a9513991eef4f3b1e604185536bc"
 SCRIPT = ROOT / "scripts" / "preview3-package.py"
 P4_SCRIPT = ROOT / "scripts" / "preview4-package.py"
+P5_SCRIPT = ROOT / "scripts" / "preview5-package.py"
 CORE = ROOT / "scripts" / "release_packager.py"
 MODULE = runpy.run_path(str(CORE))
 ENGINE_GLOBALS = MODULE["main"].__globals__
@@ -35,6 +36,7 @@ ReleaseSpec = MODULE["ReleaseSpec"]
 RELEASE_SPECS = MODULE["RELEASE_SPECS"]
 PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
 PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
+PREVIEW5_SPEC = RELEASE_SPECS["preview5"]
 build_source_manifest = partial(MODULE["build_source_manifest"], PREVIEW3_SPEC)
 canonical_repo_path = MODULE["canonical_repo_path"]
 commit_tree = MODULE["commit_tree"]
@@ -114,6 +116,14 @@ def bound_parent_ledger(spec: ReleaseSpec) -> bytes:
     return parent
 
 
+def adapter_for(spec: ReleaseSpec) -> Path:
+    return {
+        PREVIEW3_SPEC.id: SCRIPT,
+        PREVIEW4_SPEC.id: P4_SCRIPT,
+        PREVIEW5_SPEC.id: P5_SCRIPT,
+    }[spec.id]
+
+
 @contextmanager
 def repository(version: str = PREVIEW3_SPEC.release_version):
     temporary = tempfile.TemporaryDirectory(prefix="phrasegarden-source-test-")
@@ -150,14 +160,14 @@ def package_repository(spec: ReleaseSpec = PREVIEW3_SPEC):
         (root / "SHA256SUMS").write_bytes(
             f"{digest}  release/old.zip\n".encode("ascii")
         )
-        if spec is PREVIEW4_SPEC:
+        if spec.parent_ledger_binding is not None:
             (root / "SHA256SUMS").write_bytes(bound_parent_ledger(spec))
             for path in spec.predecessor_paths:
                 value = (ROOT / path).read_bytes()
                 target = root / path
                 target.write_bytes(value)
         git(root, "add", ".gitignore", "SHA256SUMS", "release/old.zip")
-        if spec is PREVIEW4_SPEC:
+        if spec.parent_ledger_binding is not None:
             git(root, "add", *(path.as_posix() for path in spec.predecessor_paths))
         head = commit(root, "package source")
         assets = root / "dist" / "assets"
@@ -165,7 +175,7 @@ def package_repository(spec: ReleaseSpec = PREVIEW3_SPEC):
         (root / "dist" / "index.html").write_bytes(b"<!doctype html>\n")
         (assets / "index-a.css").write_bytes(b"body{}\n")
         (assets / "index-b.js").write_bytes(b"console.log('fixture')\n")
-        adapter = P4_SCRIPT if spec is PREVIEW4_SPEC else SCRIPT
+        adapter = adapter_for(spec)
         frozen = tool(root, "freeze-source", head, adapter=adapter)
         if frozen.returncode != 0:
             raise AssertionError(frozen.stderr)
@@ -189,23 +199,27 @@ class ReleaseSpecificationTest(unittest.TestCase):
         self.assertRegex(result.stderr, rf"\A{code}: [^\r\n]+\n\Z")
 
     def test_closed_specs_adapters_and_committed_versions(self) -> None:
-        self.assertEqual(tuple(RELEASE_SPECS), ("preview3", "preview4"))
+        self.assertEqual(tuple(RELEASE_SPECS), ("preview3", "preview4", "preview5"))
         with self.assertRaises(TypeError):
-            RELEASE_SPECS["preview5"] = PREVIEW4_SPEC
+            RELEASE_SPECS["preview6"] = PREVIEW5_SPEC
         for value in ("Preview4", "preview-4", "0.1.0-preview.4"):
             with self.assertRaises(ToolError) as raised:
                 resolve_release_spec(value)
             self.assertEqual(raised.exception.code, "E-RELEASE-SPEC")
         for field in ("source_manifest", "stage_root", "final_archive",
                       "final_manifest", "evidence_path", "publication_contract"):
-            rerouted = replace(PREVIEW4_SPEC,
-                               **{field: Path("changed") / getattr(PREVIEW4_SPEC, field).name})
+            rerouted = replace(PREVIEW5_SPEC,
+                               **{field: Path("changed") / getattr(PREVIEW5_SPEC, field).name})
+            changed = dict(RELEASE_SPECS)
+            changed[PREVIEW5_SPEC.id] = rerouted
             with self.assertRaises(ToolError) as raised:
-                validate_release_specs({"preview3": PREVIEW3_SPEC, "preview4": rerouted})
+                validate_release_specs(changed)
             self.assertEqual(raised.exception.code, "E-RELEASE-SPEC")
         for version, adapter, code in (
             (PREVIEW4_SPEC.release_version, SCRIPT, "E-RELEASE-SOURCE-VERSION"),
             (PREVIEW3_SPEC.release_version, P4_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
+            (PREVIEW5_SPEC.release_version, P4_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
+            (PREVIEW4_SPEC.release_version, P5_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
         ):
             with repository(version) as (root, head):
                 self.assert_failure(tool(root, "freeze-source", head,
@@ -222,56 +236,58 @@ class ReleaseSpecificationTest(unittest.TestCase):
                                     "E-RELEASE-SOURCE-VERSION")
         with repository() as (root, head):
             attempted = subprocess.run(
-                [sys.executable, "-B", str(SCRIPT), "freeze-source",
-                 "--source-commit", head, "--release", "preview4"],
+                 [sys.executable, "-B", str(SCRIPT), "freeze-source",
+                  "--source-commit", head, "--release", "preview5"],
                 cwd=root, env=fixture_git_environment(), capture_output=True, text=True,
             )
             self.assertEqual(attempted.returncode, 2)
             self.assertFalse((root / SOURCE_MANIFEST).exists())
 
-    def test_preview4_stage_and_predecessor_binding(self) -> None:
-        with package_repository(PREVIEW4_SPEC) as (root, head):
-            staged = tool(root, "stage-package", head, adapter=P4_SCRIPT)
-            self.assertEqual(staged.returncode, 0, staged.stderr)
-            manifest = json.loads((root / PREVIEW4_SPEC.stage_manifest).read_bytes())
-            self.assertEqual((manifest["releaseVersion"], manifest["artifactName"]),
-                             (PREVIEW4_SPEC.release_version,
-                              PREVIEW4_SPEC.archive_name))
-            parent = (root / "SHA256SUMS").read_bytes()
-            self.assertTrue((root / PREVIEW4_SPEC.stage_ledger).read_bytes().startswith(parent))
-            self.assert_failure(tool(root, "freeze-source", head),
-                                "E-RELEASE-SOURCE-VERSION")
-        for mutation in ("reorder", "joint", "prefix", "active"):
-            with self.subTest(mutation=mutation), \
-                    package_repository(PREVIEW4_SPEC) as (root, _):
-                source = root / PREVIEW4_SPEC.source_manifest
-                source.unlink()
-                ledger = root / "SHA256SUMS"
-                lines = ledger.read_bytes().splitlines(keepends=True)
-                if mutation == "reorder":
-                    ledger.write_bytes(b"".join([*lines[:-2], lines[-1], lines[-2]]))
-                    git(root, "add", "SHA256SUMS")
-                elif mutation == "joint":
-                    path = PREVIEW4_SPEC.predecessor_paths[0]
-                    value = b"jointly changed predecessor\n"
-                    (root / path).write_bytes(value)
-                    lines[-2] = (f"{hashlib.sha256(value).hexdigest().upper()}  "
-                                 f"{path.as_posix()}\n").encode()
-                    ledger.write_bytes(b"".join(lines))
-                    git(root, "add", "SHA256SUMS", path.as_posix())
-                elif mutation == "prefix":
-                    lines[0] = b"0" * 64 + lines[0][64:]
-                    ledger.write_bytes(b"".join(lines))
-                    git(root, "add", "SHA256SUMS")
-                else:
-                    ledger.write_bytes(ledger.read_bytes() +
-                        f"{'0' * 64}  {PREVIEW4_SPEC.final_archive.as_posix()}\n".encode())
-                    git(root, "add", "SHA256SUMS")
-                head = commit(root, f"{mutation} predecessor")
-                self.assertEqual(tool(root, "freeze-source", head,
-                                      adapter=P4_SCRIPT).returncode, 0)
-                self.assert_failure(tool(root, "stage-package", head,
-                                         adapter=P4_SCRIPT), "E-PACKAGE-PREDECESSOR")
+    def test_strict_stages_and_predecessor_bindings(self) -> None:
+        strict = ((PREVIEW4_SPEC, P4_SCRIPT), (PREVIEW5_SPEC, P5_SCRIPT))
+        for spec, adapter in strict:
+            with self.subTest(spec=spec.id), package_repository(spec) as (root, head):
+                staged = tool(root, "stage-package", head, adapter=adapter)
+                self.assertEqual(staged.returncode, 0, staged.stderr)
+                manifest = json.loads((root / spec.stage_manifest).read_bytes())
+                self.assertEqual((manifest["releaseVersion"], manifest["artifactName"]),
+                                 (spec.release_version, spec.archive_name))
+                parent = (root / "SHA256SUMS").read_bytes()
+                self.assertTrue((root / spec.stage_ledger).read_bytes().startswith(parent))
+                self.assert_failure(tool(root, "freeze-source", head),
+                                    "E-RELEASE-SOURCE-VERSION")
+        for spec, adapter in strict:
+            for mutation in ("reorder", "joint", "prefix", "active"):
+                with self.subTest(spec=spec.id, mutation=mutation), \
+                        package_repository(spec) as (root, _):
+                    source = root / spec.source_manifest
+                    source.unlink()
+                    ledger = root / "SHA256SUMS"
+                    lines = ledger.read_bytes().splitlines(keepends=True)
+                    if mutation == "reorder":
+                        ledger.write_bytes(b"".join([*lines[:-2], lines[-1], lines[-2]]))
+                        git(root, "add", "SHA256SUMS")
+                    elif mutation == "joint":
+                        path = spec.predecessor_paths[0]
+                        value = b"jointly changed predecessor\n"
+                        (root / path).write_bytes(value)
+                        lines[-2] = (f"{hashlib.sha256(value).hexdigest().upper()}  "
+                                     f"{path.as_posix()}\n").encode()
+                        ledger.write_bytes(b"".join(lines))
+                        git(root, "add", "SHA256SUMS", path.as_posix())
+                    elif mutation == "prefix":
+                        lines[0] = b"0" * 64 + lines[0][64:]
+                        ledger.write_bytes(b"".join(lines))
+                        git(root, "add", "SHA256SUMS")
+                    else:
+                        ledger.write_bytes(ledger.read_bytes() +
+                            f"{'0' * 64}  {spec.final_archive.as_posix()}\n".encode())
+                        git(root, "add", "SHA256SUMS")
+                    head = commit(root, f"{mutation} predecessor")
+                    self.assertEqual(tool(root, "freeze-source", head,
+                                          adapter=adapter).returncode, 0)
+                    self.assert_failure(tool(root, "stage-package", head,
+                                             adapter=adapter), "E-PACKAGE-PREDECESSOR")
 
     def test_preview3_golden_bytes_survive_shared_core_extraction(self) -> None:
         with package_repository() as (root, head), \
