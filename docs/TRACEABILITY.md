@@ -661,3 +661,21 @@ linguistic truth, accessibility conformance, deployment, or public identity.
 | `P5-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by an external exact-byte receipt |
 | `P5-PKG-07` | Containing commit has sole parent `S5`, exact seven paths, and passes the pinned verifier plus extraction comparison. | established only by Git and verifier evidence after `P5` exists |
 | `P5-PKG-08` | Main push, Pages run, and current public files are separately observed and byte-checked. | authorized successor action; no tag or GitHub release authorized |
+
+### Preview 6 mobile Review correction and Pages package
+
+Source: exact `S6=f442677f494eb36e0177c023e287a9de47573dbe`, its
+32,705-byte complete-tree manifest, the reviewed three-file distributable, and
+`PREVIEW-6-PUBLICATION.md`. Deterministic checks do not establish deployment,
+accessibility conformance, linguistic truth, or public identity.
+
+| ID | Deterministic or evidence owner | State / next boundary |
+|---|---|---|
+| `P6-PKG-01` | Complete-tree source manifest binds 168 committed `100644` files and raw worktree bytes to `S6`. | verified / `F5F234D3…26DAE` |
+| `P6-PKG-02` | One pinned build and exact three-file audit; JavaScript unchanged from Preview 5. | verified / CSS `DBA6E294…FC73`, JS `542AC0D8…0190`, HTML `F13DEF15…EFDB` |
+| `P6-PKG-03` | Mobile Review truth order, visible labels, 800 px Copy bound, and 44 px action floor. | source assertions + local 600.5 px inspection; Linux Chromium/axe remains CI-owned |
+| `P6-PKG-04` | Canonical stage preserves the 1,716-byte Preview 5 ledger and appends only P6 ZIP then manifest. | two independent stage PASSes |
+| `P6-PKG-05` | One promotion invocation copies reviewed stage exactly. | local ZIP `6A2DC1E3…EA55`, manifest `B9753A92…74F7E`, ledger `82CBC32E…9C4E` |
+| `P6-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by external exact-byte receipt |
+| `P6-PKG-07` | Containing commit has sole parent `S6`, exact seven paths, and passes the pinned verifier. | established only by Git and verifier evidence |
+| `P6-PKG-08` | Main push, Linux browser/axe, Pages deployment, and public-byte comparison are separately observed. | authorized successor action; no tag or GitHub Release authorized |
