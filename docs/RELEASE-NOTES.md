@@ -1,8 +1,36 @@
 # Release notes
 
-## 0.1.0-preview.5 — a clearer path from choice to copy
+## 0.1.0-preview.6 — mobile handoff headroom
 
 Status: source target; package, publication, and deployment are version-bound
+
+### Product behavior
+
+- Changes only narrow-screen Review layout density; prompt bytes, summaries, language
+  identities, recipes, support labels, and privacy behavior remain unchanged.
+- Keeps the truthful support and limitation notices before Copy and retains
+  44 px actions.
+- Targets a Copy-action bottom of no more than 800 px in a 320 × 900 Review
+  viewport, leaving at least 100 px of design headroom.
+
+### Failure boundary
+
+The immutable Preview 5 package passed its deterministic and package checks,
+but Linux Chromium placed Copy at `985.984375` px in the 320 × 900 Review
+viewport, beyond the required `900` px. Pages deployment stopped. Preview 6 is
+a separately versioned correction, not a rewrite or retry of Preview 5.
+
+### Evidence boundary
+
+The target above is not a pass claim. Package, browser, Pages, accessibility,
+and public-byte outcomes require their exact Preview 6 evidence. No tag or
+GitHub Release is authorized by this Pages-only update, and no linguistic-review
+or WCAG conformance claim is added.
+
+## 0.1.0-preview.5 — a clearer path from choice to copy
+
+Status: immutable package candidate; Linux Chromium check failed and Pages
+deployment stopped
 
 ### Product behavior
 
@@ -13,8 +41,9 @@ Status: source target; package, publication, and deployment are version-bound
   Explain in, Practice in, and Turn is in.
 - Places optional relationship, tone, and detail controls first in Builder;
   complete protection detail remains available through progressive disclosure.
-- Keeps the honest support and limitation summary before Copy while fitting the
-  primary handoff into the first 320 × 900 Review viewport.
+- Keeps the honest support and limitation summary before Copy. Its local Edge
+  evidence fit the first 320 × 900 Review viewport, but the exact Linux
+  Chromium release check later failed that bound as recorded above.
 - Keeps the complete generated instructions visible, focusable, editable, and
   byte-identical for Copy and Download inside a bounded reading area.
 - Moves focus into the editor and deliberately manages the discard-edits

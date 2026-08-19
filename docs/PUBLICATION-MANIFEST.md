@@ -1,7 +1,7 @@
 # Publication manifest
 
 This manifest defines the authorized public repository contents and target
-identity for PhraseGarden `0.1.0-preview.5`. Earlier repository,
+identity for PhraseGarden `0.1.0-preview.6`. Earlier repository,
 release, license, and Pages evidence remains immutable. Actual package,
 publication, and deployment status is established only by version-bound
 release evidence and corresponding public state.
@@ -16,6 +16,7 @@ release evidence and corresponding public state.
 - Preview 3 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.3>
 - Preview 4 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.4>
 - Preview 5 has no authorized tag or GitHub release in the current Pages plan
+- Preview 6 has no authorized tag or GitHub release in the current Pages plan
 - Preview 1 historical release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place
@@ -39,6 +40,8 @@ release evidence and corresponding public state.
 - `release/phrasegarden-0.1.0-preview.4-pages-manifest.json`
 - `release/phrasegarden-0.1.0-preview.5-pages.zip`
 - `release/phrasegarden-0.1.0-preview.5-pages-manifest.json`
+- `release/phrasegarden-0.1.0-preview.6-pages.zip`
+- `release/phrasegarden-0.1.0-preview.6-pages-manifest.json`
 - `samples/0.1.0-preview.1/**`
 - `scripts/**`
 - `src/**`
@@ -71,6 +74,22 @@ samples. An archive is not by itself evidence of hosted release-download
 identity or UI-mediated download identity. Repository refs, release assets,
 and production responses require separate remote verification.
 
+## Preview 6 Pages boundary
+
+- Version: `0.1.0-preview.6`
+- Source: one exact source checkpoint `S6` and its complete-tree source manifest
+- Package: one exact seven-path child `P6` with sole parent `S6`
+- Immutable predecessor: the exact Preview 5 archive, manifest, and 1,716-byte
+  checksum-ledger prefix
+- Pages behavior: extract, verify, test, and deploy the exact checked-in Preview
+  6 archive without rebuilding it
+- Pages target: <https://jkolantree.github.io/phrasegarden/>
+- Git tag and GitHub release: not part of the authorized Pages update
+
+The source target does not establish a Preview 6 checkpoint, package,
+deployment, production bytes, accessibility conformance, or linguistic review.
+Each claim requires its named version-bound verification evidence.
+
 ## Preview 5 Pages boundary
 
 - Version: `0.1.0-preview.5`
@@ -81,9 +100,10 @@ and production responses require separate remote verification.
 - Pages target: <https://jkolantree.github.io/phrasegarden/>
 - Git tag and GitHub release: not part of the authorized Pages update
 
-The source target does not establish a Preview 5 source checkpoint, package,
-deployment, production bytes, accessibility conformance, or linguistic review.
-Each claim requires its named version-bound verification evidence.
+The Preview 5 source and package records remain immutable. Its Linux Chromium
+check placed Copy at `985.984375` px in a 320 × 900 Review viewport, beyond the
+required `900` px, so Pages deployment stopped. That failure establishes no
+accessibility conformance or linguistic-review claim.
 
 ## Preview 4 publication boundary
 

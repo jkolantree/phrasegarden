@@ -264,14 +264,21 @@ CLOSED_SPEC_PATHS = {
                  "release/phrasegarden-0.1.0-preview.5-pages-manifest.json",
                  "docs/evidence/releases/0.1.0-preview.5.md",
                  "docs/work-packages/PREVIEW-5-PUBLICATION.md"),
+    "preview6": ("artifacts/release/preview6-source-manifest.json",
+                 "artifacts/release/preview6-package-stage",
+                 "release/phrasegarden-0.1.0-preview.6-pages.zip",
+                 "release/phrasegarden-0.1.0-preview.6-pages-manifest.json",
+                 "docs/evidence/releases/0.1.0-preview.6.md",
+                 "docs/work-packages/PREVIEW-6-PUBLICATION.md"),
 }
 
 def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
-    if tuple(specs) != ("preview3", "preview4", "preview5"):
+    if tuple(specs) != ("preview3", "preview4", "preview5", "preview6"):
         fail("E-RELEASE-SPEC", "release specification IDs are not exact")
     expected = (("preview3", "0.1.0-preview.3"),
                 ("preview4", "0.1.0-preview.4"),
-                ("preview5", "0.1.0-preview.5"))
+                ("preview5", "0.1.0-preview.5"),
+                ("preview6", "0.1.0-preview.6"))
     identity_paths: list[str] = []
     for (spec_id, version), (key, spec) in zip(expected, specs.items(), strict=True):
         if (key != spec_id or spec.id != spec_id
@@ -296,7 +303,7 @@ def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
             fail("E-RELEASE-SPEC", "release specification path is invalid")
     if len({path.lower() for path in identity_paths}) != len(identity_paths):
         fail("E-RELEASE-SPEC", "release specification paths collide")
-    preview3, preview4, preview5 = specs.values()
+    preview3, preview4, preview5, preview6 = specs.values()
     if (preview3.parent_ledger_binding is not None or preview3.predecessor_bindings
             or preview4.parent_ledger_binding != (1244,
                 "E65D2D74EF7374B65E12B7898F54D83164093C267B090D0E4E7EC95B578DEA2A")
@@ -311,7 +318,14 @@ def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
                 (preview4.final_archive, 179438,
                  "1797FE8289D44D8192EA5AFCE04A364B5F46A2E09A8F378598C4A71F1FE2A463"),
                 (preview4.final_manifest, 976,
-                 "3F89B96D42EFD4D39B0713BFC7058FB0065B6CAB96CCB3BB3785A7395CBB86C5"))):
+                 "3F89B96D42EFD4D39B0713BFC7058FB0065B6CAB96CCB3BB3785A7395CBB86C5"))
+            or preview6.parent_ledger_binding != (1716,
+                "0F551D3C522C89244A964E1C0F427C9C3A14B13E2DF3219692529C89DDA19228")
+            or preview6.predecessor_bindings != (
+                (preview5.final_archive, 186175,
+                 "33BB1A8F8FA23B6B5D1DE0D727CA29CC19CBB33861ECD8B611C2C4C76F883458"),
+                (preview5.final_manifest, 976,
+                 "2E48975AC719D689F312A17D8997E4983E13F36245B62BBF1D826F7995E7DEA0"))):
         fail("E-RELEASE-SPEC", "release predecessor policy is invalid")
 
 _preview3 = make_release_spec("preview3", "0.1.0-preview.3")
@@ -335,15 +349,27 @@ _preview5 = make_release_spec(
         (_preview4.final_manifest, 976,
          "3F89B96D42EFD4D39B0713BFC7058FB0065B6CAB96CCB3BB3785A7395CBB86C5")),
 )
+_preview6 = make_release_spec(
+    "preview6", "0.1.0-preview.6",
+    parent_ledger_binding=(1716,
+        "0F551D3C522C89244A964E1C0F427C9C3A14B13E2DF3219692529C89DDA19228"),
+    predecessor_bindings=(
+        (_preview5.final_archive, 186175,
+         "33BB1A8F8FA23B6B5D1DE0D727CA29CC19CBB33861ECD8B611C2C4C76F883458"),
+        (_preview5.final_manifest, 976,
+         "2E48975AC719D689F312A17D8997E4983E13F36245B62BBF1D826F7995E7DEA0")),
+)
 RELEASE_SPECS: Mapping[str, ReleaseSpec] = MappingProxyType({
     _preview3.id: _preview3,
     _preview4.id: _preview4,
     _preview5.id: _preview5,
+    _preview6.id: _preview6,
 })
 validate_release_specs(RELEASE_SPECS)
 PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
 PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
 PREVIEW5_SPEC = RELEASE_SPECS["preview5"]
+PREVIEW6_SPEC = RELEASE_SPECS["preview6"]
 
 def resolve_release_spec(spec_id: str) -> ReleaseSpec:
     if type(spec_id) is not str or spec_id not in RELEASE_SPECS:

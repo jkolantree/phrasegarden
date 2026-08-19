@@ -36,16 +36,22 @@ evidence for this Preview honestly.
 - Synthetic Japanese composition-event coverage
 - Direct visual inspection of the captured rendered screens
 
-## Preview 5 development delta
+## Preview 6 target and Preview 5 failure
 
-The current Preview 5 UX candidate keeps exactly one Home fast path visible at
-1280 × 720 and 320 × 900. At 320 × 900, the truthful support and limitation
-notices precede Copy and the Copy action remains within the first viewport.
-Twelve sequential Microsoft Edge journeys passed with axe, keyboard, focus,
-offline-after-load, IME, bidi, reduced-motion, and reflow coverage. This is
-bounded automated development evidence; it does not establish an independent
-screen-reader matrix, real-device coverage, release deployment, or WCAG
-conformance.
+Preview 5 kept exactly one Home fast path visible in the reviewed desktop and
+mobile states, and its truthful support and limitation notices preceded Copy.
+Its exact Linux Chromium check nevertheless placed the Copy action at
+`985.984375` px in a 320 × 900 Review viewport, beyond the required `900` px.
+Pages deployment therefore stopped; that negative result remains part of the
+immutable Preview 5 record.
+
+Preview 6 changes only narrow-screen Review presentation. Its acceptance target
+keeps the support and limitation notices before Copy, retains 44 px actions,
+and places the Copy action's bottom at no more than `800` px from the viewport
+top, leaving at least 100 px of design headroom at 320 × 900. Passing that
+bound would remain bounded automated evidence; it would not establish an
+independent screen-reader matrix, real-device coverage, release deployment, or
+WCAG conformance.
 
 ## Known gaps
 

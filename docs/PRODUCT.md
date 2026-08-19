@@ -63,21 +63,23 @@ Users cannot select or upgrade a tier. The public Preview derives `Preview` only
 
 ## MVP
 
-The `0.1.0-preview.5` source contains Written Translator, Live Voice Coach, and
+The `0.1.0-preview.6` source contains Written Translator, Live Voice Coach, and
 one-way Interpreter for bundled language profiles, with Preview
 English↔Japanese guidance and conservative Generic fallback. It includes
 language swap, bounded settings, plain-language summaries, visible limitations
 and version provenance, prompt inspection, local editing, copy, and plain-text
 download. Source presence does not establish package, publication, or
 deployment status; those claims require the version-bound release evidence and
-corresponding public state. Preview 5 carries forward the one-way Interpreter,
+corresponding public state. Preview 6 carries forward the one-way Interpreter,
 independently reviewed as product code, and progressive disclosure. It orders
 the interface around the human outcome: one default fast path, optional choices
 first in Builder, support and limitations before Copy, and complete instructions
-in a bounded reading and editing area. It does not claim Gate 3 exit or stable
-readiness.
+in a bounded reading and editing area. Its only change from Preview 5 is
+narrow-screen Review presentation, with a 320 × 900 Copy-position acceptance target
+of no more than 800 px so the handoff has at least 100 px of design headroom.
+It does not claim Gate 3 exit or stable readiness.
 
-Preview 5 retains identity-only profiles for French, German,
+Preview 6 retains identity-only profiles for French, German,
 Italian, Spanish, and region-unspecified Portuguese. These profiles add no
 language-specific prompt clause, pair pack, pronunciation claim, dialect
 claim, or review tier.
@@ -88,7 +90,7 @@ reversible; Review is the informed-use handoff where support, limitations,
 destination compatibility, paste order, and destination privacy are visible
 before Copy and Download.
 
-PhraseGarden `0.1.0-preview.5` is memory-only and intentionally excludes bidirectional or
+PhraseGarden `0.1.0-preview.6` is memory-only and intentionally excludes bidirectional or
 simultaneous interpreting, local recipe storage, import/export, sharing, a
 Japanese interface, service-worker caching, accounts, telemetry, runtime model
 calls, public submissions, and evidence-qualified tier promotion.

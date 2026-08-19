@@ -730,6 +730,8 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   await expectNoAxeViolations(page, "written review");
 
   await page.setViewportSize({ width: 320, height: 900 });
+  await expect(page.getByText("Ready to use", { exact: true })).toBeVisible();
+  await expect(page.getByText("Next step", { exact: true })).toBeVisible();
   const supportBox = await page.getByTestId("support-status").boundingBox();
   const limitationBox = await page.getByTestId("limitations").boundingBox();
   const mobileCopyBox = await page.getByTestId("copy-prompt").boundingBox();
@@ -742,7 +744,7 @@ test("primary Preview, swap, Voice, and Generic journeys stay local", async ({
   expect(limitationBox!.y + limitationBox!.height).toBeLessThanOrEqual(
     mobileCopyBox!.y,
   );
-  expect(mobileCopyBox!.y + mobileCopyBox!.height).toBeLessThanOrEqual(900);
+  expect(mobileCopyBox!.y + mobileCopyBox!.height).toBeLessThanOrEqual(800);
   for (const name of ["Adjust tone or context", "Start another set"]) {
     const actionBox = await page
       .getByRole("button", { name })

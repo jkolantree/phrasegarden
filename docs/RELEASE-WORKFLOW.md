@@ -1,7 +1,7 @@
 # PhraseGarden release workflow
 
 Status: accepted working procedure
-Updated: 2026-08-18
+Updated: 2026-08-19
 
 ## Goal and authority boundary
 
@@ -16,9 +16,11 @@ future authorization boundaries:
 1. **Verify-only CI write:** push one exact source candidate to one named remote
    branch so a named, hash-pinned workflow can run with read-only contents
    permission and no deployment.
-2. **Publication:** push/promote the exact approved source, tag, release assets,
-   and Pages artifact. Authorization must name repository, source SHA, version,
-   tag, asset manifest, Pages target, and rollback artifact.
+2. **Publication:** push or promote only the exact approved source and named
+   public surfaces. Authorization must name the repository, source SHA, version,
+   each included tag or release asset, Pages target, and rollback artifact.
+   Omitted surfaces are not implied; the Preview 6 plan includes Pages but no
+   tag or GitHub Release.
 
 Neither authorization implies the other. No package may infer permission for a
 remote write from the release goal.
@@ -112,19 +114,19 @@ increased are not progress by themselves.
 
 ## Freeze, build, and same-byte promotion
 
-The active Preview 5 procedure derives complete committed-source identity with
-the pinned release adapter. Preview 3 and Preview 4 adapters remain available
-for historical verification:
+The active Preview 6 procedure derives complete committed-source identity with
+the pinned release adapter. Preview 3 through Preview 5 adapters remain
+available for historical verification:
 
 ```text
-python -B scripts/preview5-package.py freeze-source --source-commit <S5>
-python -B scripts/preview5-package.py verify-source --source-commit <S5>
+python -B scripts/preview6-package.py freeze-source --source-commit <S6>
+python -B scripts/preview6-package.py verify-source --source-commit <S6>
 ```
 
-`S5` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
+`S6` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
 The first command exclusively creates the fixed ignored
-`artifacts/release/preview5-source-manifest.json`; the second reconstructs and
-byte-compares it without rewriting. The canonical closed JSON binds `S5`, its
+`artifacts/release/preview6-source-manifest.json`; the second reconstructs and
+byte-compares it without rewriting. The canonical closed JSON binds `S6`, its
 tree, and every regular `100644` blob by portable path, mode, length, and
 SHA-256. It is derived from size/type-preflighted and typed-rehashed Git
 objects. Exact index and bounded raw-worktree checks are equality gates only.
@@ -143,17 +145,18 @@ profiles, packs, recipes, authored surfaces, catalogs, builder, validators,
 tests, fixtures and ledger snapshot, rubric/configuration, and model settings
 if any. The complete-tree source manifest is that source inventory;
 hand-maintained path lists are not. Qualification records reference its hash. A
-schema-1 release manifest records declared source `S5` and hashes distributable
-bytes only. The exact seven-path packaging commit has sole parent `S5`; its
+schema-1 release manifest records declared source `S6` and hashes distributable
+bytes only. The exact seven-path packaging commit has sole parent `S6`; its
 release-evidence record binds the source-manifest hash and qualification
 results alongside that manifest, archive, and checksum append. Tool stdout is
 diagnostic, not qualification evidence. No deterministic layer thereby proves
 that a human review occurred or that a linguistic conclusion is true.
 
-The release build happens once. Tests, archive creation, checksum generation,
-independent review, draft-asset capture, and promotion all consume those exact
-bytes. CI may verify them but must not silently rebuild a second artifact for
-deployment. Any byte mismatch stops publication.
+The Preview 6 release build happens once. Tests, archive creation, checksum
+generation, independent review, draft-asset capture, and promotion all consume
+those exact bytes. Pages CI extracts, verifies, tests, and deploys the exact
+checked-in archive; it must not silently rebuild a second deployment artifact.
+Any byte mismatch stops publication.
 
 After publication, download each release asset through its final unauthenticated
 public URL and each Pages asset through its public URL. Record path, length, and
@@ -179,6 +182,6 @@ Redeploying old server bytes alone is not accepted as rollback evidence.
 ## Publication stop rule
 
 Publication begins only after the user confirms the exact plan. Any changed
-source SHA, tag, version, workflow, asset name/hash/length, Pages target,
-rollback artifact, permission, or transmitted data class voids that
+source SHA, version, workflow, included tag or asset name/hash/length, Pages
+target, rollback artifact, permission, or transmitted data class voids that
 authorization and returns the plan for confirmation.
