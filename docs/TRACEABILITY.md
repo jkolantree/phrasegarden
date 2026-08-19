@@ -618,6 +618,25 @@ Preview 2 Pages rollback remain separate historical evidence.
 
 | ID | Deterministic owner | State / next blocker |
 |---|---|---|
-| `P4-SI-01`–`P4-SI-03` | Exact package/source identity, unchanged authored artifacts, and unchanged tier/review limits. | completed locally; `S4` checkpoint eligibility is conditional on exact-hash administrative PASS |
+| `P4-SI-01`–`P4-SI-03` | Exact package/source identity, unchanged authored artifacts, and unchanged tier/review limits. | checkpoint `S4=115d71fc8830357d6a57037de446947cf9d7c99d` |
 | `P4-SI-04`–`P4-SI-07` | Public-state, accessibility, synthetic-evidence, and pinned-workflow claim separation. | 34/34 focused within 322/322 full Vitest |
-| `P4-SI-08`–`P4-SI-10` | Regressions, exact thirteen-path scope, full local gates, two reviews, and no release output. | repaired fingerprint `4C76985A…8293` received product/language/accessibility and release/security PASSes; ten unchanged substantive paths retain them; Project/Trace/contract carry no substantive verdict and become checkpoint-eligible only under separate exact-hash administrative PASS; when satisfied, the next action is the exact `S4` checkpoint; no Preview 4 artifact |
+| `P4-SI-08`–`P4-SI-10` | Regressions, exact thirteen-path scope, full local gates, two reviews, and no release output. | exact `S4` checkpoint; later source-manifest and package evidence are separately version-bound below |
+
+### Preview 4 frozen source and local package
+
+Source: `S4`, `PREVIEW-4-PUBLICATION.md`, the 30,286-byte source manifest, the
+schema-1 release manifest, the append-only ledger, and
+`docs/evidence/releases/0.1.0-preview.4.md`. Qualification and packaging are
+local evidence only; they do not establish human linguistic truth,
+accessibility conformance, publication, deployment, or public-byte identity.
+
+| ID | Deterministic owner | State / next blocker |
+|---|---|---|
+| `P4-PKG-01` | Complete-tree manifest binds exact `S4`, tree, 156 tracked `100644` files, and 1,679,044 payload bytes. | verified repeatedly / source manifest `FE5D2AEB…3F8B` |
+| `P4-PKG-02` | One successful pinned pnpm 11.9.0 build in the corrected cycle creates exactly three audited distributable files. | verified / exact CSS, JavaScript, and HTML hashes in the evidence record; returned 11.19.0 candidate excluded |
+| `P4-PKG-03` | Full deterministic, Python, type, release-audit, sequential Edge/axe, source-reverify, and direct visual checks consume those bytes. | verified locally / 322/322, 56/56, dual typechecks, 12/12, unchanged audit hashes, 18-capture inspection |
+| `P4-PKG-04` | Deterministic stage binds source manifest, canonical ZIP/manifest, and exact historical-ledger prefix plus two-line append. | verified / exact three stage hashes and two independent fresh-cycle PASSes |
+| `P4-PKG-05` | One recorded promotion invocation copies the reviewed stage without regeneration. | verified locally / final archive `1797FE82…A463`, manifest `3F89B96D…86C5`, ledger `CB04A67C…FB7F`; independent two-bind PASS |
+| `P4-PKG-06` | Exact seven-path content receives independent frozen-byte review before checkpoint. | established only by an external exact-byte receipt; zero findings permit unchanged checkpointing without a status edit |
+| `P4-PKG-07` | Containing commit has sole parent `S4`, exact seven paths, and passes the pinned packaging-commit verifier plus fresh extraction comparison. | established only by Git identity and verifier output after such a commit exists |
+| `P4-PKG-08` | Remote preflight and user confirmation bind repository, commits, tag, asset bytes, Pages target, and rollback before public action. | established only by fresh confirmation and subsequent public evidence after local verification |

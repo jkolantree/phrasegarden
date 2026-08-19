@@ -6,16 +6,16 @@ Updated: 2026-08-18
 
 | Field | Current value |
 |---|---|
-| `activePackage` | `PREVIEW-4-PUBLICATION` source and target-release identity |
-| `state` | `LOCAL_SOURCE_IDENTITY_CHECKPOINT_ELIGIBLE_ON_ADMIN_PASS` |
-| `candidateFingerprint` | repaired fingerprint `4C76985A43A858B3A9CAD394A01553B170D00EF276CD5EBD46DD2AB7DCA78293` received two zero-finding exact-byte PASSes; ten unchanged substantive paths retain them; this Project/Trace/contract status-only closure carries no substantive verdict and is checkpoint-eligible only under a separate exact-hash administrative PASS |
-| `closedAcceptanceIds` | prior IDs; `P4-RT-01`–`P4-RT-08` checkpointed at `c245244`; `P4-AV-01`–`P4-AV-12` checkpointed at `3fc477d`; `P4-PS-01`–`P4-PS-08` checkpointed at `93e74f5`; `P4-SI-01`–`P4-SI-10` completed locally; checkpoint eligibility is conditional on exact-hash administrative PASS for the three status files |
-| `nextKnownBlocker` | no substantive blocker; under an exact-hash administrative PASS for the three status files, checkpoint exactly thirteen paths as `S4`; otherwise stop on the returned issue |
-| `lastCompletedCheck` | repaired 13-path fingerprint: two independent zero-finding PASSes; 34/34 focused, 322/322 full Vitest, dual typechecks and zero-match domain scan; 56/56 Python remains bound to unchanged Python, script, package, and release-spec inputs |
-| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 5; help-text regression 1; Git-boundary review returns 3, resolved by one consolidated redesign; Pages-selector review returns 2; source-identity review return 1 |
-| `frozenManifestHash` | Preview 3 historical source manifest 27,655 bytes, 143 files, SHA-256 `73629B908E38AF22E8601F6C83D8FEA69EA6DF675DD8D5BD35EE2C04459148E2`; no Preview 4 manifest exists |
-| `exactNextAction` | under an exact-hash administrative PASS for Project/Trace/contract, stage and commit exactly thirteen paths as `S4`; otherwise stop |
-| `forbiddenUntil` | no Preview 4 source manifest, release build, package/stage/promotion, push, tag, release, dispatch, deployment, public write, Preview 3 mutation, or Gate 4+ work before `S4` |
+| `activePackage` | `PREVIEW-4-PUBLICATION` local package and evidence boundary |
+| `state` | `LOCAL_PACKAGE_CONDITIONAL_EVIDENCE_SEQUENCE` |
+| `candidateFingerprint` | promoted archive, manifest, and ledger fingerprint `B18F4E0468B15CB8E8947125E634C9AAE5BC20732468FAEE0C3D42FA011F23EC`; exact seven-path review identity remains external because these self-containing documents do not embed their own hash |
+| `closedAcceptanceIds` | prior IDs; `P4-RT-01`–`P4-RT-08` at `c245244`; `P4-AV-01`–`P4-AV-12` at `3fc477d`; `P4-PS-01`–`P4-PS-08` at `93e74f5`; `P4-SI-01`–`P4-SI-10` at exact `S4`; `P4-PKG-01`–`P4-PKG-05` have local evidence; `P4-PKG-06` is established only by an external exact-byte review receipt, `P4-PKG-07` only by Git plus the committed-package verifier, and `P4-PKG-08` only by fresh public-value confirmation |
+| `nextKnownBlocker` | authority-stable sequence: obtain exact-byte review when no `P4-PKG-06` receipt exists; checkpoint unchanged only on zero findings; verify the containing commit when it exists; seek public confirmation only after local verification |
+| `lastCompletedCheck` | the exact seven-path content passed 34/34 focused and 322/322 full Vitest plus release audit after promoted-byte PASS and consolidated claim repair; later state is determined only by the external authorities named above |
+| `retryCounters` | prior counters retained; Preview 3 Pages fold 1; Preview 4 fold repair 1; tooling harness corrections 5; help-text regression 1; Git-boundary review returns 3; Pages-selector review returns 2; source-identity review return 1; Preview 4 returned runtime-mismatch candidate 1; corrected-cycle invalid timing observation 1; promotion retries 0; final-doc claim regression 3, consolidated at the exact stable substring boundary; seven-path temporal review return 1 |
+| `frozenManifestHash` | Preview 4 source manifest: 30,286 bytes, 156 files, SHA-256 `FE5D2AEBB3C325A20753249C5971A16CAADA54E2BFEED906562603F1F26F3F8B`, binding `S4=115d71fc8830357d6a57037de446947cf9d7c99d` and tree `651caf779623e3b9d0ae2be2fa9207ae3f64ce6c` |
+| `exactNextAction` | follow the authority-stable sequence in `nextKnownBlocker` without editing this record between a zero-finding review and checkpoint |
+| `forbiddenUntil` | no push, tag, GitHub release, dispatch, deployment, public write, Preview 1–3 mutation, Gate 4+ work, or release-readiness claim before exact local `P4` verification and fresh exact-value confirmation |
 
 ## Current product state
 
@@ -28,6 +28,14 @@ Chromium viewport. The workflow performed no deployment. Repository evidence
 therefore still treats immutable Preview 2 package
 `6e55e8d142c748de181cd5136076d576d0994e19` as the last qualified Pages
 rollback; current live serving bytes require a fresh direct check.
+
+Exact Preview 4 source
+`S4=115d71fc8830357d6a57037de446947cf9d7c99d` is frozen and locally
+qualified. Its archive, release manifest, append-only checksum ledger, and four
+evidence documents form one exact local seven-path content record. External
+review establishes checkpoint eligibility; Git and the committed-package
+verifier establish `P4`; public evidence establishes any later public state.
+This document does not infer one boundary from another.
 
 The local `release/next` branch adds the independently reviewed Gate 3
 Interpreter at `c2e6104`, process controls at `e293426`, and progressive
@@ -72,6 +80,7 @@ Detailed proof is preserved outside this cursor:
 - [Preview 2 release evidence](evidence/releases/0.1.0-preview.2.md)
 - [Preview 3 local packaging evidence](evidence/releases/0.1.0-preview.3.md)
 - [Preview 3 publication outcome](evidence/releases/0.1.0-preview.3-publication.md)
+- [Preview 4 local packaging evidence](evidence/releases/0.1.0-preview.4.md)
 - [Gate 3 Interpreter evidence](evidence/candidates/gate-3-interpreter.md)
 
 ## Durable boundaries
@@ -139,7 +148,8 @@ Detailed proof is preserved outside this cursor:
 | Preview 4 closed release tooling | completed locally | checkpoint `c245244400858d759176b4d0679c343b700a5fde`; full gates, exact-byte substantive PASS, separate administrative rebind; net 496 |
 | Preview 4 archive verifier | completed locally | checkpoint `3fc477d86e66dbfcf3485b71beccfcadfb9a7291`; 28/28 within 56/56 Python, 312/312 Vitest, dual typechecks, build/audit/scans, two substantive PASSes and separate administrative rebind; net 639 |
 | Preview 4 Pages selector | completed locally | checkpoint `93e74f508cad465d0b1652c2ca4478fd62424fb8`; 34/34 focused, 322/322 full, 56/56 Python, dual typechecks, two substantive PASSes and separate administrative rebind; net 163 |
-| Preview 4 source identity | substantively completed; checkpoint conditional | repaired fingerprint `4C76985A…8293` received independent product/language/accessibility and release/security PASSes; ten substantive paths retain them; three status files carry no substantive verdict and are checkpoint-eligible only under exact-hash administrative PASS; no source manifest, release artifact, package, or public action |
+| Preview 4 source identity | completed locally | exact checkpoint `S4=115d71fc8830357d6a57037de446947cf9d7c99d`; tree `651caf779623e3b9d0ae2be2fa9207ae3f64ce6c`; 13 paths and all source-identity gates/reviews |
+| Preview 4 frozen source and local package | exact local content record | corrected pnpm 11.9.0 cycle; 30,286-byte source manifest; 322/322 Vitest, 56/56 Python, dual typechecks, 12/12 Edge/axe, audits, source rechecks, two staged-byte PASSes, one promotion invocation, and promoted-byte PASS; review, commit, verifier, and public states come only from their named external evidence |
 | Gates 4–6 | skipped by order | no implementation begun |
 | External linguistic review | deferred | Preview labels state the limitation |
 | Model/prospective evaluation | skipped | no model calls and no prospective fixtures consumed |
@@ -175,8 +185,11 @@ The correction reuses the existing design system and permanent browser fixture.
 
 ## Exact next eligible action
 
-Under an exact-hash administrative PASS for Project/Trace/contract, stage and
-commit exactly thirteen source-identity paths as `S4`; otherwise stop on the
-returned issue. Do not create the source
-manifest, release build, package, push, tag, publish, dispatch, deploy, begin
-Gate 4, or claim release readiness before `S4`.
+Apply the authority-stable sequence: if no external exact-byte `P4-PKG-06`
+receipt exists, review the seven paths; if it records zero findings, checkpoint
+the unchanged bytes with sole parent `S4`; if that commit exists, run the pinned
+packaging-commit verifier and fresh byte comparison; only after local
+verification seek confirmation of exact public values. Do not edit this record
+between review and checkpoint. Do not push, tag, publish, dispatch, deploy,
+begin Gate 4, mutate prior releases, or claim release readiness without the
+required later authority.
