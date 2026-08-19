@@ -395,7 +395,7 @@ describe("Pages workflow policy", () => {
   const p4Manifest = "release/phrasegarden-0.1.0-preview.4-pages-manifest.json";
   const p4Archive = "release/phrasegarden-0.1.0-preview.4-pages.zip";
   const occurrences = (value: string): number => workflow.split(value).length - 1;
-  const workflowPolicyHash = "B1008B9F3A25A7E7BA22CBCCD2EA6ABB50387CE66D876207171A6E2DE46CB276";
+  const workflowPolicyHash = "9D07A5D81633AF33FBBAD2251930DF24C9EEE14793D4FB3BB6EE2B7DADF4E98F";
   const packageDocument = JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
     version: string; scripts: Record<string, string>;
   };
@@ -425,6 +425,10 @@ describe("Pages workflow policy", () => {
       "      - name: Confirm browser checks did not alter the qualified bytes\n        continue-on-error: true\n        run:")],
     ["alternate checkout", (source) => source.replace(
       "        with:\n          fetch-depth: 0", "        with:\n          repository: another/public-repository\n          ref: main\n          fetch-depth: 0")],
+    ["recovery bypass", (source) => source.replace("    needs: recovery-harness\n", "")],
+    ["changed qualified commit", (source) => source.replace(
+      "          ref: ed89c07a23526adc99f498eaaa05b7d10c144633",
+      "          ref: 115d71fc8830357d6a57037de446947cf9d7c99d")],
     ["elevated verify permission", (source) => source.replace(
       "    permissions:\n      contents: read", "    permissions:\n      contents: read\n      issues: write")],
     ["added schedule", (source) => source.replace(
@@ -459,21 +463,29 @@ describe("Pages workflow policy", () => {
       "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
       "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1",
       "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+      "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1",
+      "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
       "actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa",
       "actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
     ]);
     expect(uses.every((value) => /@[0-9a-f]{40}$/.test(value ?? ""))).toBe(true);
-    expect(workflow.match(/if: github\.ref == 'refs\/heads\/main'/g)).toHaveLength(2);
+    expect(workflow.match(/if: github\.ref == 'refs\/heads\/main'/g)).toHaveLength(3);
     expect(workflow).toContain("permissions: {}");
-    expect(workflow).toMatch(/verify:\n\s+if:.*\n\s+permissions:\n\s+contents: read/);
+    expect(workflow).toMatch(/recovery-harness:\n\s+if:.*\n\s+permissions:\n\s+contents: read/);
+    expect(workflow).toMatch(/verify:\n\s+if:.*\n\s+needs: recovery-harness\n\s+permissions:\n\s+contents: read/);
     expect(workflow).toMatch(/deploy:\n\s+if:.*\n\s+permissions:\n\s+pages: write\n\s+id-token: write/);
-    expect(workflow.match(/fetch-depth:/g)).toHaveLength(1);
+    expect(workflow.match(/fetch-depth:/g)).toHaveLength(2);
     expect(workflow.match(/fetch-depth: 0/g)).toHaveLength(1);
-    expect(workflow).toContain("persist-credentials: false");
+    expect(workflow.match(/fetch-depth: 2/g)).toHaveLength(1);
+    expect(workflow.match(/persist-credentials: false/g)).toHaveLength(2);
     expect(workflow).not.toMatch(/(?:filter|sparse-checkout):/);
     expect(commands).toEqual([
+      "pnpm install --frozen-lockfile",
+      "python3 -m unittest discover -s tests/release -p 'test_*.py'",
+      "pnpm exec vitest run tests/release/release-audit.test.ts",
+      "test \"$(git rev-parse HEAD)\" = \"ed89c07a23526adc99f498eaaa05b7d10c144633\" && test \"$(git rev-list --parents -n 1 HEAD)\" = \"ed89c07a23526adc99f498eaaa05b7d10c144633 115d71fc8830357d6a57037de446947cf9d7c99d\"",
       "pnpm install --frozen-lockfile", "pnpm test", "pnpm typecheck",
-      "python3 -m unittest tests/release/test_verify_release_archive.py",
       `python3 scripts/preview4-verify-release-archive.py --archive ${p4Archive} --manifest ${p4Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
       `node scripts/release-audit.mjs ${p4Manifest}`,
       "pnpm exec playwright install --with-deps chromium", "pnpm test:e2e:dist",
@@ -497,6 +509,8 @@ describe("Pages workflow policy", () => {
     expect([extract, firstAudit, browser, secondAudit, upload].every((index) => index >= 0)).toBe(true);
     expect([extract, firstAudit, browser, secondAudit, upload]).toEqual([...[extract, firstAudit, browser, secondAudit, upload]].sort((left, right) => left - right));
     expect(workflow.indexOf("Confirm browser checks")).toBeLessThan(upload);
+    expect(workflow).toContain("ref: ed89c07a23526adc99f498eaaa05b7d10c144633");
+    expect(workflow).toContain("ed89c07a23526adc99f498eaaa05b7d10c144633 115d71fc8830357d6a57037de446947cf9d7c99d");
     expect(workflow).toContain("needs: verify");
     expect(workflow.match(/\n\s+path: dist\n/g)).toHaveLength(1);
   });

@@ -30,12 +30,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  verify:
+  recovery-harness:
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -49,12 +49,41 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm test
-      - run: pnpm typecheck
-      - name: Test release-archive fail-closed bindings
-        run: python3 -m unittest tests/release/test_verify_release_archive.py
+      - name: Test the repaired release-tool fixtures
+        run: python3 -m unittest discover -s tests/release -p 'test_*.py'
         env:
           PYTHONDONTWRITEBYTECODE: "1"
+      - name: Test this recovery workflow policy
+        run: pnpm exec vitest run tests/release/release-audit.test.ts
+
+  verify:
+    if: github.ref == 'refs/heads/main'
+    needs: recovery-harness
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ed89c07a23526adc99f498eaaa05b7d10c144633
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Confirm the exact qualified package commit
+        run: >-
+          test "$(git rev-parse HEAD)" = "ed89c07a23526adc99f498eaaa05b7d10c144633" &&
+          test "$(git rev-list --parents -n 1 HEAD)" =
+          "ed89c07a23526adc99f498eaaa05b7d10c144633 115d71fc8830357d6a57037de446947cf9d7c99d"
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4 peeled commit
+        with:
+          version: 11.9.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm typecheck
       - name: Extract the exact qualified Pages archive
         run: >-
           python3 scripts/preview4-verify-release-archive.py

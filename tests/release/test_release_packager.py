@@ -100,6 +100,20 @@ def commit(root: Path, message: str) -> str:
     git(root, "commit", "-q", "-m", message)
     return git(root, "rev-parse", "HEAD").decode("ascii").strip()
 
+
+def bound_parent_ledger(spec: ReleaseSpec) -> bytes:
+    binding = spec.parent_ledger_binding
+    if binding is None:
+        raise AssertionError("release specification has no parent-ledger binding")
+    length, expected_digest = binding
+    current = (ROOT / "SHA256SUMS").read_bytes()
+    parent = current[:length]
+    actual = hashlib.sha256(parent).hexdigest().upper()
+    if len(parent) != length or actual != expected_digest or not parent.endswith(b"\n"):
+        raise AssertionError("qualified parent ledger bytes do not match")
+    return parent
+
+
 @contextmanager
 def repository(version: str = PREVIEW3_SPEC.release_version):
     temporary = tempfile.TemporaryDirectory(prefix="phrasegarden-source-test-")
@@ -137,7 +151,7 @@ def package_repository(spec: ReleaseSpec = PREVIEW3_SPEC):
             f"{digest}  release/old.zip\n".encode("ascii")
         )
         if spec is PREVIEW4_SPEC:
-            (root / "SHA256SUMS").write_bytes((ROOT / "SHA256SUMS").read_bytes())
+            (root / "SHA256SUMS").write_bytes(bound_parent_ledger(spec))
             for path in spec.predecessor_paths:
                 value = (ROOT / path).read_bytes()
                 target = root / path

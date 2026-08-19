@@ -5,6 +5,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import runpy
 import shutil
 import stat
@@ -59,6 +60,68 @@ ARCHIVE_PATH = PREVIEW3_SPEC.final_archive.as_posix()
 def digest(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest().upper()
 
+
+LEDGER_ROW = re.compile(rb"([0-9A-F]{64})  ([A-Za-z0-9][A-Za-z0-9._/-]*)\n")
+
+
+def fixture_ledger_rows(value: bytes) -> list[tuple[str, str]]:
+    if not value or not value.endswith(b"\n"):
+        raise AssertionError("fixture ledger must be nonempty and LF-terminated")
+    rows: list[tuple[str, str]] = []
+    folded: set[str] = set()
+    for line in value.splitlines(keepends=True):
+        matched = LEDGER_ROW.fullmatch(line)
+        if matched is None:
+            raise AssertionError("fixture ledger row is not canonical")
+        name = matched.group(2).decode("ascii")
+        parts = name.split("/")
+        if name.startswith("/") or name.endswith("/") or any(
+            part in ("", ".", "..") for part in parts
+        ):
+            raise AssertionError("fixture ledger path is not canonical")
+        collision = name.lower()
+        if collision in folded:
+            raise AssertionError("fixture ledger path is duplicate or case-colliding")
+        folded.add(collision)
+        rows.append((matched.group(1).decode("ascii"), name))
+    return rows
+
+
+def fixture_regular_bytes(path: Path) -> bytes:
+    if not stat.S_ISREG(path.lstat().st_mode):
+        raise AssertionError(f"fixture path is not a regular file: {path}")
+    return path.read_bytes()
+
+
+def preview4_parent_ledger(value: bytes | None = None) -> bytes:
+    raw = (ROOT / CHECKSUM_PATH).read_bytes() if value is None else value
+    binding = PREVIEW4_SPEC.parent_ledger_binding
+    if binding is None:
+        raise AssertionError("Preview 4 predecessor binding is missing")
+    length, expected_digest = binding
+    parent = raw[:length]
+    if (len(parent), digest(parent)) != (length, expected_digest) or not parent.endswith(b"\n"):
+        raise AssertionError("Preview 4 predecessor ledger bytes do not match")
+    fixture_ledger_rows(parent)
+    return parent
+
+
+def preview4_append_rows() -> tuple[bytes, bytes]:
+    rows = []
+    for path in (PREVIEW4_SPEC.final_archive, PREVIEW4_SPEC.final_manifest):
+        value = fixture_regular_bytes(ROOT / path)
+        rows.append(f"{digest(value)}  {path.as_posix()}\n".encode("ascii"))
+    return rows[0], rows[1]
+
+
+def validate_preview4_ledger_state(value: bytes) -> list[tuple[str, str]]:
+    parent = preview4_parent_ledger(value)
+    archive, manifest = preview4_append_rows()
+    if value not in (parent, parent + archive + manifest):
+        raise AssertionError("Preview 4 ledger state is not exact")
+    return fixture_ledger_rows(value)
+
+
 def manifest_for(path: str, value: bytes) -> dict:
     return {
         "schemaVersion": 1,
@@ -107,13 +170,15 @@ def build_package(
     run_git(root, "config", "user.name", "Synthetic test")
     run_git(root, "config", "user.email", "test@example.invalid")
     if spec.id == "preview4":
-        parent_ledger = (ROOT / CHECKSUM_PATH).read_bytes()
+        parent_ledger = preview4_parent_ledger()
         source_paths = [CHECKSUM_PATH, "package.json"]
-        for line in parent_ledger.decode("ascii").splitlines():
-            name = line.split("  ", 1)[1]
+        for expected_digest, name in fixture_ledger_rows(parent_ledger):
+            value = fixture_regular_bytes(ROOT.joinpath(*name.split("/")))
+            if digest(value) != expected_digest:
+                raise AssertionError(f"fixture ledger digest does not match: {name}")
             target = root.joinpath(*name.split("/"))
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(ROOT.joinpath(*name.split("/")).read_bytes())
+            target.write_bytes(value)
             source_paths.append(name)
     else:
         old = root / "release" / "old.zip"
@@ -279,9 +344,10 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
              "print(len(m['verify_checksums'](Path('SHA256SUMS'))))"],
             cwd=ROOT, capture_output=True,
         )
+        expected_count = len(fixture_ledger_rows((ROOT / CHECKSUM_PATH).read_bytes()))
         self.assertEqual(
             (documented.returncode, documented.stdout.replace(b"\r\n", b"\n")),
-            (0, b"11\n"),
+            (0, f"{expected_count}\n".encode("ascii")),
         )
         error = io.StringIO()
         with mock.patch.object(sys, "stderr", error):
@@ -665,7 +731,7 @@ class PackagingCommitValidationTest(unittest.TestCase):
         nonregular.assert_called_once()
 
     def test_preview4_source_identity_is_strict_and_predecessor_bound(self) -> None:
-        ledger = (ROOT / CHECKSUM_PATH).read_bytes()
+        ledger = preview4_parent_ledger()
         values = {
             "package.json": b'{"version":"0.1.0-preview.4"}\n',
             **{
@@ -704,6 +770,41 @@ class PackagingCommitValidationTest(unittest.TestCase):
             values[predecessor] += b"x"
             with self.assertRaisesRegex(ValueError, "byte identity mismatch"):
                 validate_source_release_identity(PREVIEW4_SPEC, "0" * 40, ledger)
+
+    def test_preview4_parent_ledger_and_append_states_are_exact(self) -> None:
+        parent = preview4_parent_ledger()
+        archive, manifest = preview4_append_rows()
+        current = (ROOT / CHECKSUM_PATH).read_bytes()
+        for valid in (parent, parent + archive + manifest, current):
+            self.assertEqual(validate_preview4_ledger_state(valid), fixture_ledger_rows(valid))
+        invalid = [
+            parent + archive,
+            parent + manifest,
+            parent + manifest + archive,
+            parent + archive + manifest + b"x",
+            parent + b"0" * 64 + archive[64:] + manifest,
+            parent + archive.replace(b"preview.4", b"Preview.4") + manifest,
+            parent + archive.replace(b"pages.zip", b"other.zip") + manifest,
+        ]
+        for value in invalid:
+            with self.subTest(value=value[-120:]), self.assertRaisesRegex(
+                AssertionError, "state is not exact"
+            ):
+                validate_preview4_ledger_state(value)
+        with self.assertRaisesRegex(AssertionError, "do not match"):
+            preview4_parent_ledger(b"x" + parent[1:])
+
+    def test_fixture_ledger_parser_fails_closed(self) -> None:
+        row = b"A" * 64 + b"  release/a.zip\n"
+        invalid = [
+            b"", row[:-1], row.lower(), row.replace(b"/", b"\\"),
+            row.replace(b"release/a.zip", b"release/../a.zip"), row + row,
+            row + row.replace(b"release/a.zip", b"RELEASE/a.zip"),
+        ]
+        for value in invalid:
+            with self.subTest(value=value), self.assertRaises(AssertionError):
+                fixture_ledger_rows(value)
+
     def test_ledger_preserves_parent_and_appends_exactly_two_lines(self) -> None:
         with tempfile.TemporaryDirectory(
             prefix="phrasegarden-ledger-test-"
