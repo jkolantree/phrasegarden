@@ -30,17 +30,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  verify:
+  recovery-harness:
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
           persist-credentials: false
+      - name: Confirm the exact one-shot recovery commit
+        run: >-
+          test "$(git rev-list --parents -n 1 HEAD)" =
+          "$(git rev-parse HEAD) 4e3b6e9fd433c7aae69c8e43747b7e60a5527d1e" &&
+          test "$(git diff-tree --no-commit-id --name-only -r HEAD)" =
+          $'.github/workflows/pages.yml\ntests/release/release-audit.test.ts'
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4 peeled commit
         with:
           version: 11.9.0
@@ -49,10 +55,39 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Test the release-tool fixtures
+      - name: Test the repaired release-tool fixtures
         run: python3 -m unittest discover -s tests/release -p 'test_*.py'
         env:
           PYTHONDONTWRITEBYTECODE: "1"
+      - name: Test this recovery workflow policy
+        run: pnpm exec vitest run tests/release/release-audit.test.ts
+
+  verify:
+    if: github.ref == 'refs/heads/main'
+    needs: recovery-harness
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: 4e3b6e9fd433c7aae69c8e43747b7e60a5527d1e
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Confirm the exact qualified package commit
+        run: >-
+          test "$(git rev-parse HEAD)" = "4e3b6e9fd433c7aae69c8e43747b7e60a5527d1e" &&
+          test "$(git rev-list --parents -n 1 HEAD)" =
+          "4e3b6e9fd433c7aae69c8e43747b7e60a5527d1e 16ad1fbf964e4ee6084457d27208c17ae5d413e9"
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4 peeled commit
+        with:
+          version: 11.9.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm test
       - run: pnpm typecheck
       - name: Extract the exact qualified Pages archive

@@ -397,8 +397,10 @@ describe("Pages workflow policy", () => {
   const p4Archive = "release/phrasegarden-0.1.0-preview.4-pages.zip";
   const p5Manifest = "release/phrasegarden-0.1.0-preview.5-pages-manifest.json";
   const p5Archive = "release/phrasegarden-0.1.0-preview.5-pages.zip";
+  const p5Commit = "4e3b6e9fd433c7aae69c8e43747b7e60a5527d1e";
+  const s5Commit = "16ad1fbf964e4ee6084457d27208c17ae5d413e9";
   const occurrences = (value: string): number => workflow.split(value).length - 1;
-  const workflowPolicyHash = "EA17BA65FAF116775B4CDCC1DB5143CEF50889CB96B39F3E61A284CA6FF12AA3";
+  const workflowPolicyHash = "F044FA6B4637F94630681E8EE1152E33B83BB7B87204A67AE438752DA90452F4";
   const packageDocument = JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
     version: string; scripts: Record<string, string>;
   };
@@ -427,7 +429,15 @@ describe("Pages workflow policy", () => {
       "      - name: Confirm browser checks did not alter the qualified bytes\n        run:",
       "      - name: Confirm browser checks did not alter the qualified bytes\n        continue-on-error: true\n        run:")],
     ["alternate checkout", (source) => source.replace(
-      "        with:\n          fetch-depth: 2", "        with:\n          repository: another/public-repository\n          ref: main\n          fetch-depth: 2")],
+      "        with:\n          fetch-depth: 0", "        with:\n          repository: another/public-repository\n          ref: main\n          fetch-depth: 0")],
+    ["recovery bypass", (source) => source.replace("    needs: recovery-harness\n", "")],
+    ["recovery scope bypass", (source) => source.replace(
+      "      - name: Confirm the exact one-shot recovery commit\n        run:",
+      "      - name: Confirm the exact one-shot recovery commit\n        if: false\n        run:")],
+    ["changed qualified commit", (source) => source.replace(
+      `          ref: ${p5Commit}`, `          ref: ${s5Commit}`)],
+    ["changed qualified parent", (source) => source.replace(
+      `${p5Commit} ${s5Commit}`, `${p5Commit} ${p5Commit}`)],
     ["packaging identity bypass", (source) => source.replace(
       "          --require-packaging-commit", "          ")],
     ["changed active archive", (source) => source.replace(
@@ -466,23 +476,31 @@ describe("Pages workflow policy", () => {
       "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
       "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1",
       "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+      "actions/checkout@11d5960a326750d5838078e36cf38b85af677262",
+      "pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1",
+      "actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
       "actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa",
       "actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e",
     ]);
     expect(uses.every((value) => /@[0-9a-f]{40}$/.test(value ?? ""))).toBe(true);
-    expect(workflow.match(/if: github\.ref == 'refs\/heads\/main'/g)).toHaveLength(2);
+    expect(workflow.match(/if: github\.ref == 'refs\/heads\/main'/g)).toHaveLength(3);
     expect(workflow).toContain("permissions: {}");
-    expect(workflow).not.toContain("recovery-harness:");
-    expect(workflow).toMatch(/verify:\n\s+if:.*\n\s+permissions:\n\s+contents: read/);
+    expect(workflow).toMatch(/recovery-harness:\n\s+if:.*\n\s+permissions:\n\s+contents: read/);
+    expect(workflow).toMatch(/verify:\n\s+if:.*\n\s+needs: recovery-harness\n\s+permissions:\n\s+contents: read/);
     expect(workflow).toMatch(/deploy:\n\s+if:.*\n\s+permissions:\n\s+pages: write\n\s+id-token: write/);
-    expect(workflow.match(/fetch-depth:/g)).toHaveLength(1);
+    expect(workflow.match(/fetch-depth:/g)).toHaveLength(2);
+    expect(workflow.match(/fetch-depth: 0/g)).toHaveLength(1);
     expect(workflow.match(/fetch-depth: 2/g)).toHaveLength(1);
-    expect(workflow.match(/persist-credentials: false/g)).toHaveLength(1);
-    expect(workflow).not.toMatch(/^\s+ref:/m);
+    expect(workflow.match(/persist-credentials: false/g)).toHaveLength(2);
+    expect(workflow.match(/^\s+ref:/gm)).toHaveLength(1);
     expect(workflow).not.toMatch(/(?:filter|sparse-checkout):/);
     expect(commands).toEqual([
+      `test "$(git rev-list --parents -n 1 HEAD)" = "$(git rev-parse HEAD) ${p5Commit}" && test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = $'.github/workflows/pages.yml\\ntests/release/release-audit.test.ts'`,
       "pnpm install --frozen-lockfile",
       "python3 -m unittest discover -s tests/release -p 'test_*.py'",
+      "pnpm exec vitest run tests/release/release-audit.test.ts",
+      `test "$(git rev-parse HEAD)" = "${p5Commit}" && test "$(git rev-list --parents -n 1 HEAD)" = "${p5Commit} ${s5Commit}"`,
+      "pnpm install --frozen-lockfile",
       "pnpm test", "pnpm typecheck",
       `python3 scripts/preview5-verify-release-archive.py --archive ${p5Archive} --manifest ${p5Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
       `node scripts/release-audit.mjs ${p5Manifest}`,
@@ -507,6 +525,8 @@ describe("Pages workflow policy", () => {
     expect([extract, firstAudit, browser, secondAudit, upload].every((index) => index >= 0)).toBe(true);
     expect([extract, firstAudit, browser, secondAudit, upload]).toEqual([...[extract, firstAudit, browser, secondAudit, upload]].sort((left, right) => left - right));
     expect(workflow.indexOf("Confirm browser checks")).toBeLessThan(upload);
+    expect(workflow).toContain(`ref: ${p5Commit}`);
+    expect(workflow).toContain(`${p5Commit} ${s5Commit}`);
     expect(workflow).toContain("needs: verify");
     expect(workflow.match(/\n\s+path: dist\n/g)).toHaveLength(1);
   });
