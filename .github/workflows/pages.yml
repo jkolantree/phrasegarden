@@ -44,7 +44,7 @@ jobs:
       - name: Confirm the exact one-shot recovery commit
         run: >-
           test "$(git rev-list --parents -n 1 HEAD)" =
-          "$(git rev-parse HEAD) 4e3b6e9fd433c7aae69c8e43747b7e60a5527d1e" &&
+          "$(git rev-parse HEAD) 0084b682c3cb172a436dddfba1a2d4448cdaa8ef" &&
           test "$(git diff-tree --no-commit-id --name-only -r HEAD)" =
           $'.github/workflows/pages.yml\ntests/release/release-audit.test.ts'
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4 peeled commit
@@ -101,7 +101,9 @@ jobs:
       - run: >-
           node scripts/release-audit.mjs
           release/phrasegarden-0.1.0-preview.5-pages-manifest.json
-      - run: pnpm exec playwright install --with-deps chromium
+      - name: Install exact Playwright Chromium without OS package refresh
+        timeout-minutes: 10
+        run: pnpm exec playwright install chromium
       - run: pnpm test:e2e:dist
         env:
           PLAYWRIGHT_CHANNEL: chromium

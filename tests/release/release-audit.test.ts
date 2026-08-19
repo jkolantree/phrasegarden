@@ -398,9 +398,10 @@ describe("Pages workflow policy", () => {
   const p5Manifest = "release/phrasegarden-0.1.0-preview.5-pages-manifest.json";
   const p5Archive = "release/phrasegarden-0.1.0-preview.5-pages.zip";
   const p5Commit = "4e3b6e9fd433c7aae69c8e43747b7e60a5527d1e";
+  const firstRecoveryCommit = "0084b682c3cb172a436dddfba1a2d4448cdaa8ef";
   const s5Commit = "16ad1fbf964e4ee6084457d27208c17ae5d413e9";
   const occurrences = (value: string): number => workflow.split(value).length - 1;
-  const workflowPolicyHash = "F044FA6B4637F94630681E8EE1152E33B83BB7B87204A67AE438752DA90452F4";
+  const workflowPolicyHash = "3B09C9D30961A8F55163A8DC2F1D772CC0D3B9122F7C20319FED8505E0D617A1";
   const packageDocument = JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
     version: string; scripts: Record<string, string>;
   };
@@ -495,7 +496,7 @@ describe("Pages workflow policy", () => {
     expect(workflow.match(/^\s+ref:/gm)).toHaveLength(1);
     expect(workflow).not.toMatch(/(?:filter|sparse-checkout):/);
     expect(commands).toEqual([
-      `test "$(git rev-list --parents -n 1 HEAD)" = "$(git rev-parse HEAD) ${p5Commit}" && test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = $'.github/workflows/pages.yml\\ntests/release/release-audit.test.ts'`,
+      `test "$(git rev-list --parents -n 1 HEAD)" = "$(git rev-parse HEAD) ${firstRecoveryCommit}" && test "$(git diff-tree --no-commit-id --name-only -r HEAD)" = $'.github/workflows/pages.yml\\ntests/release/release-audit.test.ts'`,
       "pnpm install --frozen-lockfile",
       "python3 -m unittest discover -s tests/release -p 'test_*.py'",
       "pnpm exec vitest run tests/release/release-audit.test.ts",
@@ -504,7 +505,7 @@ describe("Pages workflow policy", () => {
       "pnpm test", "pnpm typecheck",
       `python3 scripts/preview5-verify-release-archive.py --archive ${p5Archive} --manifest ${p5Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
       `node scripts/release-audit.mjs ${p5Manifest}`,
-      "pnpm exec playwright install --with-deps chromium", "pnpm test:e2e:dist",
+      "pnpm exec playwright install chromium", "pnpm test:e2e:dist",
       `node scripts/release-audit.mjs ${p5Manifest}`,
     ]);
     const extractionStep = workflow.split(/\n(?=      - )/).find((step) => step.includes("Extract the exact qualified Pages archive"));
@@ -525,6 +526,8 @@ describe("Pages workflow policy", () => {
     expect([extract, firstAudit, browser, secondAudit, upload].every((index) => index >= 0)).toBe(true);
     expect([extract, firstAudit, browser, secondAudit, upload]).toEqual([...[extract, firstAudit, browser, secondAudit, upload]].sort((left, right) => left - right));
     expect(workflow.indexOf("Confirm browser checks")).toBeLessThan(upload);
+    expect(workflow).toContain("Install exact Playwright Chromium without OS package refresh\n        timeout-minutes: 10\n        run: pnpm exec playwright install chromium");
+    expect(workflow).not.toContain("playwright install --with-deps");
     expect(workflow).toContain(`ref: ${p5Commit}`);
     expect(workflow).toContain(`${p5Commit} ${s5Commit}`);
     expect(workflow).toContain("needs: verify");
