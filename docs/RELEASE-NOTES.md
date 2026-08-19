@@ -1,5 +1,45 @@
 # Release notes
 
+## 0.1.0-preview.7 — clearer accessibility semantics and Node 24 release pins
+
+Status: source candidate; package, deployment, tag, and GitHub Release status
+require separate version-bound evidence
+
+### Product behavior
+
+- Carries forward Preview 6's exact prompt, compiler, recipe, profile,
+  pair-pack, support-label, and privacy behavior.
+- Gives Home, Builder, and Review one clearly named language-support guidance
+  area, and gives the complete generated instructions named document semantics
+  for accessibility software.
+- Adds automated forced-colors regressions without claiming a manual
+  forced-colors inspection, screen-reader pass, or WCAG conformance.
+- Keeps English↔Japanese labeled Preview because external linguistic review is
+  incomplete. All other directions remain Generic, including
+  region-unspecified Portuguese (`pt`).
+
+### Release infrastructure
+
+- Updates the pinned official GitHub Actions commits to their Node 24-backed
+  releases. This is release infrastructure only; it does not change prompts,
+  language identity, support-tier resolution, privacy, or runtime behavior.
+- Plans the same build-once and same-byte Pages path used by Preview 6. Preview
+  7 must still freeze `S7`, qualify its built bytes, create an exact `P7`
+  packaging child, and compare public bytes after deployment.
+
+### Evidence boundary
+
+Preview 6 remains the exact immutable Pages predecessor: checksum ledger 1,952
+bytes / SHA-256
+`82CBC32E5606F827765983271B248CD7C4788DFE57AB703FD1B94A55432B9C4E`,
+Pages ZIP 186,851 bytes / SHA-256
+`6A2DC1E364F42B64D54034E734233CB09A9166A01F9C6591D182AB40CA81EA55`,
+and manifest 976 bytes / SHA-256
+`B9753A9286D3C8E662ABB7A9244817BFA7EAA2382B262794816527C765074F7E`.
+No Preview 7 package, deployment, public-byte result, manual assistive-
+technology result, or linguistic-review claim follows from the source
+candidate.
+
 ## 0.1.0-preview.6 — mobile handoff headroom
 
 Status: source target; package, publication, and deployment are version-bound

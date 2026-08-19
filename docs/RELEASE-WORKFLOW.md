@@ -19,7 +19,7 @@ future authorization boundaries:
 2. **Publication:** push or promote only the exact approved source and named
    public surfaces. Authorization must name the repository, source SHA, version,
    each included tag or release asset, Pages target, and rollback artifact.
-   Omitted surfaces are not implied; the Preview 6 plan includes Pages but no
+   Omitted surfaces are not implied; the Preview 7 plan includes Pages but no
    tag or GitHub Release.
 
 Neither authorization implies the other. No package may infer permission for a
@@ -114,19 +114,19 @@ increased are not progress by themselves.
 
 ## Freeze, build, and same-byte promotion
 
-The active Preview 6 procedure derives complete committed-source identity with
-the pinned release adapter. Preview 3 through Preview 5 adapters remain
+The active Preview 7 procedure derives complete committed-source identity with
+the pinned release adapter. Preview 3 through Preview 6 adapters remain
 available for historical verification:
 
 ```text
-python -B scripts/preview6-package.py freeze-source --source-commit <S6>
-python -B scripts/preview6-package.py verify-source --source-commit <S6>
+python -B scripts/preview7-package.py freeze-source --source-commit <S7>
+python -B scripts/preview7-package.py verify-source --source-commit <S7>
 ```
 
-`S6` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
+`S7` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
 The first command exclusively creates the fixed ignored
-`artifacts/release/preview6-source-manifest.json`; the second reconstructs and
-byte-compares it without rewriting. The canonical closed JSON binds `S6`, its
+`artifacts/release/preview7-source-manifest.json`; the second reconstructs and
+byte-compares it without rewriting. The canonical closed JSON binds `S7`, its
 tree, and every regular `100644` blob by portable path, mode, length, and
 SHA-256. It is derived from size/type-preflighted and typed-rehashed Git
 objects. Exact index and bounded raw-worktree checks are equality gates only.
@@ -145,18 +145,25 @@ profiles, packs, recipes, authored surfaces, catalogs, builder, validators,
 tests, fixtures and ledger snapshot, rubric/configuration, and model settings
 if any. The complete-tree source manifest is that source inventory;
 hand-maintained path lists are not. Qualification records reference its hash. A
-schema-1 release manifest records declared source `S6` and hashes distributable
-bytes only. The exact seven-path packaging commit has sole parent `S6`; its
+schema-1 release manifest records declared source `S7` and hashes distributable
+bytes only. The exact seven-path packaging commit has sole parent `S7`; its
 release-evidence record binds the source-manifest hash and qualification
 results alongside that manifest, archive, and checksum append. Tool stdout is
 diagnostic, not qualification evidence. No deterministic layer thereby proves
 that a human review occurred or that a linguistic conclusion is true.
 
-The Preview 6 release build happens once. Tests, archive creation, checksum
+The Preview 7 release build happens once. Tests, archive creation, checksum
 generation, independent review, draft-asset capture, and promotion all consume
 those exact bytes. Pages CI extracts, verifies, tests, and deploys the exact
 checked-in archive; it must not silently rebuild a second deployment artifact.
 Any byte mismatch stops publication.
+
+The required Preview 7 sequence is: exact uncommitted source set → `S7` →
+source qualification → one build → deterministic stage → independent review →
+same-byte promotion → exact `P7` packaging child → Pages run → public-byte
+comparison. The workflow's official GitHub Actions remain pinned by immutable
+commit SHA and use their Node 24-backed releases; that infrastructure update
+does not change product behavior or establish any later step in this sequence.
 
 After publication, download each release asset through its final unauthenticated
 public URL and each Pages asset through its public URL. Record path, length, and

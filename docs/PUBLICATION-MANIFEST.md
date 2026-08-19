@@ -1,10 +1,11 @@
 # Publication manifest
 
-This manifest defines the authorized public repository contents and target
-identity for PhraseGarden `0.1.0-preview.6`. Earlier repository,
-release, license, and Pages evidence remains immutable. Actual package,
-publication, and deployment status is established only by version-bound
-release evidence and corresponding public state.
+This manifest defines the authorized public repository contents and source
+target for PhraseGarden `0.1.0-preview.7`. This source record does not establish
+its containing checkpoint, a package, deployment, tag, or GitHub Release. Earlier
+repository, release, license, and Pages evidence remains immutable. Actual
+package, publication, and deployment status is established only by
+version-bound release evidence and corresponding public state.
 
 ## Authorized repository
 
@@ -15,8 +16,11 @@ release evidence and corresponding public state.
 - Preview 2 rollback release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.2>
 - Preview 3 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.3>
 - Preview 4 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.4>
-- Preview 5 has no authorized tag or GitHub release in the current Pages plan
-- Preview 6 has no authorized tag or GitHub release in the current Pages plan
+- Preview 5 has no tag or GitHub Release
+- Preview 6 is the exact immutable Pages predecessor and has no tag or GitHub
+  Release
+- Preview 7 is a source candidate; its Pages-only plan has no tag or GitHub
+  Release
 - Preview 1 historical release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place
@@ -42,6 +46,8 @@ release evidence and corresponding public state.
 - `release/phrasegarden-0.1.0-preview.5-pages-manifest.json`
 - `release/phrasegarden-0.1.0-preview.6-pages.zip`
 - `release/phrasegarden-0.1.0-preview.6-pages-manifest.json`
+- `release/phrasegarden-0.1.0-preview.7-pages.zip`
+- `release/phrasegarden-0.1.0-preview.7-pages-manifest.json`
 - `samples/0.1.0-preview.1/**`
 - `scripts/**`
 - `src/**`
@@ -74,6 +80,33 @@ samples. An archive is not by itself evidence of hosted release-download
 identity or UI-mediated download identity. Repository refs, release assets,
 and production responses require separate remote verification.
 
+## Preview 7 source and Pages boundary
+
+- Version: `0.1.0-preview.7`
+- Authority boundary: this source record alone establishes no `S7`, `P7`,
+  Preview 7 archive, deployment, tag, or GitHub Release
+- Source: one exact source checkpoint `S7` and its complete-tree source
+  manifest, established only by Git and source-qualification evidence
+- Package: one exact seven-path child `P7` with sole parent `S7`, established
+  only by Git and committed-package verification
+- Immutable predecessor checksum ledger: 1,952 bytes, SHA-256
+  `82CBC32E5606F827765983271B248CD7C4788DFE57AB703FD1B94A55432B9C4E`
+- Immutable predecessor Pages archive: 186,851 bytes, SHA-256
+  `6A2DC1E364F42B64D54034E734233CB09A9166A01F9C6591D182AB40CA81EA55`
+- Immutable predecessor manifest: 976 bytes, SHA-256
+  `B9753A9286D3C8E662ABB7A9244817BFA7EAA2382B262794816527C765074F7E`
+- Planned Pages behavior: extract, verify, test, and deploy the exact checked-in
+  Preview 7 archive without rebuilding it
+- Pages target: <https://jkolantree.github.io/phrasegarden/>
+- Git tag and GitHub Release: not part of the Preview 7 Pages-only plan
+
+Preview 7 must follow this identity chain: exact source set → `S7` → one build
+→ deterministic stage → independent review → same-byte promotion → exact `P7`
+child → Pages → public-byte comparison. No earlier link proves a later one.
+The Preview 7 archive and manifest enter the repository include boundary only
+after their exact bytes are qualified; they do not exist merely because this
+source target is documented.
+
 ## Preview 6 Pages boundary
 
 - Version: `0.1.0-preview.6`
@@ -86,9 +119,9 @@ and production responses require separate remote verification.
 - Pages target: <https://jkolantree.github.io/phrasegarden/>
 - Git tag and GitHub release: not part of the authorized Pages update
 
-The source target does not establish a Preview 6 checkpoint, package,
-deployment, production bytes, accessibility conformance, or linguistic review.
-Each claim requires its named version-bound verification evidence.
+Preview 6 passed its version-bound Pages qualification and is the exact
+immutable Pages predecessor for Preview 7. That result does not establish
+Preview 7 bytes, accessibility conformance, or linguistic review.
 
 ## Preview 5 Pages boundary
 

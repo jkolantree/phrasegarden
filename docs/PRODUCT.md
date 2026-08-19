@@ -30,7 +30,7 @@ Within two minutes, a first-time visitor can:
 
 1. Confirm a language direction and task using situation-based labels such as Translate writing, Practice speaking, or Translate a conversation.
 2. Make the default instructions immediately, or change the languages and task.
-3. Optionally adjust relationship, register, correction, pronunciation support, teaching depth, pace, turn handling, or clarification.
+3. In Builder, see the language-support guidance and optionally adjust relationship, register, correction, pronunciation support, teaching depth, pace, turn handling, or clarification.
 4. On Review, see the exact support tier and limitations before Copy, plus a plain-language summary of what the instructions ask the destination tool to do.
 5. Copy or download the deterministic instructions, inspect their complete visible text, and optionally edit a clearly labeled local copy.
 
@@ -63,23 +63,21 @@ Users cannot select or upgrade a tier. The public Preview derives `Preview` only
 
 ## MVP
 
-The `0.1.0-preview.6` source contains Written Translator, Live Voice Coach, and
-one-way Interpreter for bundled language profiles, with Preview
-English↔Japanese guidance and conservative Generic fallback. It includes
-language swap, bounded settings, plain-language summaries, visible limitations
-and version provenance, prompt inspection, local editing, copy, and plain-text
-download. Source presence does not establish package, publication, or
-deployment status; those claims require the version-bound release evidence and
-corresponding public state. Preview 6 carries forward the one-way Interpreter,
-independently reviewed as product code, and progressive disclosure. It orders
-the interface around the human outcome: one default fast path, optional choices
-first in Builder, support and limitations before Copy, and complete instructions
-in a bounded reading and editing area. Its only change from Preview 5 is
-narrow-screen Review presentation, with a 320 × 900 Copy-position acceptance target
-of no more than 800 px so the handoff has at least 100 px of design headroom.
-It does not claim Gate 3 exit or stable readiness.
+The `0.1.0-preview.7` source candidate contains Written Translator,
+Live Voice Coach, and one-way Interpreter for bundled language profiles, with
+Preview English↔Japanese guidance and conservative Generic fallback. It carries
+forward Preview 6's exact prompt, compiler, recipe, profile, pair-pack,
+support-label, and privacy behavior. Home, Builder, and Review each expose one
+clearly named language-support guidance area, and Review exposes the complete
+generated instructions as a named document for accessibility software. The
+candidate also adds automated forced-colors regressions and updates pinned
+GitHub Actions to official Node 24-backed commits; the Action update changes
+release infrastructure, not product semantics. Source presence does not
+establish a Preview 7 package, deployment, tag, or GitHub Release. It does not
+claim Gate 3 exit, stable readiness, manual assistive-technology coverage,
+WCAG conformance, or external linguistic review.
 
-Preview 6 retains identity-only profiles for French, German,
+Preview 7 retains identity-only profiles for French, German,
 Italian, Spanish, and region-unspecified Portuguese. These profiles add no
 language-specific prompt clause, pair pack, pronunciation claim, dialect
 claim, or review tier.
@@ -90,7 +88,7 @@ reversible; Review is the informed-use handoff where support, limitations,
 destination compatibility, paste order, and destination privacy are visible
 before Copy and Download.
 
-PhraseGarden `0.1.0-preview.6` is memory-only and intentionally excludes bidirectional or
+PhraseGarden `0.1.0-preview.7` is memory-only and intentionally excludes bidirectional or
 simultaneous interpreting, local recipe storage, import/export, sharing, a
 Japanese interface, service-worker caching, accounts, telemetry, runtime model
 calls, public submissions, and evidence-qualified tier promotion.

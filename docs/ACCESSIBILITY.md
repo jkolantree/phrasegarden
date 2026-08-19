@@ -19,6 +19,8 @@ evidence for this Preview honestly.
   wrapping
 - IME-aware editing that does not commit changes during composition
 - Restrained live announcements for committed actions
+- Named language-guidance, limitation, handoff, and complete-instruction
+  regions for accessibility APIs
 - A bounded, keyboard-focusable complete-instruction reading region; Copy and
   Download still use the full exact text
 
@@ -36,7 +38,7 @@ evidence for this Preview honestly.
 - Synthetic Japanese composition-event coverage
 - Direct visual inspection of the captured rendered screens
 
-## Preview 6 target and Preview 5 failure
+## Preview 6 Pages predecessor and Preview 5 failure
 
 Preview 5 kept exactly one Home fast path visible in the reviewed desktop and
 mobile states, and its truthful support and limitation notices preceded Copy.
@@ -45,13 +47,23 @@ Its exact Linux Chromium check nevertheless placed the Copy action at
 Pages deployment therefore stopped; that negative result remains part of the
 immutable Preview 5 record.
 
-Preview 6 changes only narrow-screen Review presentation. Its acceptance target
-keeps the support and limitation notices before Copy, retains 44 px actions,
-and places the Copy action's bottom at no more than `800` px from the viewport
-top, leaving at least 100 px of design headroom at 320 × 900. Passing that
-bound would remain bounded automated evidence; it would not establish an
-independent screen-reader matrix, real-device coverage, release deployment, or
-WCAG conformance.
+Preview 6 changed only narrow-screen Review presentation. Its acceptance target
+kept the support and limitation notices before Copy, retained 44 px actions,
+and placed the Copy action's bottom at no more than `800` px from the viewport
+top, leaving at least 100 px of design headroom at 320 × 900. Preview 6 later
+passed its version-bound Pages qualification and is the exact immutable Pages
+predecessor. That bounded evidence did not establish an independent
+screen-reader matrix, real-device coverage, or WCAG conformance.
+
+## Preview 7 source-candidate coverage
+
+The Preview 7 source candidate keeps Preview 6 behavior and adds
+automated checks for visible focus, selected state, truthful support and
+limitation notices, 44 px actions, DOM order, axe, and narrow reflow under
+forced-colors emulation. It also checks the named language-guidance regions and
+the named complete-instruction document through browser role-and-name queries.
+These are source changes and automated regression checks, not a packaged or
+deployed Preview 7, a manual forced-colors inspection, or a screen-reader pass.
 
 ## Known gaps
 

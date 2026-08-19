@@ -29,6 +29,7 @@ SCRIPT = ROOT / "scripts" / "preview3-package.py"
 P4_SCRIPT = ROOT / "scripts" / "preview4-package.py"
 P5_SCRIPT = ROOT / "scripts" / "preview5-package.py"
 P6_SCRIPT = ROOT / "scripts" / "preview6-package.py"
+P7_SCRIPT = ROOT / "scripts" / "preview7-package.py"
 CORE = ROOT / "scripts" / "release_packager.py"
 MODULE = runpy.run_path(str(CORE))
 ENGINE_GLOBALS = MODULE["main"].__globals__
@@ -39,6 +40,7 @@ PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
 PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
 PREVIEW5_SPEC = RELEASE_SPECS["preview5"]
 PREVIEW6_SPEC = RELEASE_SPECS["preview6"]
+PREVIEW7_SPEC = RELEASE_SPECS["preview7"]
 build_source_manifest = partial(MODULE["build_source_manifest"], PREVIEW3_SPEC)
 canonical_repo_path = MODULE["canonical_repo_path"]
 commit_tree = MODULE["commit_tree"]
@@ -124,6 +126,7 @@ def adapter_for(spec: ReleaseSpec) -> Path:
         PREVIEW4_SPEC.id: P4_SCRIPT,
         PREVIEW5_SPEC.id: P5_SCRIPT,
         PREVIEW6_SPEC.id: P6_SCRIPT,
+        PREVIEW7_SPEC.id: P7_SCRIPT,
     }[spec.id]
 
 
@@ -203,20 +206,21 @@ class ReleaseSpecificationTest(unittest.TestCase):
 
     def test_closed_specs_adapters_and_committed_versions(self) -> None:
         self.assertEqual(
-            tuple(RELEASE_SPECS), ("preview3", "preview4", "preview5", "preview6")
+            tuple(RELEASE_SPECS),
+            ("preview3", "preview4", "preview5", "preview6", "preview7"),
         )
         with self.assertRaises(TypeError):
-            RELEASE_SPECS["preview7"] = PREVIEW6_SPEC
-        for value in ("Preview6", "preview-6", "0.1.0-preview.6"):
+            RELEASE_SPECS["preview8"] = PREVIEW7_SPEC
+        for value in ("Preview7", "preview-7", "0.1.0-preview.7"):
             with self.assertRaises(ToolError) as raised:
                 resolve_release_spec(value)
             self.assertEqual(raised.exception.code, "E-RELEASE-SPEC")
         for field in ("source_manifest", "stage_root", "final_archive",
                       "final_manifest", "evidence_path", "publication_contract"):
-            rerouted = replace(PREVIEW6_SPEC,
-                               **{field: Path("changed") / getattr(PREVIEW6_SPEC, field).name})
+            rerouted = replace(PREVIEW7_SPEC,
+                               **{field: Path("changed") / getattr(PREVIEW7_SPEC, field).name})
             changed = dict(RELEASE_SPECS)
-            changed[PREVIEW6_SPEC.id] = rerouted
+            changed[PREVIEW7_SPEC.id] = rerouted
             with self.assertRaises(ToolError) as raised:
                 validate_release_specs(changed)
             self.assertEqual(raised.exception.code, "E-RELEASE-SPEC")
@@ -227,6 +231,8 @@ class ReleaseSpecificationTest(unittest.TestCase):
             (PREVIEW4_SPEC.release_version, P5_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
             (PREVIEW6_SPEC.release_version, P5_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
             (PREVIEW5_SPEC.release_version, P6_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
+            (PREVIEW7_SPEC.release_version, P6_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
+            (PREVIEW6_SPEC.release_version, P7_SCRIPT, "E-RELEASE-SOURCE-VERSION"),
         ):
             with repository(version) as (root, head):
                 self.assert_failure(tool(root, "freeze-source", head,
@@ -244,7 +250,7 @@ class ReleaseSpecificationTest(unittest.TestCase):
         with repository() as (root, head):
             attempted = subprocess.run(
                  [sys.executable, "-B", str(SCRIPT), "freeze-source",
-                  "--source-commit", head, "--release", "preview6"],
+                  "--source-commit", head, "--release", "preview7"],
                 cwd=root, env=fixture_git_environment(), capture_output=True, text=True,
             )
             self.assertEqual(attempted.returncode, 2)
@@ -252,7 +258,7 @@ class ReleaseSpecificationTest(unittest.TestCase):
 
     def test_strict_stages_and_predecessor_bindings(self) -> None:
         strict = ((PREVIEW4_SPEC, P4_SCRIPT), (PREVIEW5_SPEC, P5_SCRIPT),
-                  (PREVIEW6_SPEC, P6_SCRIPT))
+                  (PREVIEW6_SPEC, P6_SCRIPT), (PREVIEW7_SPEC, P7_SCRIPT))
         for spec, adapter in strict:
             with self.subTest(spec=spec.id), package_repository(spec) as (root, head):
                 staged = tool(root, "stage-package", head, adapter=adapter)

@@ -1627,6 +1627,19 @@ code {
 }
 
 @media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
+
+  .segmented-options label:has(input:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  button:disabled {
+    opacity: 1;
+  }
+
   .language-rail,
   .settings-side,
   .home-start-card,

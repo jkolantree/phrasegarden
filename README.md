@@ -18,15 +18,15 @@ Open the public Prompt Studio at
 [jkolantree.github.io/phrasegarden](https://jkolantree.github.io/phrasegarden/).
 Earlier versioned releases and downloadable assets are available from the
 [PhraseGarden releases](https://github.com/jkolantree/phrasegarden/releases).
-The `0.1.0-preview.6` source carries forward Preview 5's one-way Interpreter,
-expanded Generic language catalog, and deterministic compiler. It makes the
-human path clearer: one outcome-first start, optional tone and context controls,
-and a copy-first Review with complete instructions in a bounded reading area.
-Preview 6 changes only narrow-screen Review layout density so the truthful support and
-limitation notices can remain before Copy with deliberate viewport headroom.
-Source presence does not
-establish packaging, publication, or deployment; version-bound release evidence
-and the corresponding public repository state establish those claims.
+The `0.1.0-preview.7` source candidate carries forward Preview 6's exact
+prompt, compiler, language, support-label, and privacy behavior. It adds clearly
+named language-support guidance on Home, Builder, and Review, and gives
+accessibility software a named document for the complete generated
+instructions. It also adds automated forced-colors checks and updates the
+pinned GitHub Actions to their official Node 24-backed commits. Those Action
+changes affect build and publication infrastructure only. This source record
+does not establish its containing Git checkpoint, a package, deployment, tag,
+or GitHub Release; each requires its own version-bound evidence.
 
 ## Run locally
 
@@ -49,7 +49,7 @@ PhraseGarden never asks for the words you want to translate. Paste the
 generated instructions into a language tool of your choice, then provide source text
 there.
 
-## What Preview 6 includes
+## What Preview 7 includes
 
 - English→Japanese and Japanese→English Preview guidance
 - Conservative Generic generation for all other bundled directions
@@ -68,12 +68,12 @@ there.
 - Pure deterministic compiler, validation, provenance, warnings, and summaries
 - Visible and editable generated prompts
 - Exact UTF-8/LF plain-text downloads
-- Keyboard, narrow-screen, bidirectional-label, reduced-motion, and automated
-  accessibility coverage
+- Keyboard, narrow-screen, bidirectional-label, reduced-motion, forced-colors,
+  named-region, and automated accessibility coverage
 - No backend, account, database, telemetry, advertising, runtime AI, service
   worker, local recipe storage, or share payload
 
-The Preview 6 interface and generated instruction surface are English-only.
+The Preview 7 interface and generated instruction surface are English-only.
 Read the [product limitations](docs/LIMITATIONS.md) before use.
 
 ## Support labels
@@ -82,7 +82,7 @@ Read the [product limitations](docs/LIMITATIONS.md) before use.
 |---|---|
 | Preview | An exact built-in directed pair pack is versioned, but external linguistic review is incomplete. |
 | Generic | No exact pair pack is selected; only universal, conservative instructions are emitted. |
-| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 6 cannot assign them. |
+| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 7 cannot assign them. |
 
 A user or imported configuration cannot choose or upgrade its tier.
 

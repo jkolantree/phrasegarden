@@ -1356,6 +1356,126 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
   expect(transitionDuration).not.toContain("0.14s");
 });
 
+test("role and name queries expose named guidance, handoff, and instruction regions", async ({
+  page,
+}) => {
+  const supportRegion = page.getByRole("region", {
+    name: /Guidance: Built in\s+Preview/,
+  });
+
+  await page.goto("/");
+  await expect(supportRegion).toHaveCount(1);
+  await openBuilder(page);
+  await expect(supportRegion).toHaveCount(1);
+  await generate(page);
+
+  await expect(supportRegion).toHaveCount(1);
+  await expect(
+    page.getByRole("region", { name: "Known limitations" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "Copy, then paste elsewhere" }),
+  ).toBeVisible();
+  const promptDocument = page.getByRole("document", {
+    name: "Complete generated instructions",
+  });
+  await expect(promptDocument).toBeVisible();
+  await expect(promptDocument).toHaveAccessibleName(
+    "Complete generated instructions",
+  );
+
+  const reviewOrder = await page
+    .locator(
+      "[data-testid='support-status'], [data-testid='limitations'], [data-testid='prompt-handoff'], [data-testid='canonical-prompt']",
+    )
+    .evaluateAll((elements) =>
+      elements.map((element) => element.getAttribute("data-testid")),
+    );
+  expect(reviewOrder).toEqual([
+    "support-status",
+    "limitations",
+    "prompt-handoff",
+    "canonical-prompt",
+  ]);
+  await expectNoAxeViolations(page, "named accessibility regions");
+});
+
+test("forced colors preserves focus, selection, truth, actions, and narrow reflow", async ({
+  page,
+}) => {
+  await page.emulateMedia({ forcedColors: "active" });
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto("/");
+  expect(
+    await page.evaluate(() => matchMedia("(forced-colors: active)").matches),
+  ).toBe(true);
+
+  const fastPath = page.getByRole("button", { name: "Make my instructions" });
+  await fastPath.focus();
+  const focusStyle = await fastPath.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      outlineStyle: style.outlineStyle,
+      outlineWidth: Number.parseFloat(style.outlineWidth),
+    };
+  });
+  expect(focusStyle.outlineStyle).not.toBe("none");
+  expect(focusStyle.outlineWidth).toBeGreaterThanOrEqual(2);
+
+  await openHomeChoices(page);
+  const selectedTask = page.getByRole("radio", { name: /Translate writing/ });
+  await expect(selectedTask).toBeChecked();
+  const selectedStyle = await selectedTask.evaluate((element) => {
+    const label = element.closest("label");
+    if (label === null) throw new Error("selected task label is missing");
+    const style = getComputedStyle(label);
+    return {
+      outlineStyle: style.outlineStyle,
+      outlineWidth: Number.parseFloat(style.outlineWidth),
+    };
+  });
+  expect(selectedStyle.outlineStyle).not.toBe("none");
+  expect(selectedStyle.outlineWidth).toBeGreaterThanOrEqual(2);
+
+  await page.getByRole("button", { name: "Use current choices" }).click();
+  await generate(page);
+  await expect(page.getByTestId("support-status")).toContainText(
+    "External language review: incomplete.",
+  );
+  await expect(page.getByTestId("limitations")).toBeVisible();
+  await expect(page.getByTestId("prompt-handoff")).toBeVisible();
+
+  const actions = [
+    page.getByTestId("copy-prompt"),
+    page.getByTestId("download-prompt"),
+  ];
+  for (const action of actions) {
+    const box = await action.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(320);
+  }
+  const reviewOrder = await page
+    .locator(
+      "[data-testid='support-status'], [data-testid='limitations'], [data-testid='prompt-handoff']",
+    )
+    .evaluateAll((elements) =>
+      elements.map((element) => element.getAttribute("data-testid")),
+    );
+  expect(reviewOrder).toEqual([
+    "support-status",
+    "limitations",
+    "prompt-handoff",
+  ]);
+  const dimensions = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 1);
+  await expectNoAxeViolations(page, "forced-colors review");
+});
+
 test("200% and 400% equivalent layout widths do not create page overflow", async ({
   page,
 }) => {

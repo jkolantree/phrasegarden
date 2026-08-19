@@ -1209,6 +1209,10 @@ export function App() {
             </button>
           </section>
 
+          {presentation.ok ? (
+            <SupportStatus compact provenance={presentation.result.provenance} />
+          ) : null}
+
           <form
             class="builder-form"
             onSubmit={(event) => {
@@ -1867,9 +1871,11 @@ export function App() {
               <pre
                 ref={promptSurfaceRef}
                 class="prompt-surface"
+                role="document"
                 lang="en"
                 dir="ltr"
                 tabIndex={0}
+                aria-labelledby="prompt-title"
                 aria-describedby="complete-text-note"
                 data-testid="canonical-prompt"
               >
