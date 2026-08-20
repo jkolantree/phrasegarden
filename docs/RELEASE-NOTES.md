@@ -1,9 +1,44 @@
 # Release notes
 
+## 0.1.0-preview.9 — restore mobile Home headroom
+
+Status: source recovery target; exact source, package, deployment, public-byte,
+tag, and GitHub Release states require separate version-bound evidence
+
+### Product behavior
+
+- Preserves Preview 8's English and Japanese interfaces, start presets,
+  English generated prompt, language identities, recipes, pair guidance,
+  support tiers, privacy boundary, and local-only runtime behavior.
+- Changes only narrow, short-screen CSS density. It hides no content, preserves
+  semantic and focus order, keeps affected actions at least 44 px high, and
+  targets an English and Japanese Home primary-action bottom of no more than
+  `800` px in a 320 × 900 viewport.
+- Strengthens the same browser regression to require at least 100 px of
+  headroom rather than merely touching the viewport boundary.
+
+### Failure boundary
+
+The exact Preview 8 package is immutable. Actions run `32405959146` extracted
+and audited its archive, then returned 13/15 Linux Chromium journeys. Two
+journeys measured the same English Home primary-action bottom at
+`1024.828125` px in a 320 × 900 viewport, beyond the required `900` px. Upload
+and deployment were skipped; the post-run public-byte observation remained
+exact Preview 7. Preview 9 is a separately versioned recovery, not a retry or
+rewrite of that result.
+
+### Deterministic and authority boundary
+
+Preview 9 adds one closed release identity, version-specific adapters, exact
+Preview 8 predecessor bindings, and a no-build Pages selector. The target above
+is not a pass claim. It establishes no `S9`, build, package, browser result,
+deployment, public bytes, linguistic review, accessibility conformance, tag,
+or GitHub Release. Any public action requires its own exact authorization.
+
 ## 0.1.0-preview.8 — start in English or Japanese
 
-Status: source target; package, deployment, tag, GitHub Release, and public-byte
-status require separate version-bound evidence
+Status: immutable package candidate; Linux Chromium check failed and upload and
+Pages deployment were skipped
 
 ### Product behavior
 
@@ -30,20 +65,21 @@ status require separate version-bound evidence
 
 ### Evidence boundary
 
-Preview 7 remains immutable: 2,188-byte checksum ledger / SHA-256
-`FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A`,
-187,305-byte Pages ZIP / SHA-256
-`715ED188561505D1531FA903EC85EE742A34AE0A6646C9E61190D0D79FFD9513`,
+Preview 8 has exact package commit
+`721c356ca4019ad232c90a5334a5de76d0feaf66`, 2,424-byte checksum ledger /
+SHA-256 `B16FEDD0476E3505E16CC156451EC23849CF0840792250402A6E1E9EE0EC663D`,
+241,170-byte Pages ZIP / SHA-256
+`BCE2BC2D45CD34BE22C1EB481B13456494D9E46E7815F630A23E07BAEAA6734F`,
 and 976-byte manifest / SHA-256
-`87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA`.
-No Preview 8 source checkpoint, package, deployment, public-byte result, human
-linguistic review, accessibility conformance, tag, or GitHub Release follows
-from this source note.
+`175C4E5B5885759A105FD1F1844EED6D626641B60C940A25FF021E17216F6B96`.
+Run `32405959146` preserved its failed browser result and skipped upload and
+deployment. It established no Preview 8 public bytes, human linguistic review,
+accessibility conformance, tag, or GitHub Release.
 
 ## 0.1.0-preview.7 — clearer accessibility semantics and Node 24 release pins
 
-Status: source candidate; package, deployment, tag, and GitHub Release status
-require separate version-bound evidence
+Status: source-note boundary; later package and deployment were established by
+separate version-bound evidence; no Preview 7 tag or GitHub Release
 
 ### Product behavior
 
@@ -78,7 +114,10 @@ and manifest 976 bytes / SHA-256
 `B9753A9286D3C8E662ABB7A9244817BFA7EAA2382B262794816527C765074F7E`.
 No Preview 7 package, deployment, public-byte result, manual assistive-
 technology result, or linguistic-review claim follows from the source
-candidate.
+candidate alone. Later version-bound evidence established the exact Preview 7
+package and Pages deployment; the post-Preview 8 failure comparison observed
+those same exact Preview 7 public bytes. It established no manual assistive-
+technology or linguistic-review result.
 
 ## 0.1.0-preview.6 — mobile handoff headroom
 

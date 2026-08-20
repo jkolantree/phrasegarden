@@ -63,18 +63,19 @@ Users cannot select or upgrade a tier. The public Preview derives `Preview` only
 
 ## MVP
 
-The `0.1.0-preview.8` source candidate contains Written Translator,
-Live Voice Coach, and one-way Interpreter for bundled language profiles, with
-Preview English↔Japanese guidance and conservative Generic fallback. It carries
-forward Preview 7's exact prompt, compiler, recipe, profile, pair-pack,
-support-label, and privacy behavior. It adds complete English and Japanese page
-interfaces, deterministic start-in-your-language behavior, and a persistent
-unreviewed-interface disclosure whenever Japanese is active. Source presence
-does not establish a Preview 8 package, deployment, tag, or GitHub Release. It does not
-claim Gate 3 exit, stable readiness, manual assistive-technology coverage,
-WCAG conformance, or external linguistic review.
+The `0.1.0-preview.9` source target contains Written Translator, Live Voice
+Coach, and one-way Interpreter for bundled language profiles, with Preview
+English↔Japanese guidance and conservative Generic fallback. It carries forward
+Preview 8's exact prompt, compiler, recipe, profile, pair-pack, support-label,
+privacy, complete English and Japanese page interfaces, deterministic
+start-in-your-language behavior, and persistent unreviewed-interface disclosure
+whenever Japanese is active. It changes only narrow, short-screen CSS density,
+the corresponding 320 × 900 Home regression, and additive release identity and
+mechanics. This contract establishes no exact `S9`, package, deployment, tag,
+or GitHub Release. It does not claim Gate 3 exit, stable readiness, manual
+assistive-technology coverage, WCAG conformance, or external linguistic review.
 
-Preview 8 retains identity-only profiles for French, German,
+Preview 9 retains identity-only profiles for French, German,
 Italian, Spanish, and region-unspecified Portuguese. These profiles add no
 language-specific prompt clause, pair pack, pronunciation claim, dialect
 claim, or review tier.
@@ -85,13 +86,13 @@ reversible; Review is the informed-use handoff where support, limitations,
 destination compatibility, paste order, and destination privacy are visible
 before Copy and Download.
 
-PhraseGarden `0.1.0-preview.8` is memory-only and intentionally excludes bidirectional or
-simultaneous interpreting, local recipe storage, import/export, sharing,
-service-worker caching, accounts, telemetry, runtime model calls, public
-submissions, and evidence-qualified tier promotion.
+PhraseGarden `0.1.0-preview.9` is memory-only and intentionally excludes
+bidirectional or simultaneous interpreting, local recipe storage, import/export,
+sharing, service-worker caching, accounts, telemetry, runtime model calls,
+public submissions, and evidence-qualified tier promotion.
 
-The Preview 8 source adds a prominent English/Japanese
-language-entry control. Before the visitor changes a semantic setting or makes
+Preview 9 preserves Preview 8's prominent English/Japanese language-entry
+control. Before the visitor changes a semantic setting or makes
 instructions, choosing English applies fresh Written Translator defaults for
 English→Japanese and choosing Japanese applies fresh defaults for
 Japanese→English. After semantic work begins, the same controls change page

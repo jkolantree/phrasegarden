@@ -1738,6 +1738,48 @@ code {
   }
 }
 
+@media (max-width: 37.49rem) and (max-height: 60rem) {
+  .header-inner {
+    min-block-size: 3.75rem;
+    padding-block: var(--space-2);
+  }
+
+  .page {
+    padding-block-start: var(--space-3);
+  }
+
+  .language-entry-copy {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .hero {
+    padding-block: var(--space-2) var(--space-3);
+  }
+
+  .hero h1 {
+    margin-block-end: var(--space-2);
+    font-size: clamp(1.875rem, 9.5vw, 2.25rem);
+    line-height: 1.05;
+    text-wrap: wrap;
+  }
+
+  .hero-copy {
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .home-start-summary .support-status {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .home-start-summary .support-detail {
+    font-size: 0.875rem;
+    line-height: 1.35;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   button,
   select,

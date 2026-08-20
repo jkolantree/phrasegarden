@@ -18,15 +18,17 @@ Open the public Prompt Studio at
 [jkolantree.github.io/phrasegarden](https://jkolantree.github.io/phrasegarden/).
 Earlier versioned releases and downloadable assets are available from the
 [PhraseGarden releases](https://github.com/jkolantree/phrasegarden/releases).
-The `0.1.0-preview.8` source candidate adds a prominent English/Japanese page-
-language choice and a complete Japanese Preview interface. On an untouched
-page, choosing a language also applies a useful English↔Japanese starting
-direction; after work begins, it changes presentation only and preserves exact
-settings and prompt edits. The Japanese interface has not completed qualified
-human review, and the portable generated instructions remain English. This
-source record
-does not establish its containing Git checkpoint, a package, deployment, tag,
-or GitHub Release; each requires its own version-bound evidence.
+Preview 8 added a prominent English/Japanese page-language choice and a
+complete Japanese Preview interface. Its exact Pages run extracted and audited
+the checked-in archive, but Linux Chromium returned the candidate before upload
+or deployment because two Home checks placed the primary-action bottom at
+`1024.828125` px in a 320 × 900 viewport. The post-run public observation
+remained exact Preview 7.
+
+`0.1.0-preview.9` is the separately versioned recovery target. It preserves the
+Preview 8 product, prompt, language, tier, and privacy behavior while tightening
+only narrow, short-screen layout density and its regression. This source record
+alone establishes no `S9`, package, deployment, tag, or GitHub Release.
 
 ## Run locally
 
@@ -49,10 +51,10 @@ PhraseGarden never asks for the words you want to translate. Paste the
 generated instructions into a language tool of your choice, then provide source text
 there.
 
-## What Preview 8 includes
+## What Preview 9 preserves and corrects
 
 - Complete English and Japanese page interfaces, with the Japanese catalog
-  explicitly shipped as an unreviewed Preview
+  explicitly labeled as an unreviewed Preview
 - A conspicuous start-in-your-language choice that never overwrites work after
   a visitor changes settings, generates instructions, or edits them
 - English→Japanese and Japanese→English Preview guidance
@@ -74,6 +76,9 @@ there.
 - Exact UTF-8/LF plain-text downloads
 - Keyboard, narrow-screen, bidirectional-label, reduced-motion, forced-colors,
   named-region, and automated accessibility coverage
+- A 320 × 900 Home target that keeps the primary-action bottom no more than
+  800 px from the viewport top, preserving at least 100 px of headroom without
+  hiding content or shrinking 44 px targets
 - No backend, account, database, telemetry, advertising, runtime AI, service
   worker, local recipe storage, or share payload
 
@@ -88,7 +93,7 @@ Read the [product limitations](docs/LIMITATIONS.md) before use.
 |---|---|
 | Preview | An exact built-in directed pair pack is versioned, but external linguistic review is incomplete. |
 | Generic | No exact pair pack is selected; only universal, conservative instructions are emitted. |
-| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 8 cannot assign them. |
+| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 9 cannot assign them. |
 
 A user or imported configuration cannot choose or upgrade its tier.
 

@@ -4,10 +4,13 @@ Updated: 2026-08-20
 
 ## Current layer
 
-PhraseGarden `0.1.0-preview.8` is the active release-source target. It has one
-exact corrected local source checkpoint and one same-byte local package
-content record. Neither local state establishes its containing packaging
-commit, a workflow run, deployment, public bytes, a tag, or a GitHub Release.
+PhraseGarden `0.1.0-preview.9` is the active recovery-source target. It must have
+one source checkpoint `S9` whose sole parent is the exact returned Preview 8
+package commit `721c356ca4019ad232c90a5334a5de76d0feaf66`, followed later by one
+exact seven-path `P9` package child. This source record does not itself establish
+`S9` or `P9`; their exact identities require the named Git and qualification
+evidence. This source package authorizes no push, deployment, tag, or GitHub
+Release.
 
 The product provides a complete English `source-interface` catalog and a
 complete Japanese `public-unreviewed-preview` page catalog. Japanese is
@@ -18,28 +21,29 @@ prompt remains English LTR; user edits preserve that same prompt surface.
 English↔Japanese remains Preview; every other direction remains Generic; `pt`
 remains region-unspecified.
 
-## Exact Preview 8 source
+## Immutable Preview 8 returned candidate
 
-- `S8=44df6aef96b0cbc87c9e116810c7b096a082cdb6`
-- Tree: `bb116952e2edce61cbfa9c4a441a3927d0477ca2`
-- Sole parent: `0023e059794eb0bd52d04e8fbb74e04760c10788`
-- Product baseline: `f0583569aa2441fb6d34d4c40a6e3e0e0233d363`
-- Source manifest: 36,862 bytes; 189 committed `100644` files;
-  2,655,279 payload bytes; SHA-256
+- Package commit `P8=721c356ca4019ad232c90a5334a5de76d0feaf66`
+- Tree: `d2e674f891d2c03c336d1a934d63a5c702e33018`
+- Sole parent: corrected
+  `S8=44df6aef96b0cbc87c9e116810c7b096a082cdb6`
+- Corrected-S8 source manifest: 36,862 bytes; SHA-256
   `8050C15FEE3D94BAB01C8A76353DAD0F744360D58E36396074EF9BFD8C1814AB`
-- Reviewed 31-path source fingerprint: SHA-256
-  `F242BEF34F87D09644FB1AF7A4E41F294234A5353F26BD26B673183CCD6FD228`
-  over the ordinal `path|length|SHA256` UTF-8/LF ledger.
+- Pages ZIP: 241,170 bytes; SHA-256
+  `BCE2BC2D45CD34BE22C1EB481B13456494D9E46E7815F630A23E07BAEAA6734F`
+- Release manifest: 976 bytes; SHA-256
+  `175C4E5B5885759A105FD1F1844EED6D626641B60C940A25FF021E17216F6B96`
+- Checksum ledger: 2,424 bytes; SHA-256
+  `B16FEDD0476E3505E16CC156451EC23849CF0840792250402A6E1E9EE0EC663D`
 
-At corrected-S8 source qualification, before the seven package paths were
-materialized, the source manifest matched the complete Git tree, index, and
-raw worktree.
-Protected compiler, prompt, recipe, profile, pair-pack, support-tier,
-persistence, dependency-lock, and Preview 1–7 release bytes did not change.
-The corrected child changes only the already-allowlisted release lifecycle
-fixture that distinguishes the P7-final/P8-parent state from P8-final state.
+Actions run `32405959146` extracted and audited the exact checked-in Preview 8
+archive, then returned 13/15 Linux Chromium journeys. Two journeys measured the
+same English Home primary-action bottom at `1024.828125` px in a 320 × 900
+viewport, beyond the required `900` px. Upload and deployment were skipped. The
+post-run public-byte observation remained exact Preview 7. This is an immutable
+Preview 8 failure, not a result that Preview 9 may overwrite or continue.
 
-## Exact Preview 7 predecessor
+## Exact public Preview 7 predecessor
 
 | Artifact | Bytes | SHA-256 |
 |---|---:|---|
@@ -47,62 +51,43 @@ fixture that distinguishes the P7-final/P8-parent state from P8-final state.
 | Release manifest | 976 | `87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA` |
 | `SHA256SUMS` | 2,188 | `FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A` |
 
-## Exact local Preview 8 package content
+## Preview 9 bounded correction
 
-One Node 24.19.0 / pnpm 11.9.0 build from corrected `S8` reproduced the
-reviewed three distributable files. The corrected stage was promoted once
-without regeneration. Final bytes equal the corrected stage byte-for-byte.
+The exact source contract is
+`docs/work-packages/PREVIEW-9-SOURCE-IDENTITY.md`. Its closed 21-path delta is
+limited to CSS density, the stronger 320 × 900 regression, truthful status
+documents, and additive Preview 9 release mechanics. At 320 × 900, both English
+and Japanese Home primary-action bottoms must be no more than `800` px from the
+viewport top while all content remains available and every affected action
+remains at least 44 px high. The 100 px margin is required headroom, not a
+claim that the current worktree passes.
 
-| Artifact | Bytes | SHA-256 |
-|---|---:|---|
-| Pages ZIP | 241,170 | `BCE2BC2D45CD34BE22C1EB481B13456494D9E46E7815F630A23E07BAEAA6734F` |
-| Release manifest | 976 | `175C4E5B5885759A105FD1F1844EED6D626641B60C940A25FF021E17216F6B96` |
-| `SHA256SUMS` | 2,424 | `B16FEDD0476E3505E16CC156451EC23849CF0840792250402A6E1E9EE0EC663D` |
-
-The ledger preserves the exact 2,188-byte Preview 7 prefix and appends only
-the Preview 8 ZIP row followed by its corrected manifest row.
-
-## Completed local evidence
-
-- 344/344 deterministic application tests, 58/58 Python release/security
-  tests, and 41/41 workflow/claim-policy tests passed.
-- Both TypeScript configurations passed.
-- Release audit passed before and after 15/15 sequential Edge/axe journeys on
-  the corrected source's one release build; output hashes remained identical.
-- The complete-tree source manifest reverified after browser execution.
-- Independent source and staged-package reviews returned zero open P1/P2/P3;
-  the lifecycle correction and final forced-colors repair each received their
-  own exact read-only rebind.
-
-The first local package was returned after the post-promotion Python suite
-exposed a stale P7-current fixture. Its complete bytes are retained in an
-ignored quarantine. The smallest fixture repair became corrected `S8`; the
-replacement source, build, stage, promotion, and 58/58 post-P8 suite were run
-as a new candidate cycle.
-
-These results establish deterministic local behavior and byte identity only.
-They do not establish qualified Japanese linguistic review, WCAG conformance,
-manual assistive-technology behavior, broad device support, destination-model
-quality, deployment, current public bytes, a tag, or a GitHub Release.
+Preview 9 does not change interface copy, configuration, compiler, prompt,
+recipe, language profile, pair pack, support tier, persistence, privacy,
+runtime-network behavior, or dependencies. Japanese remains a
+`public-unreviewed-preview`; the generated prompt remains English LTR;
+English↔Japanese remains Preview and every other direction remains Generic;
+`pt` remains region-unspecified.
 
 ## Next eligible actions
 
-Follow the earliest unmet condition without editing this state merely to mark
-the transition:
+Follow the earliest unmet condition:
 
-1. If the exact seven package paths have no external zero-finding receipt,
-   obtain that read-only review.
-2. If that receipt exists but no containing package commit exists, checkpoint
-   the same seven unchanged paths as the sole-parent child of corrected `S8`.
-3. If the commit exists but committed-package verification does not, run the
-   pinned Preview 8 verifier into a fresh ignored extraction and compare all
-   three files to the reviewed stage and `dist`.
-4. Once local package identity is established, stop for exact remote and
-   publication authorization before any push or Pages action.
+1. Finish and review the exact 21-path source delta; do not stage unrelated
+   work.
+2. After focused and full deterministic checks pass, checkpoint those exact
+   bytes once as `S9` with sole parent `P8=721c356…feaf66`.
+3. Freeze and qualify one complete-tree source manifest, run one build, create
+   and review one deterministic stage, and promote it once without
+   regeneration.
+4. Create the exact seven-path `P9` package child, then run committed-package
+   verification.
+5. Stop for exact remote/publication authorization before any push or Pages
+   action. A tag or GitHub Release is outside this plan.
 
-Stop on byte or path drift, another build/stage/promotion, an open review
-finding, wrong parent or ledger prefix, remote drift, or a claim stronger than
-the evidence.
+Stop on a missing or extra path, failed check, changed P8 failure evidence,
+wrong parent or ledger prefix, another build/stage/promotion, open review
+finding, remote drift, or a claim stronger than the evidence.
 
 ## Deferred
 

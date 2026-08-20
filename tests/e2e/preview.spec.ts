@@ -101,7 +101,8 @@ async function expectNarrowLanguageEntry(
   await expect(makeButton).toBeVisible();
   const makeButtonBox = await makeButton.boundingBox();
   expect(makeButtonBox, `${label}: primary action`).not.toBeNull();
-  expect(makeButtonBox!.y + makeButtonBox!.height).toBeLessThanOrEqual(900);
+  expect(makeButtonBox!.height).toBeGreaterThanOrEqual(44);
+  expect(makeButtonBox!.y + makeButtonBox!.height).toBeLessThanOrEqual(800);
 }
 
 async function expectReviewDirection(
@@ -1486,7 +1487,7 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
   expect(mobileQuickActionBox).not.toBeNull();
   expect(
     mobileQuickActionBox!.y + mobileQuickActionBox!.height,
-  ).toBeLessThanOrEqual(page.viewportSize()!.height);
+  ).toBeLessThanOrEqual(page.viewportSize()!.height - 100);
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to main content" })).toBeFocused();
   await page.keyboard.press("Tab");

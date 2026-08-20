@@ -62,10 +62,12 @@ automated checks for visible focus, selected state, truthful support and
 limitation notices, 44 px actions, DOM order, axe, and narrow reflow under
 forced-colors emulation. It also checks the named language-guidance regions and
 the named complete-instruction document through browser role-and-name queries.
-These are source changes and automated regression checks, not a packaged or
-deployed Preview 7, a manual forced-colors inspection, or a screen-reader pass.
+At that source-candidate stage, these changes and automated regressions did not
+establish a package or deployment. Later version-bound evidence established
+Preview 7 as the exact public Pages predecessor. Neither stage establishes a
+manual forced-colors inspection or screen-reader pass.
 
-## Preview 8 Japanese interface
+## Preview 8 Japanese interface and returned Pages run
 
 The Preview 8 source includes a complete Japanese interface catalog with a
 persistent named disclosure that qualified-speaker review is incomplete. The
@@ -73,6 +75,29 @@ adjacent English control is its immediate recovery path and preserves settings,
 generated instructions, and edits. Automated catalog, keyboard, axe, reflow,
 IME, and byte-preservation checks are development evidence; they do not prove
 human Japanese quality or manual assistive-technology behavior.
+
+The exact Preview 8 Pages run `32405959146` extracted and audited the checked-in
+archive successfully, then returned 13/15 Linux Chromium journeys. Two journeys
+measured the same English Home primary-action bottom at `1024.828125` px in a
+320 × 900 viewport, beyond the required `900` px. Upload and deployment were
+skipped, and the post-run public-byte observation remained exact Preview 7.
+This negative result is immutable Preview 8 evidence; local Edge results and
+axe results do not override it.
+
+## Preview 9 narrow Home recovery target
+
+Preview 9 changes only narrow, short-screen CSS density and strengthens the
+Home regression. At 320 × 900, the English and Japanese Home primary action
+must end no more than `800` px from the viewport top, leaving at least 100 px of
+headroom. All language-entry and primary actions remain at least 44 px high;
+all copy, the Japanese review disclosure, semantic and focus order, and normal
+vertical scrolling remain available. The same states must keep page-level
+horizontal overflow within the existing one-pixel tolerance and pass their
+named axe checks. The 320 px path also remains the 400%-equivalent reflow case.
+
+Those are acceptance targets, not results. Preview 9 accessibility evidence
+exists only after the exact `S9` source, build, checked-in archive, Linux
+browser run, and any separately required manual inspections are identified.
 
 ## Known gaps
 

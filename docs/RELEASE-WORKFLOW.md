@@ -19,7 +19,7 @@ future authorization boundaries:
 2. **Publication:** push or promote only the exact approved source and named
    public surfaces. Authorization must name the repository, source SHA, version,
    each included tag or release asset, Pages target, and rollback artifact.
-   Omitted surfaces are not implied. Preview 8 source work authorizes no push,
+   Omitted surfaces are not implied. Preview 9 source work authorizes no push,
    Pages deployment, tag, or GitHub Release; each later external plan must name
    its exact identities and bytes.
 
@@ -127,22 +127,28 @@ increased are not progress by themselves.
 
 ## Freeze, build, and same-byte promotion
 
-The active Preview 8 procedure derives complete committed-source identity with
-the pinned release adapter. Preview 3 through Preview 7 adapters remain
+The active Preview 9 procedure derives complete committed-source identity with
+the pinned release adapter. Preview 3 through Preview 8 adapters remain
 available for historical verification:
 
 ```text
-python -B scripts/preview8-package.py freeze-source --source-commit <S8>
-python -B scripts/preview8-package.py verify-source --source-commit <S8>
+python -B scripts/preview9-package.py freeze-source --source-commit <S9>
+python -B scripts/preview9-package.py verify-source --source-commit <S9>
 ```
 
-`S8` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
+`S9` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository
+and has sole parent exact Preview 8 package commit
+`721c356ca4019ad232c90a5334a5de76d0feaf66`.
 The first command exclusively creates the fixed ignored
-`artifacts/release/preview8-source-manifest.json`; the second reconstructs and
-byte-compares it without rewriting. The canonical closed JSON binds `S8`, its
+`artifacts/release/preview9-source-manifest.json`; the second reconstructs and
+byte-compares it without rewriting. The canonical closed JSON binds `S9`, its
 tree, and every regular `100644` blob by portable path, mode, length, and
 SHA-256. It is derived from size/type-preflighted and typed-rehashed Git
 objects. Exact index and bounded raw-worktree checks are equality gates only.
+The source-manifest commands do not establish commit ancestry. After creating
+the checkpoint, an exact local Git check must prove that `S9` has the sole parent
+`721c356ca4019ad232c90a5334a5de76d0feaf66`; the Pages workflow repeats that
+fail-closed check before package extraction or deployment.
 
 The source tool rejects non-HEAD or abbreviated identity, dirty gates,
 nonignored untracked paths, alternate/partial/common object storage, local
@@ -158,25 +164,34 @@ profiles, packs, recipes, authored surfaces, catalogs, builder, validators,
 tests, fixtures and ledger snapshot, rubric/configuration, and model settings
 if any. The complete-tree source manifest is that source inventory;
 hand-maintained path lists are not. Qualification records reference its hash. A
-schema-1 release manifest records declared source `S8` and hashes distributable
-bytes only. The exact seven-path packaging commit has sole parent `S8`; its
+schema-1 release manifest records declared source `S9` and hashes distributable
+bytes only. The exact seven-path packaging commit has sole parent `S9`; its
 release-evidence record binds the source-manifest hash and qualification
 results alongside that manifest, archive, and checksum append. Tool stdout is
 diagnostic, not qualification evidence. No deterministic layer thereby proves
 that a human review occurred or that a linguistic conclusion is true.
 
-The Preview 8 release build happens once. Tests, archive creation, checksum
+The Preview 9 release build happens once. Tests, archive creation, checksum
 generation, independent review, draft-asset capture, and promotion all consume
 those exact bytes. Pages CI extracts, verifies, tests, and deploys the exact
 checked-in archive; it must not silently rebuild a second deployment artifact.
 Any byte mismatch stops publication.
 
-The required Preview 8 sequence is: exact uncommitted source set → `S8` →
+The required Preview 9 sequence is: exact 21-path source set → `S9` →
 source qualification → one build → deterministic stage → independent review →
-same-byte promotion → exact `P8` packaging child → Pages run → public-byte
-comparison. The workflow's official GitHub Actions remain pinned by immutable
-commit SHA and use their Node 24-backed releases; that infrastructure update
+same-byte promotion → exact `P9` packaging child → separately authorized Pages
+run → public-byte comparison. The workflow's official GitHub Actions remain
+pinned by immutable commit SHA and use their Node 24-backed releases; that
+infrastructure update
 does not change product behavior or establish any later step in this sequence.
+
+Preview 8 remains an immutable returned cycle. Its exact Actions run
+`32405959146` extracted and audited the archive, then returned 13/15 Linux
+Chromium journeys because two Home checks measured the primary-action bottom at
+`1024.828125` px in the required 320 × 900 first viewport. Upload and deployment
+were skipped, and the post-run public-byte observation remained exact Preview
+7. Preview 9 must use a new source identity, build, stage, package, and run; it
+may not continue or rewrite Preview 8 evidence.
 
 After publication, download each release asset through its final unauthenticated
 public URL and each Pages asset through its public URL. Record path, length, and

@@ -11,10 +11,10 @@ on:
       - "package.json"
       - "pnpm-lock.yaml"
       - "playwright.config.ts"
-      - "release/phrasegarden-0.1.0-preview.7-pages-manifest.json"
-      - "release/phrasegarden-0.1.0-preview.7-pages.zip"
       - "release/phrasegarden-0.1.0-preview.8-pages-manifest.json"
       - "release/phrasegarden-0.1.0-preview.8-pages.zip"
+      - "release/phrasegarden-0.1.0-preview.9-pages-manifest.json"
+      - "release/phrasegarden-0.1.0-preview.9-pages.zip"
       - "scripts/**"
       - "src/**"
       - "tests/**"
@@ -41,6 +41,13 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Bind exact Preview 9 source and package ancestry
+        run: >-
+          test "$(git rev-list --parents -n 1 HEAD)"
+          = "$(git rev-parse HEAD) $(git rev-parse HEAD^)"
+          &&
+          test "$(git rev-list --parents -n 1 HEAD^)"
+          = "$(git rev-parse HEAD^) 721c356ca4019ad232c90a5334a5de76d0feaf66"
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10 peeled commit
         with:
           version: 11.9.0
@@ -57,15 +64,15 @@ jobs:
       - run: pnpm typecheck
       - name: Extract the exact qualified Pages archive
         run: >-
-          python3 scripts/preview8-verify-release-archive.py
-          --archive release/phrasegarden-0.1.0-preview.8-pages.zip
-          --manifest release/phrasegarden-0.1.0-preview.8-pages-manifest.json
+          python3 scripts/preview9-verify-release-archive.py
+          --archive release/phrasegarden-0.1.0-preview.9-pages.zip
+          --manifest release/phrasegarden-0.1.0-preview.9-pages-manifest.json
           --checksums SHA256SUMS
           --output dist
           --require-packaging-commit
       - run: >-
           node scripts/release-audit.mjs
-          release/phrasegarden-0.1.0-preview.8-pages-manifest.json
+          release/phrasegarden-0.1.0-preview.9-pages-manifest.json
       - name: Install exact Playwright Chromium without OS package refresh
         timeout-minutes: 10
         run: pnpm exec playwright install chromium
@@ -75,7 +82,7 @@ jobs:
       - name: Confirm browser checks did not alter the qualified bytes
         run: >-
           node scripts/release-audit.mjs
-          release/phrasegarden-0.1.0-preview.8-pages-manifest.json
+          release/phrasegarden-0.1.0-preview.9-pages-manifest.json
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: dist

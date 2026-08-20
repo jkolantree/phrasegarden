@@ -721,4 +721,23 @@ and post-P8 suite replace rather than continue the returned cycle.
 | `P8-PKG-05` | One successful owner-context promotion copies reviewed corrected stage exactly. | local ZIP `BCE2BC2D…6734F`, manifest `175C4E5B…F6B96`, ledger `B16FEDD0…C663D` |
 | `P8-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by an external exact-byte receipt |
 | `P8-PKG-07` | Containing commit has sole parent corrected `S8`, exact seven paths, and passes the pinned verifier. | established only by Git and verifier evidence |
-| `P8-PKG-08` | Separately authorized main push, Linux browser/axe, Pages deployment, warning annotations, and public-byte comparison are observed. | external authorization and subsequent public evidence required; this package authorizes no tag or GitHub Release |
+| `P8-PKG-08` | Separately authorized main push, Linux browser/axe, Pages deployment, warning annotations, and public-byte comparison are observed. | returned: run `32405959146` extracted/audited, then finished 13/15 after two Home bottoms of `1024.828125 > 900`; upload/deploy skipped; post-run public bytes exact P7; no tag or GitHub Release |
+
+### Preview 9 narrow Home recovery and Pages identity
+
+Source: `PREVIEW-9-SOURCE-IDENTITY.md`, with sole intended source parent exact
+returned `P8=721c356ca4019ad232c90a5334a5de76d0feaf66`. Preview 9 is a new
+candidate cycle. It preserves the Preview 8 failure and changes only narrow,
+short-screen CSS density, the owning Home regression, truthful documents, and
+additive release identity/mechanics. No row below is a pass claim until its
+named exact evidence exists.
+
+| ID | Deterministic or evidence owner | State / next boundary |
+|---|---|---|
+| `P9-SRC-01` | One exact 21-path source delta is checkpointed as `S9` with sole parent exact `P8`, then bound by one complete-tree source manifest. | not established by this source record / exact Git checkpoint and manifest evidence required |
+| `P9-UX-01` | At 320 × 900, English and Japanese Home primary-action bottoms are at most `800` px, all affected actions remain at least 44 px high, all content remains available, and semantic/focus order is unchanged. | development target / Linux Chromium evidence required |
+| `P9-UX-02` | Narrow Home states retain horizontal reflow tolerance, named axe checks, Japanese disclosure and English recovery, and 400%-equivalent behavior. | development target / exact browser evidence required |
+| `P9-BOUNDARY-01` | Interface copy, prompt bytes, configuration, compiler, recipes, profiles, pair packs, support tiers, persistence, privacy, runtime network behavior, dependencies, and Preview 1–8 artifacts remain unchanged. | protected-path and deterministic diff evidence required |
+| `P9-PKG-01` | One build from exact `S9` produces exactly three audited files; one deterministic stage preserves the 2,424-byte P8 ledger and appends only the P9 ZIP then manifest. | later qualification target |
+| `P9-PKG-02` | Independent review precedes one same-byte promotion and one exact seven-path `P9` child whose sole parent is `S9`. | later exact-byte evidence required |
+| `P9-PUB-01` | A separately authorized Pages run extracts without rebuilding, passes Linux browser/axe, deploys, and is followed by public-byte comparison. | external authorization and public evidence required; this source package authorizes no tag or GitHub Release |

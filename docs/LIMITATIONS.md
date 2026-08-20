@@ -1,12 +1,12 @@
 # Product limitations
 
-This source tree defines a PhraseGarden `0.1.0-preview.8` candidate. It carries
-forward Preview 7's exact prompt, compiler, language profiles, pair guidance,
-support labels, and privacy behavior. It adds complete English and Japanese
-page interfaces plus deterministic start-in-your-language behavior. Source
-presence does not establish a Preview 8 package, deployment,
-tag, or GitHub Release. Those states require version-bound evidence and the
-corresponding public repository state.
+The PhraseGarden `0.1.0-preview.9` source target carries forward Preview 8's
+exact prompt, compiler, language profiles, pair guidance, support labels,
+English and Japanese page interfaces, start-in-your-language behavior, and
+privacy boundary. It targets only a narrow, short-screen CSS-density correction
+and a stronger 320 × 900 Home regression. This document establishes no exact
+`S9`, package, deployment, tag, or GitHub Release; those states require
+version-bound evidence and the corresponding repository or public state.
 
 ## Language and support
 
@@ -18,7 +18,7 @@ corresponding public repository state.
 - French, German, Italian, Spanish, and region-unspecified Portuguese are
   bundled as identity-only Generic profiles. `pt` does not mean Brazilian,
   European, neutral, or dialect-reviewed Portuguese; `pt-BR` and `pt-PT` are
-  not supported by the `0.1.0-preview.8` source candidate.
+  not supported by the `0.1.0-preview.9` source target.
 - The bundled canonical registry is a small supported set, not a claim of
   universal language coverage. A valid BCP 47 tag that is not in the exact
   registry is unsupported.
@@ -75,8 +75,14 @@ corresponding public repository state.
   `985.984375` px in a 320 × 900 Review viewport, beyond the required `900` px.
   Preview 6's version-bound Pages qualification established the corrected
   predecessor with Copy at no more than `800` px while retaining truthful
-  support and limitation notices before it. Preview 8 must qualify its own
-  built bytes; source inheritance alone does not transfer that result.
+  support and limitation notices before it.
+- The immutable Preview 8 package also did not deploy. Actions run
+  `32405959146` extracted and audited its archive, but two of 15 Linux Chromium
+  journeys placed the English Home primary action at `1024.828125` px in a
+  320 × 900 viewport. Upload and deployment were skipped; the post-run public
+  bytes remained exact Preview 7. Preview 9 must qualify its own built bytes
+  with the Home action bottom at no more than `800` px; neither local Preview 8
+  results nor source inheritance transfers that result.
 - The in-app manual localhost inspection was blocked by that browser surface's
   local-URL policy. Sequential Edge journeys, explicit focus assertions, and
   captured screenshots passed; no stronger manual-browser claim is made.
