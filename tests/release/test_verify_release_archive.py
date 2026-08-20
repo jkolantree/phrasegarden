@@ -865,10 +865,14 @@ class PackagingCommitValidationTest(unittest.TestCase):
 
     def test_strict_parent_ledgers_accept_only_lifecycle_states(self) -> None:
         current = (ROOT / CHECKSUM_PATH).read_bytes()
-        self.assertEqual(
-            validate_release_ledger_state(PREVIEW7_SPEC, current),
-            fixture_ledger_rows(current),
-        )
+        if release_append_rows(PREVIEW8_SPEC) is None:
+            self.assertEqual(
+                validate_release_ledger_state(PREVIEW7_SPEC, current),
+                fixture_ledger_rows(current),
+            )
+        else:
+            with self.assertRaisesRegex(AssertionError, "state is not exact"):
+                validate_release_ledger_state(PREVIEW7_SPEC, current)
         self.assertEqual(
             validate_release_ledger_state(PREVIEW8_SPEC, current),
             fixture_ledger_rows(current),
