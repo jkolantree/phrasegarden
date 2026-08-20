@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "releaseVersion": "0.1.0-preview.9",
+  "artifactName": "phrasegarden-0.1.0-preview.9-pages.zip",
+  "sourceProvenance": {
+    "kind": "git-commit",
+    "gitCommit": "464239831bb856dbe6d2b045dc5c59607d8b91aa",
+    "statement": "Records the declared source commit and distributable byte inventory; this manifest does not establish build qualification or a packaging commit."
+  },
+  "build": {
+    "command": "pnpm build",
+    "base": "./",
+    "sourceMaps": false
+  },
+  "files": [
+    {
+      "path": "assets/index-Cdqs8Ohz.css",
+      "bytes": 27076,
+      "sha256": "7AEA2C5D7F3374C75EB71B16B5469066B95A077F49C3EAD31287180295E86461"
+    },
+    {
+      "path": "assets/index-WaRuW-Fx.js",
+      "bytes": 213417,
+      "sha256": "2C44D10708CA8EE3876C6439A7B12C8C024762961A61C574FD9D1765C1B621C4"
+    },
+    {
+      "path": "index.html",
+      "bytes": 899,
+      "sha256": "98956C9C0E66AB148E2D7A766ECE57C5D44BDE52A77C351039DB17837878C2AF"
+    }
+  ]
+}

@@ -4,13 +4,21 @@ Updated: 2026-08-20
 
 ## Current layer
 
-PhraseGarden `0.1.0-preview.9` is the active recovery-source target. It must have
-one source checkpoint `S9` whose sole parent is the exact returned Preview 8
-package commit `721c356ca4019ad232c90a5334a5de76d0feaf66`, followed later by one
-exact seven-path `P9` package child. This source record does not itself establish
+PhraseGarden `0.1.0-preview.9` is the active recovery-source target and has one
+exact local source checkpoint and one same-byte local package content set.
+This source record does not itself establish
 `S9` or `P9`; their exact identities require the named Git and qualification
-evidence. This source package authorizes no push, deployment, tag, or GitHub
-Release.
+evidence. This package record does not itself establish the independent review
+of those seven packaging paths, their containing `P9` Git commit,
+committed-package verification, a workflow run, deployment, public bytes, a
+tag, or a GitHub Release.
+
+- Source: `S9=464239831bb856dbe6d2b045dc5c59607d8b91aa`
+- Tree: `77053600abfd72796b83895a355554b0f2db5786`
+- Sole parent: returned
+  `P8=721c356ca4019ad232c90a5334a5de76d0feaf66`
+- Complete-tree manifest: 38,276 bytes; 196 files; SHA-256
+  `5FB0CA12B15DB8E1B2145A6F9E38A239718827BB54869F5BD51BA1E79F1F2BA3`
 
 The product provides a complete English `source-interface` catalog and a
 complete Japanese `public-unreviewed-preview` page catalog. Japanese is
@@ -20,6 +28,48 @@ The Japanese catalog has no qualified-human review. The generated portable
 prompt remains English LTR; user edits preserve that same prompt surface.
 English↔Japanese remains Preview; every other direction remains Generic; `pt`
 remains region-unspecified.
+
+## Preview 9 bounded correction
+
+The exact source contract is
+`docs/work-packages/PREVIEW-9-SOURCE-IDENTITY.md`. Its closed 21-path delta is
+limited to narrow, short-screen presentation density, the stronger 320 × 900
+regression, truthful status documents, and additive Preview 9 release
+mechanics.
+
+## Preview 9 local qualification and package bytes
+
+The exact 21-path S9 source received an independent zero-finding review. The
+deterministic suites passed, including 346/346 application tests, 58/58 Python
+release/security tests, 43/43 workflow/claim-policy tests, and both TypeScript
+configurations.
+
+One Node 24.19.0 / pnpm 11.9.0 build from S9 produced exactly three audited
+files. Release audit passed before and after both 15/15 Chromium/axe and 15/15
+Edge/axe journeys on the same bytes. The browser checks include the English
+and Japanese 320 × 900 Home bound of no more than 800 px, at least 44 px action
+height, reflow, keyboard/focus behavior, and the carried-forward product and
+privacy journeys.
+
+Two independent reviews of the deterministic stage returned PASS. One
+same-byte promotion produced:
+
+| Artifact | Bytes | SHA-256 |
+|---|---:|---|
+| Pages ZIP | 241,760 | `EE0805A69D80D81EA940755F19D2C54466F5EDB22F81A7C8BED4633581C9A850` |
+| Release manifest | 976 | `5B498173ACCDD8C4128B53462C2D59A2AAF47B8A9993A6B1188EFE7E338344FF` |
+| `SHA256SUMS` | 2,660 | `80ECF74FA5677087169D8C696D2C541386BD9FF9B3C8DE4ACCA59A7FAC6F43CC` |
+
+The ledger preserves the exact 2,424-byte Preview 8 prefix, SHA-256
+`B16FEDD0476E3505E16CC156451EC23849CF0840792250402A6E1E9EE0EC663D`,
+then appends only the Preview 9 ZIP row followed by its manifest row. The final
+trio is byte-equal to the reviewed stage.
+
+An initial sandboxed source-freeze attempt failed at its environment boundary
+and produced no valid manifest. Early browser setups that collided on a local
+port were invalid harness executions. Neither supplies product or
+qualification evidence; the successful owner-context freeze and isolated
+same-dist browser runs above are the qualifying observations.
 
 ## Immutable Preview 8 returned candidate
 
@@ -51,43 +101,23 @@ Preview 8 failure, not a result that Preview 9 may overwrite or continue.
 | Release manifest | 976 | `87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA` |
 | `SHA256SUMS` | 2,188 | `FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A` |
 
-## Preview 9 bounded correction
-
-The exact source contract is
-`docs/work-packages/PREVIEW-9-SOURCE-IDENTITY.md`. Its closed 21-path delta is
-limited to CSS density, the stronger 320 × 900 regression, truthful status
-documents, and additive Preview 9 release mechanics. At 320 × 900, both English
-and Japanese Home primary-action bottoms must be no more than `800` px from the
-viewport top while all content remains available and every affected action
-remains at least 44 px high. The 100 px margin is required headroom, not a
-claim that the current worktree passes.
-
-Preview 9 does not change interface copy, configuration, compiler, prompt,
-recipe, language profile, pair pack, support tier, persistence, privacy,
-runtime-network behavior, or dependencies. Japanese remains a
-`public-unreviewed-preview`; the generated prompt remains English LTR;
-English↔Japanese remains Preview and every other direction remains Generic;
-`pt` remains region-unspecified.
-
 ## Next eligible actions
 
 Follow the earliest unmet condition:
 
-1. Finish and review the exact 21-path source delta; do not stage unrelated
-   work.
-2. After focused and full deterministic checks pass, checkpoint those exact
-   bytes once as `S9` with sole parent `P8=721c356…feaf66`.
-3. Freeze and qualify one complete-tree source manifest, run one build, create
-   and review one deterministic stage, and promote it once without
-   regeneration.
-4. Create the exact seven-path `P9` package child, then run committed-package
-   verification.
-5. Stop for exact remote/publication authorization before any push or Pages
-   action. A tag or GitHub Release is outside this plan.
+1. If the exact seven-path local content set lacks an external read-only
+   review, bind and review those unchanged bytes.
+2. If that review returns zero open P1/P2/P3, checkpoint exactly those seven
+   paths once as `P9` with sole parent S9.
+3. If `P9` exists, run the pinned committed-package verifier and fresh ignored
+   extraction comparison.
+4. Stop for exact remote/publication authorization before any push or Pages
+   action. A tag or GitHub Release remains outside this plan.
 
-Stop on a missing or extra path, failed check, changed P8 failure evidence,
-wrong parent or ledger prefix, another build/stage/promotion, open review
-finding, remote drift, or a claim stronger than the evidence.
+Stop on a missing or extra path, changed source/stage/final byte, failed check,
+changed P8 failure evidence, wrong parent or ledger prefix, another
+build/stage/promotion, open review finding, remote drift, or a claim stronger
+than the evidence.
 
 ## Deferred
 
