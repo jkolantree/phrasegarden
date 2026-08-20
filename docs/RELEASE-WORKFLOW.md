@@ -30,6 +30,15 @@ remote write from the release goal.
 Only the first eligible row is active. A package that exceeds 700 net lines or
 crosses unrelated owners stops and splits before more implementation.
 
+On 2026-08-20 the user explicitly reprioritized the complete English/Japanese
+language-entry vertical ahead of Gate 4 to address first-run comprehension.
+This is a development-order exception, not a Gate 5 completion claim. The
+foundation and Japanese catalog may be implemented as sequential logical
+source packages under that authorization; public exposure still requires an
+exact-byte qualified human Japanese review and a separately authorized
+versioned release cycle. No later locale, persistence, service worker, tag,
+GitHub Release, or deployment is implied.
+
 | Order | Package | Budget | Exit |
 |---:|---|---:|---|
 | 1 | `G3.5` Advanced disclosure | 300–500 | Existing settings use one modality-aware disclosure; no semantic or prompt-byte change |
@@ -52,11 +61,12 @@ crosses unrelated owners stops and splits before more implementation.
 | 18 | `G6.4` independent RC review | read only | No open P1/P2/P3; claims do not exceed exact evidence |
 | 19 | Publication and production qualification | external write | Exact approved bytes publish and final public bytes requalify |
 
-Gate 4 identity/collision semantics, Japanese author/reviewer and locale policy,
+Gate 4 identity/collision semantics, qualified Japanese review evidence,
 service-worker activation, stable support-tier contract, stable version, human
 reviewer governance, usability-data collection, optional model evaluation, and
-the exact publication plan are just-in-time decisions. They do not block
-`G3.5`.
+the exact publication plan remain just-in-time decisions. ADR-038 now fixes the
+English/Japanese locale and start-preset policy; it does not establish the
+human review required for public exposure.
 
 ## Package execution
 

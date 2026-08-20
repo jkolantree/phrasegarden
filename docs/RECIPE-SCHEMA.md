@@ -72,6 +72,13 @@ type RecipeConfiguration = {
 
 `home`, `target`, the UI's `interfaceLocale`, and the authored `promptSurface` are distinct. `interfaceLocale` is presentation state, not semantic recipe configuration. The compiler receives one exact prompt-surface object; it never chooses a surface from interface or language settings. V1 materialization always pins the sole bundled reviewed English surface, `instructions-en`; additional authored surfaces require later explicit product scope and independent review.
 
+The application may offer an exact bundled start preset that supplies
+`homeLanguageId`, `targetLanguageId`, and `written-translator` to the ordinary
+materializer. That convenience action is not a schema field. Its locale ID is
+never serialized into configuration or provenance, and after the first
+semantic mutation or generation a locale change cannot rematerialize or
+compile anything.
+
 The registry's sole content artifact is `src/packs/canonical-language-registry.data.json`: exact UTF-8 bytes, no BOM, LF line endings, and one terminal LF. `contentSha256` is the SHA-256 of that whole file; the digest is stored outside the hashed bytes in `canonical-language-registry.ts`. Version `2026-08-17.1` has digest `498C0F6963F31E9FF21028F52AAD112F2A04453BF7BB4EFD0521A381ECEAECF5`. Its canonical tags are exact, unique, and code-unit sorted: `de`, `en`, `es`, `fr`, `he`, `id`, `it`, `ja`, `pt`, `tlh`, `yi`, `zh-Hant-TW`. Deprecated-form and grandfathered-tag entries are also exact, unique, and code-unit sorted. Registry order is normative source order; runtime code neither sorts nor rewrites it. `pt` is region-unspecified Portuguese; `pt-BR` and `pt-PT` remain unsupported. Discovery strings such as `Francais`, `Espanol`, and `Portugues` are profile metadata, not accepted identities or aliases.
 
 ### Closed enums and defaults

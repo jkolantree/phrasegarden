@@ -791,3 +791,28 @@ test order, and upload policy remain.
 4 packaging commit exists; this checkpoint must not be pushed or dispatched
 alone. Static policy proves configuration, not execution, deployment, or public
 bytes. Source freeze, packaging, and publication remain separate.
+
+## ADR-038 — Language entry presets stop before semantic work
+
+Status: Accepted
+Date: 2026-08-20
+
+**Context:** A prominent language choice should help a first-time visitor begin
+without conflating interface language, translation direction, prompt language,
+or support quality. A later page-language change must not erase configuration,
+generated instructions, or edits.
+
+**Decision:** The application keeps exact `en`/`ja` interface locale state and
+a one-way `starting → preserve-work` session phase outside recipe
+configuration. While starting, English selects fresh `en→ja` Written defaults
+and Japanese selects fresh `ja→en` Written defaults without generating. Any
+semantic mutation, generation, or edit enters preserve-work; later locale
+actions re-render the complete closed UI and summary catalogs only. Refresh
+returns to English/defaults. Locale selection uses no URL, storage, ambient
+locale, `Intl`, network, or compiler input. The portable prompt remains the
+reviewed English `instructions-en` surface.
+
+**Consequences:** A locale catalog must be complete and fail closed without
+English fallback. Development Japanese copy is not proof of qualified human
+review; publication requires a separately bound review and release
+authorization. Other interface locales remain absent until complete.

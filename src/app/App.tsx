@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -35,9 +36,13 @@ import {
   type WrittenSettings,
 } from "../domain";
 import {
-  LIMITATION_MESSAGES_EN,
-  OPTION_LABELS_EN,
-  WARNING_MESSAGES_EN,
+  localizeSummaryItems,
+  uiLimitationMessage,
+  uiLocaleCatalog,
+  uiOptionLabel,
+  uiText,
+  type InterfaceLocaleId,
+  type UiLocaleCatalog,
 } from "../locales";
 import type { SearchableLanguageProfile } from "../packs";
 import { BehaviorSummary } from "../ui/BehaviorSummary";
@@ -55,6 +60,10 @@ import {
   promptDownloadName,
   type PromptDraft,
 } from "./prompt-artifact";
+import {
+  decideLanguageEntry,
+  type LanguageEntryPhase,
+} from "./language-entry";
 import {
   DEFAULT_WRITTEN_CONFIGURATION,
   PHRASEGARDEN_CATALOG,
@@ -83,22 +92,20 @@ type Presentation =
 
 interface ReviewArtifact {
   readonly result: CompileResult;
-  readonly summary: RenderedSummary;
   readonly draft: PromptDraft;
   readonly editing: boolean;
 }
 
-function compilePresentation(configuration: RecipeConfiguration): Presentation {
-  const compiled = compileFromCatalog(
-    configuration,
-    PHRASEGARDEN_CATALOG,
-  );
+function renderPresentation(
+  compiled: ReturnType<typeof compileFromCatalog>,
+  ui: UiLocaleCatalog,
+): Presentation {
   if (!compiled.ok) {
     return compiled;
   }
   const rendered = renderSummary(
-    compiled.value.summaryItems,
-    PHRASEGARDEN_CATALOG.summaryCatalogs[0],
+    localizeSummaryItems(ui, compiled.value),
+    ui.summaryCatalog,
   );
   return rendered.ok
     ? { ok: true, result: compiled.value, summary: rendered.value }
@@ -137,82 +144,77 @@ function profileFor(id: string): SearchableLanguageProfile {
   return profile;
 }
 
-function humanize(value: string): string {
-  const explicit = OPTION_LABELS_EN[value];
-  if (explicit !== undefined) {
-    return explicit;
-  }
-  const spaced = value.replaceAll("-", " ");
-  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
-}
-
-function toolName(recipeId: ActiveRecipeId): string {
+function toolName(ui: UiLocaleCatalog, recipeId: ActiveRecipeId): string {
   switch (recipeId) {
     case "written-translator":
-      return "Translate writing";
+      return uiText(ui, "tool.written");
     case "live-voice-coach":
-      return "Practice speaking";
+      return uiText(ui, "tool.voice");
     case "interpreter":
-      return "Translate a conversation";
+      return uiText(ui, "tool.interpreter");
   }
 }
 
-function pairRailCopy(modality: ActiveModality) {
+function pairRailCopy(ui: UiLocaleCatalog, modality: ActiveModality) {
   switch (modality) {
     case "written":
       return {
-        homeKicker: "Translate from",
-        homeLabel: "Text is in",
-        homeHelp: "The language of the text you will give the other tool.",
-        targetKicker: "Translate into",
-        targetLabel: "Translate to",
-        targetHelp: "The language you want the other tool to produce.",
+        homeKicker: uiText(ui, "pair.writtenHomeKicker"),
+        homeLabel: uiText(ui, "pair.writtenHomeLabel"),
+        homeHelp: uiText(ui, "pair.writtenHomeHelp"),
+        targetKicker: uiText(ui, "pair.writtenTargetKicker"),
+        targetLabel: uiText(ui, "pair.writtenTargetLabel"),
+        targetHelp: uiText(ui, "pair.writtenTargetHelp"),
       } as const;
     case "live-voice":
       return {
-        homeKicker: "Explain in",
-        homeLabel: "Explain in",
-        homeHelp: "The language you want explanations and teaching in.",
-        targetKicker: "Practice in",
-        targetLabel: "Practice in",
-        targetHelp: "The language you want to practice speaking.",
+        homeKicker: uiText(ui, "pair.voiceHomeKicker"),
+        homeLabel: uiText(ui, "pair.voiceHomeLabel"),
+        homeHelp: uiText(ui, "pair.voiceHomeHelp"),
+        targetKicker: uiText(ui, "pair.voiceTargetKicker"),
+        targetLabel: uiText(ui, "pair.voiceTargetLabel"),
+        targetHelp: uiText(ui, "pair.voiceTargetHelp"),
       } as const;
     case "interpreting":
       return {
-        homeKicker: "Translate from",
-        homeLabel: "Turn is in",
-        homeHelp: "The language of each turn you give the other tool.",
-        targetKicker: "Translate into",
-        targetLabel: "Translate to",
-        targetHelp: "The one language the other tool should produce.",
+        homeKicker: uiText(ui, "pair.interpreterHomeKicker"),
+        homeLabel: uiText(ui, "pair.interpreterHomeLabel"),
+        homeHelp: uiText(ui, "pair.interpreterHomeHelp"),
+        targetKicker: uiText(ui, "pair.interpreterTargetKicker"),
+        targetLabel: uiText(ui, "pair.interpreterTargetLabel"),
+        targetHelp: uiText(ui, "pair.interpreterTargetHelp"),
       } as const;
   }
 }
 
-function reviewUseInstruction(settings: ActiveSettings): string {
+function reviewUseInstruction(ui: UiLocaleCatalog, settings: ActiveSettings): string {
   switch (settings.modality) {
     case "written":
-      return "Paste the instructions first. Send the text you want translated as your next message.";
+      return uiText(ui, "review.useWritten");
     case "live-voice":
-      return "Paste the instructions before practice begins. Voice features still depend on the other tool.";
+      return uiText(ui, "review.useVoice");
     case "interpreting": {
-      const sourceUnit =
+      return uiText(
+        ui,
         settings.turnMode === "short-relay"
-          ? "one short, complete home-language chunk at a time"
-          : "one complete home-language turn or message at a time";
-      return `Paste the instructions before interpreting starts. Then give the tool ${sourceUnit}. It translates only into the target language; swap the languages and make another set of instructions for the reverse direction.`;
+          ? "review.useInterpreterShort"
+          : "review.useInterpreterConsecutive",
+      );
     }
   }
 }
 
-function destinationPrivacyObject(modality: ActiveModality): string {
+function destinationPrivacyObject(
+  ui: UiLocaleCatalog,
+  modality: ActiveModality,
+): string {
   switch (modality) {
     case "written":
-      return "the text you enter there.";
+      return uiText(ui, "review.privacyWritten");
     case "live-voice":
-      return "any audio, transcripts, or text it receives during practice.";
+      return uiText(ui, "review.privacyVoice");
     case "interpreting":
-      return "any participant's text, transcript, or audio while interpreting.";
+      return uiText(ui, "review.privacyInterpreter");
   }
 }
 
@@ -257,24 +259,29 @@ function rematerialize(
   return { ...base, ...common } as RecipeConfiguration;
 }
 
-function directionAnnouncement(configuration: RecipeConfiguration): string {
-  const homeName = publicLanguageName(configuration.languages.home.id);
-  const targetName = publicLanguageName(configuration.languages.target.id);
-  const compiled = compilePresentation(configuration);
+function directionAnnouncement(
+  ui: UiLocaleCatalog,
+  configuration: RecipeConfiguration,
+): string {
+  const homeName = publicLanguageName(ui, configuration.languages.home.id);
+  const targetName = publicLanguageName(ui, configuration.languages.target.id);
+  const compiled = compileFromCatalog(configuration, PHRASEGARDEN_CATALOG);
   if (!compiled.ok) {
-    return `Direction changed to ${homeName} to ${targetName}. Support level could not be determined.`;
+    return uiText(ui, "announce.directionUnknown", {
+      home: homeName,
+      target: targetName,
+    });
   }
-  const preview = compiled.result.provenance.supportTier === "preview";
-  return `Direction changed to ${homeName} to ${targetName}. Support level: ${
-    preview ? "Preview" : "Generic"
-  }. ${
-    preview
-      ? "Built-in direction guidance; independent language review is not complete."
-      : "General guidance only."
-  }`;
+  const preview = compiled.value.provenance.supportTier === "preview";
+  return uiText(
+    ui,
+    preview ? "announce.directionPreview" : "announce.directionGeneric",
+    { home: homeName, target: targetName },
+  );
 }
 
 interface LanguageSelectProps {
+  readonly ui: UiLocaleCatalog;
   readonly id: string;
   readonly label: string;
   readonly help: string;
@@ -284,6 +291,7 @@ interface LanguageSelectProps {
 }
 
 function LanguageSelect({
+  ui,
   id,
   label,
   help,
@@ -308,7 +316,7 @@ function LanguageSelect({
             disabled={profile.ref.id === excludedId}
             dir="auto"
           >
-            {publicLanguageOptionLabel(profile)}
+            {publicLanguageOptionLabel(ui, profile)}
           </option>
         ))}
       </select>
@@ -320,15 +328,16 @@ function LanguageSelect({
 }
 
 interface ToolChooserProps {
+  readonly ui: UiLocaleCatalog;
   readonly prefix: string;
   readonly value: ActiveRecipeId;
   readonly onChange: (recipeId: ActiveRecipeId) => void;
 }
 
-function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
+function ToolChooser({ ui, prefix, value, onChange }: ToolChooserProps) {
   return (
     <fieldset class="tool-chooser">
-      <legend>What do you want help with?</legend>
+      <legend>{uiText(ui, "tool.question")}</legend>
       <div class="segmented-options">
         <label class="recommended-tool" for={`${prefix}-written`}>
           <input
@@ -341,14 +350,15 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
           />
           <span>
             <strong>
-              Translate writing <small class="recommended-label">Recommended</small>
+              {uiText(ui, "tool.written")} {" "}
+              <small class="recommended-label">
+                {uiText(ui, "tool.recommended")}
+              </small>
             </strong>
-            <small>
-              For messages, emails, documents, and other written text.
-            </small>
+              <small>{uiText(ui, "tool.writtenHelp")}</small>
           </span>
         </label>
-        <p class="other-tools-label">Other ways to use PhraseGarden</p>
+        <p class="other-tools-label">{uiText(ui, "tool.other")}</p>
         <div class="other-tool-options">
           <label for={`${prefix}-voice`}>
             <input
@@ -360,10 +370,8 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
               onChange={() => onChange("live-voice-coach")}
             />
             <span>
-              <strong>Practice speaking</strong>
-              <small>
-                For conversation practice in an AI tool with voice features.
-              </small>
+              <strong>{uiText(ui, "tool.voice")}</strong>
+              <small>{uiText(ui, "tool.voiceHelp")}</small>
             </span>
           </label>
           <label for={`${prefix}-interpreter`}>
@@ -376,10 +384,8 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
               onChange={() => onChange("interpreter")}
             />
             <span>
-              <strong>Translate a conversation</strong>
-              <small>
-                For translating each complete turn in one direction.
-              </small>
+              <strong>{uiText(ui, "tool.interpreter")}</strong>
+              <small>{uiText(ui, "tool.interpreterHelp")}</small>
             </span>
           </label>
         </div>
@@ -389,6 +395,7 @@ function ToolChooser({ prefix, value, onChange }: ToolChooserProps) {
 }
 
 interface SelectFieldProps<Value extends string> {
+  readonly ui: UiLocaleCatalog;
   readonly id: string;
   readonly label: string;
   readonly value: Value;
@@ -398,6 +405,7 @@ interface SelectFieldProps<Value extends string> {
 }
 
 function SelectField<Value extends string>({
+  ui,
   id,
   label,
   value,
@@ -419,7 +427,7 @@ function SelectField<Value extends string>({
       >
         {values.map((option) => (
           <option key={option} value={option}>
-            {humanize(option)}
+            {uiOptionLabel(ui, option)}
           </option>
         ))}
       </select>
@@ -472,12 +480,14 @@ function updateInterpreterSettings(
 }
 
 function PairRails({
+  ui,
   configuration,
   onHome,
   onTarget,
   onSwap,
   compact = false,
 }: {
+  readonly ui: UiLocaleCatalog;
   readonly configuration: RecipeConfiguration;
   readonly onHome: (value: string) => void;
   readonly onTarget: (value: string) => void;
@@ -486,15 +496,16 @@ function PairRails({
 }) {
   const home = profileFor(configuration.languages.home.id);
   const target = profileFor(configuration.languages.target.id);
-  const copy = pairRailCopy(configuration.settings.modality);
+  const copy = pairRailCopy(ui, configuration.settings.modality);
   return (
     <div class={`pair-rails${compact ? " pair-rails-compact" : ""}`}>
       <section class="language-rail home-rail" aria-labelledby="home-rail-title">
         <p class="rail-kicker" id="home-rail-title">
           {copy.homeKicker}
         </p>
-        <LanguageLabel profile={home} showCode={false} />
+        <LanguageLabel ui={ui} profile={home} showCode={false} />
         <LanguageSelect
+          ui={ui}
           id={compact ? "builder-home-language" : "home-language"}
           label={copy.homeLabel}
           help={copy.homeHelp}
@@ -504,9 +515,9 @@ function PairRails({
         />
       </section>
       <div class="pair-connector">
-        <span aria-hidden="true">to</span>
-        <button type="button" class="swap-button" onClick={onSwap}>
-          Swap languages
+          <span aria-hidden="true">{uiText(ui, "global.to").trim()}</span>
+          <button type="button" class="swap-button" onClick={onSwap}>
+          {uiText(ui, "pair.swap")}
         </button>
       </div>
       <section
@@ -516,8 +527,9 @@ function PairRails({
         <p class="rail-kicker" id="target-rail-title">
           {copy.targetKicker}
         </p>
-        <LanguageLabel profile={target} showCode={false} />
+        <LanguageLabel ui={ui} profile={target} showCode={false} />
         <LanguageSelect
+          ui={ui}
           id={compact ? "builder-target-language" : "target-language"}
           label={copy.targetLabel}
           help={copy.targetHelp}
@@ -531,21 +543,23 @@ function PairRails({
 }
 
 function ReviewDirection({
+  ui,
   configuration,
 }: {
+  readonly ui: UiLocaleCatalog;
   readonly configuration: RecipeConfiguration;
 }) {
   const home = profileFor(configuration.languages.home.id);
   const target = profileFor(configuration.languages.target.id);
-  const targetName = publicLanguageName(target.ref.id);
+  const targetName = publicLanguageName(ui, target.ref.id);
   return (
     <p class="review-direction" data-testid="review-direction">
-      <span lang="en" dir="ltr">
-        {publicLanguageName(home.ref.id)}
+      <span lang={ui.locale} dir={ui.direction}>
+        {publicLanguageName(ui, home.ref.id)}
       </span>
       <span aria-hidden="true">→</span>
-      <span class="sr-only"> to </span>
-      <span lang="en" dir="ltr">
+      <span class="sr-only">{uiText(ui, "global.to")}</span>
+      <span lang={ui.locale} dir={ui.direction}>
         {targetName}
         {targetName !== target.autonym && (
           <>
@@ -559,24 +573,28 @@ function ReviewDirection({
       </span>
       <span aria-hidden="true">·</span>
       <span class="sr-only">, </span>
-      <span>{toolName(configuration.recipe.id)}</span>
+      <span>{toolName(ui, configuration.recipe.id)}</span>
     </p>
   );
 }
 
-function CompilerErrors({ issues }: { readonly issues: readonly ValidationIssue[] }) {
+function CompilerErrors({
+  ui,
+  issues,
+}: {
+  readonly ui: UiLocaleCatalog;
+  readonly issues: readonly ValidationIssue[];
+}) {
   return (
     <section class="error-summary" role="alert" aria-labelledby="error-title">
-      <h2 id="error-title">PhraseGarden couldn't make these instructions</h2>
-      <p>
-        Your settings are still here. Please go back and try again.
-      </p>
+      <h2 id="error-title">{uiText(ui, "error.title")}</h2>
+      <p>{uiText(ui, "error.body")}</p>
       <details>
-        <summary>Technical error details</summary>
+        <summary>{uiText(ui, "error.details")}</summary>
         <ul>
           {issues.map((item, index) => (
             <li key={`${item.code}-${item.path}-${index}`}>
-              <code>{item.code}</code> at <code>{item.path}</code>
+              <code>{item.code}</code>{uiText(ui, "error.at")}<code>{item.path}</code>
             </li>
           ))}
         </ul>
@@ -586,9 +604,11 @@ function CompilerErrors({ issues }: { readonly issues: readonly ValidationIssue[
 }
 
 function ReplacePromptConfirmation({
+  ui,
   onKeep,
   onReplace,
 }: {
+  readonly ui: UiLocaleCatalog;
   readonly onKeep: () => void;
   readonly onReplace: () => void;
 }) {
@@ -600,12 +620,8 @@ function ReplacePromptConfirmation({
       aria-describedby="replace-prompt-description"
       data-testid="replace-prompt-confirmation"
     >
-      <h2 id="replace-prompt-title">Replace your edited copy?</h2>
-      <p id="replace-prompt-description">
-        Making new instructions from these settings will replace the edited copy
-        currently in this tab. Copy or download it first if you want to keep
-        it.
-      </p>
+      <h2 id="replace-prompt-title">{uiText(ui, "replace.title")}</h2>
+      <p id="replace-prompt-description">{uiText(ui, "replace.body")}</p>
       <div>
         <button
           type="button"
@@ -613,17 +629,107 @@ function ReplacePromptConfirmation({
           onClick={onKeep}
           autoFocus
         >
-          Keep edited copy
+          {uiText(ui, "replace.keep")}
         </button>
         <button type="button" class="primary-action" onClick={onReplace}>
-          Replace and make instructions
+          {uiText(ui, "replace.confirm")}
         </button>
       </div>
     </section>
   );
 }
 
+function LanguageEntry({
+  ui,
+  locale,
+  phase,
+  onSelect,
+}: {
+  readonly ui: UiLocaleCatalog;
+  readonly locale: InterfaceLocaleId;
+  readonly phase: LanguageEntryPhase;
+  readonly onSelect: (locale: InterfaceLocaleId) => void;
+}) {
+  const starting = phase === "starting";
+  const titleId = "language-entry-title";
+  const helpId = "language-entry-help";
+  const entries = [
+    {
+      locale: "en" as const,
+      label: starting ? (
+        <>
+          <bdi lang="en" dir="ltr">English</bdi>
+          <span aria-hidden="true"> → </span>
+          <bdi lang="ja" dir="ltr">日本語</bdi>
+        </>
+      ) : (
+        <bdi lang="en" dir="ltr">English</bdi>
+      ),
+      aria: uiText(
+        ui,
+        starting ? "entry.englishStartAria" : "entry.englishPageAria",
+      ),
+    },
+    {
+      locale: "ja" as const,
+      label: starting ? (
+        <>
+          <bdi lang="ja" dir="ltr">日本語</bdi>
+          <span aria-hidden="true"> → </span>
+          <bdi lang="en" dir="ltr">English</bdi>
+        </>
+      ) : (
+        <bdi lang="ja" dir="ltr">日本語</bdi>
+      ),
+      aria: uiText(
+        ui,
+        starting ? "entry.japaneseStartAria" : "entry.japanesePageAria",
+      ),
+    },
+  ];
+  return (
+    <section
+      class="language-entry"
+      aria-labelledby={titleId}
+      aria-describedby={helpId}
+      data-testid="language-entry"
+    >
+      <div class="language-entry-inner">
+        <div class="language-entry-copy">
+          <p id={titleId} class="language-entry-title">
+            {uiText(ui, starting ? "entry.startTitle" : "entry.pageTitle")}
+          </p>
+          <p id={helpId} class="language-entry-help">
+            {uiText(ui, starting ? "entry.startHelp" : "entry.pageHelp")}
+          </p>
+        </div>
+        <div class="language-entry-actions">
+          {entries.map((entry) => (
+            <button
+              key={entry.locale}
+              type="button"
+              class="language-entry-action"
+              aria-label={entry.aria}
+              aria-pressed={locale === entry.locale}
+              onClick={() => onSelect(entry.locale)}
+            >
+              <span>{entry.label}</span>
+              {locale === entry.locale && (
+                <small>{uiText(ui, "entry.current")}</small>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function App() {
+  const [interfaceLocale, setInterfaceLocale] =
+    useState<InterfaceLocaleId>("en");
+  const [languageEntryPhase, setLanguageEntryPhase] =
+    useState<LanguageEntryPhase>("starting");
   const [view, setView] = useState<View>("home");
   const [homeChoicesOpen, setHomeChoicesOpen] = useState(false);
   const [configuration, setConfiguration] = useState<RecipeConfiguration>(
@@ -631,7 +737,7 @@ export function App() {
   );
   const [artifact, setArtifact] = useState<ReviewArtifact | null>(null);
   const [announcement, setAnnouncement] = useState(
-    "English to Japanese Translate writing selected.",
+    uiText(uiLocaleCatalog("en"), "announce.initial"),
   );
   const [confirmRegenerate, setConfirmRegenerate] = useState(false);
   const [confirmReplacePrompt, setConfirmReplacePrompt] = useState(false);
@@ -647,21 +753,52 @@ export function App() {
   const restoreButtonRef = useRef<HTMLButtonElement>(null);
   const composingRef = useRef(false);
   const initialViewRef = useRef(true);
+  const ui = useMemo(() => uiLocaleCatalog(interfaceLocale), [interfaceLocale]);
 
-  const presentation = useMemo(
-    () => compilePresentation(configuration),
+  const compiledConfiguration = useMemo(
+    () => compileFromCatalog(configuration, PHRASEGARDEN_CATALOG),
     [configuration],
+  );
+  const presentation = useMemo(
+    () => renderPresentation(compiledConfiguration, ui),
+    [compiledConfiguration, ui],
   );
   const homeProfile = profileFor(configuration.languages.home.id);
   const targetProfile = profileFor(configuration.languages.target.id);
 
-  useEffect(() => {
+  const artifactSummary = useMemo(() => {
+    if (artifact === null) {
+      return null;
+    }
+    const rendered = renderSummary(
+      localizeSummaryItems(ui, artifact.result),
+      ui.summaryCatalog,
+    );
+    if (!rendered.ok) {
+      throw new Error(
+        `Invalid bundled summary presentation: ${rendered.issues
+          .map((issue) => `${issue.code}:${issue.path}`)
+          .join(",")}`,
+      );
+    }
+    return rendered.value;
+  }, [artifact?.result, ui]);
+
+  useLayoutEffect(() => {
     const titles: Readonly<Record<View, string>> = {
-      home: "PhraseGarden · Better instructions for language tools",
-      builder: "Adjust your instructions · PhraseGarden",
-      review: "Use your instructions · PhraseGarden",
+      home: uiText(ui, "document.homeTitle"),
+      builder: uiText(ui, "document.builderTitle"),
+      review: uiText(ui, "document.reviewTitle"),
     };
+    document.documentElement.lang = ui.locale;
+    document.documentElement.dir = ui.direction;
     document.title = titles[view];
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute("content", uiText(ui, "document.description"));
+  }, [ui, view]);
+
+  useEffect(() => {
     if (initialViewRef.current) {
       initialViewRef.current = false;
     } else {
@@ -756,13 +893,39 @@ export function App() {
     setAnnouncement(message);
   }
 
+  function selectInterfaceLocale(locale: InterfaceLocaleId): void {
+    if (locale === interfaceLocale) {
+      return;
+    }
+    const nextUi = uiLocaleCatalog(locale);
+    const decision = decideLanguageEntry(languageEntryPhase, locale);
+    if (decision.kind === "apply-start-preset") {
+      setConfiguration(decision.configuration);
+      setHomeChoicesOpen(false);
+    }
+    setInterfaceLocale(locale);
+    setActionFeedback(null);
+    setAnnouncement(
+      uiText(
+        nextUi,
+        decision.kind === "apply-start-preset"
+          ? locale === "en"
+            ? "entry.englishStartAnnouncement"
+            : "entry.japaneseStartAnnouncement"
+          : locale === "en"
+            ? "entry.englishPageAnnouncement"
+            : "entry.japanesePageAnnouncement",
+      ),
+    );
+  }
+
   function selectLanguages(
     homeLanguageId: string,
     targetLanguageId: string,
   ): void {
     if (homeLanguageId === targetLanguageId) {
       setAnnouncement(
-        "Home and target languages must be different. The previous selection remains.",
+        uiText(ui, "announce.sameLanguage"),
       );
       return;
     }
@@ -773,10 +936,12 @@ export function App() {
       configuration.recipe.id,
     );
     setConfiguration(next);
-    setAnnouncement(directionAnnouncement(next));
+    setLanguageEntryPhase("preserve-work");
+    setAnnouncement(directionAnnouncement(ui, next));
   }
 
   function chooseTool(recipeId: ActiveRecipeId): void {
+    setLanguageEntryPhase("preserve-work");
     setConfiguration((current) =>
       rematerialize(
         current,
@@ -786,11 +951,9 @@ export function App() {
       ),
     );
     const message: Readonly<Record<ActiveRecipeId, string>> = {
-      "written-translator": "Translate writing selected.",
-      "live-voice-coach":
-        "Practice speaking selected. Voice-tool abilities reset to I don't know.",
-      interpreter:
-        "Translate a conversation selected. It works in one direction at a time.",
+      "written-translator": uiText(ui, "announce.written"),
+      "live-voice-coach": uiText(ui, "announce.voice"),
+      interpreter: uiText(ui, "announce.interpreter"),
     };
     setAnnouncement(message[recipeId]);
   }
@@ -799,6 +962,7 @@ export function App() {
     update: (current: RecipeConfiguration) => RecipeConfiguration,
     message: string,
   ): void {
+    setLanguageEntryPhase("preserve-work");
     setConfiguration((current) => update(current));
     announceConfiguration(message);
   }
@@ -807,26 +971,25 @@ export function App() {
     if (artifact?.draft.modified === true && !replaceEdited) {
       setConfirmReplacePrompt(true);
       setAnnouncement(
-        "Making new instructions would replace your edited copy. Confirmation is required.",
+        uiText(ui, "announce.replace"),
       );
       return;
     }
-    const current = compilePresentation(configuration);
-    if (!current.ok) {
+    if (!presentation.ok) {
       setAnnouncement(
-        "PhraseGarden couldn't make these instructions. Your settings are still here.",
+        uiText(ui, "announce.compileError"),
       );
       return;
     }
     setArtifact({
-      result: current.result,
-      summary: current.summary,
-      draft: createPromptDraft(current.result),
+      result: presentation.result,
+      draft: createPromptDraft(presentation.result),
       editing: false,
     });
     setConfirmRegenerate(false);
     setConfirmReplacePrompt(false);
     setActionFeedback(null);
+    setLanguageEntryPhase("preserve-work");
     navigateTo("review");
   }
 
@@ -843,14 +1006,13 @@ export function App() {
       setActionFeedback({
         kind: "success",
         message: artifact.draft.modified
-          ? "Your edited instructions were copied."
-          : "Your instructions were copied.",
+          ? uiText(ui, "announce.copyEdited")
+          : uiText(ui, "announce.copy"),
       });
     } catch {
       setActionFeedback({
         kind: "error",
-        message:
-          "Copy was not available. Select the visible instruction text and copy it manually.",
+        message: uiText(ui, "announce.copyError"),
       });
     }
   }
@@ -880,8 +1042,8 @@ export function App() {
       setActionFeedback({
         kind: "success",
         message: artifact.draft.modified
-          ? "Your edited text-file download started."
-          : "Your text-file download started.",
+          ? uiText(ui, "announce.downloadEdited")
+          : uiText(ui, "announce.download"),
       });
     } catch {
       if (url !== null) {
@@ -889,8 +1051,7 @@ export function App() {
       }
       setActionFeedback({
         kind: "error",
-        message:
-          "Download could not start. Select the visible instruction text and copy it manually.",
+        message: uiText(ui, "announce.downloadError"),
       });
     }
   }
@@ -928,7 +1089,7 @@ export function App() {
     setConfirmRegenerate(false);
     setConfirmReplacePrompt(false);
     setActionFeedback(null);
-    setAnnouncement("The original generated instructions were restored.");
+    setAnnouncement(uiText(ui, "announce.restored"));
     globalThis.requestAnimationFrame(() => promptSurfaceRef.current?.focus());
   }
 
@@ -954,7 +1115,7 @@ export function App() {
           headingRef.current?.focus();
         }}
       >
-        Skip to main content
+        {uiText(ui, "global.skip")}
       </a>
       <header class="site-header">
         <div class="header-inner">
@@ -965,17 +1126,24 @@ export function App() {
               setHomeChoicesOpen(false);
               navigateTo("home");
             }}
-            aria-label="PhraseGarden home"
+            aria-label={uiText(ui, "global.home")}
           >
             <span aria-hidden="true" class="wordmark-weave" />
             PhraseGarden
           </button>
-          <p class="privacy-status" aria-label="Session only; not saved">
+          <p class="privacy-status" aria-label={uiText(ui, "global.sessionAria")}>
             <span class="privacy-dot" aria-hidden="true" />
-            <span class="privacy-long">Session only · </span>not saved
+            <span class="privacy-long">{uiText(ui, "global.sessionPrefix")}</span>
+            {uiText(ui, "global.notSaved")}
           </p>
         </div>
       </header>
+      <LanguageEntry
+        ui={ui}
+        locale={interfaceLocale}
+        phase={languageEntryPhase}
+        onSelect={selectInterfaceLocale}
+      />
       <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
         {announcement}
       </div>
@@ -984,13 +1152,11 @@ export function App() {
         <main id="main-content" class="page home-page">
           <section class="hero">
             <h1 id="page-title" ref={headingRef} tabIndex={-1}>
-              Keep your meaning when AI translates.
+              {uiText(ui, "home.heroTitle")}
             </h1>
             <p class="hero-copy">
-              Choose languages and what you want to do. PhraseGarden makes
-              reusable instructions for another AI chat or language tool.
-              Copy the instructions there, then send the words you want
-              translated. <strong>Your text never comes here.</strong>
+              {uiText(ui, "home.heroCopy")} {" "}
+              <strong>{uiText(ui, "home.heroPrivacy")}</strong>
             </p>
           </section>
 
@@ -1000,21 +1166,24 @@ export function App() {
               aria-labelledby="ready-choices-title"
             >
               <div class="home-start-summary">
-                <p class="eyebrow" aria-hidden="true">Ready to start</p>
+                <p class="eyebrow" aria-hidden="true">
+                  {uiText(ui, "home.ready")}
+                </p>
                 <h2
                   id="ready-choices-title"
                   ref={homeReadyHeadingRef}
                   tabIndex={-1}
                 >
-                  <span class="sr-only">Ready to start: </span>
-                  {publicLanguageName(configuration.languages.home.id)}
+                  <span class="sr-only">{uiText(ui, "home.readyPrefix")}</span>
+                  {publicLanguageName(ui, configuration.languages.home.id)}
                   <span aria-hidden="true"> → </span>
-                  <span class="sr-only"> to </span>
-                  {publicLanguageName(configuration.languages.target.id)}
+                  <span class="sr-only">{uiText(ui, "global.to")}</span>
+                  {publicLanguageName(ui, configuration.languages.target.id)}
                 </h2>
-                <p class="ready-tool">{toolName(configuration.recipe.id)}</p>
+                <p class="ready-tool">{toolName(ui, configuration.recipe.id)}</p>
                 {presentation.ok ? (
                   <SupportStatus
+                    ui={ui}
                     compact
                     provenance={presentation.result.provenance}
                   />
@@ -1027,21 +1196,21 @@ export function App() {
                   onClick={() => generatePrompt()}
                   disabled={!presentation.ok}
                 >
-                  Make my instructions
+                  {uiText(ui, "home.make")}
                 </button>
                 <button
                   type="button"
                   class="secondary-action"
                   onClick={() => navigateTo("builder")}
                 >
-                  Adjust tone or context
+                  {uiText(ui, "home.adjust")}
                 </button>
                 <button
                   type="button"
                   class="text-action"
                   onClick={openHomeChoices}
                 >
-                  Change languages or task
+                  {uiText(ui, "home.change")}
                 </button>
                 {artifact !== null && (
                   <button
@@ -1049,12 +1218,13 @@ export function App() {
                     class="text-action"
                     onClick={() => navigateTo("review")}
                   >
-                    Return to current instructions
+                    {uiText(ui, "home.return")}
                   </button>
                 )}
               </div>
               {confirmReplacePrompt && (
                 <ReplacePromptConfirmation
+                  ui={ui}
                   onKeep={() => navigateTo("review")}
                   onReplace={() => generatePrompt(true)}
                 />
@@ -1066,14 +1236,14 @@ export function App() {
             <section class="home-weave" aria-labelledby="choose-direction">
               <div class="home-choices-heading">
                 <div>
-                  <p class="eyebrow">Change choices</p>
+                  <p class="eyebrow">{uiText(ui, "home.changeEyebrow")}</p>
                   <h2
                     id="choose-direction"
                     class="section-title"
                     ref={homeChoicesHeadingRef}
                     tabIndex={-1}
                   >
-                    Choose languages and task
+                    {uiText(ui, "home.chooseTitle")}
                   </h2>
                 </div>
                 <button
@@ -1081,10 +1251,11 @@ export function App() {
                   class="text-action"
                   onClick={closeHomeChoices}
                 >
-                  Use current choices
+                  {uiText(ui, "home.useCurrent")}
                 </button>
               </div>
               <PairRails
+                ui={ui}
                 configuration={configuration}
                 onHome={(id) =>
                   selectLanguages(
@@ -1108,11 +1279,13 @@ export function App() {
               <div class="home-task-panel">
                 {presentation.ok ? (
                   <SupportStatus
+                    ui={ui}
                     compact
                     provenance={presentation.result.provenance}
                   />
                 ) : null}
                 <ToolChooser
+                  ui={ui}
                   prefix="home"
                   value={configuration.recipe.id}
                   onChange={chooseTool}
@@ -1124,23 +1297,24 @@ export function App() {
                     onClick={() => generatePrompt()}
                     disabled={!presentation.ok}
                   >
-                    Make my instructions
+                    {uiText(ui, "home.make")}
                   </button>
                   <button
                     type="button"
                     class="secondary-action"
                     onClick={() => navigateTo("builder")}
                   >
-                    Adjust tone or context
+                    {uiText(ui, "home.adjust")}
                   </button>
                 </div>
                 <p class="quick-start-note">
                   {configuration.settings.modality === "interpreting"
-                    ? "One direction at a time. Swap the languages and make another set of instructions for the reverse direction."
-                    : "The defaults work for most people. Adjust tone or context only when it matters."}
+                    ? uiText(ui, "home.interpreterNote")
+                    : uiText(ui, "home.defaultsNote")}
                 </p>
                 {confirmReplacePrompt && (
                   <ReplacePromptConfirmation
+                    ui={ui}
                     onKeep={() => navigateTo("review")}
                     onReplace={() => generatePrompt(true)}
                   />
@@ -1149,25 +1323,18 @@ export function App() {
             </section>
           )}
 
-          <section class="proof-strip" aria-label="PhraseGarden promises">
+          <section class="proof-strip" aria-label={uiText(ui, "home.promisesAria")}>
             <p>
-              <strong>Your text never comes here</strong>
-              <span>
-                PhraseGarden never asks for the words you want translated.
-              </span>
+              <strong>{uiText(ui, "home.privateTitle")}</strong>
+              <span>{uiText(ui, "home.privateBody")}</span>
             </p>
             <p>
-              <strong>Session only</strong>
-              <span>
-                Settings, instructions, and edits disappear when you refresh or
-                close this tab.
-              </span>
+              <strong>{uiText(ui, "home.sessionTitle")}</strong>
+              <span>{uiText(ui, "home.sessionBody")}</span>
             </p>
             <p>
-              <strong>Take it with you</strong>
-              <span>
-                Copy or download plain text for a compatible AI or language tool.
-              </span>
+              <strong>{uiText(ui, "home.portableTitle")}</strong>
+              <span>{uiText(ui, "home.portableBody")}</span>
             </p>
           </section>
         </main>
@@ -1176,27 +1343,24 @@ export function App() {
       {view === "builder" && (
         <main id="main-content" class="page builder-page">
           <div class="page-heading">
-            <p class="eyebrow">Optional settings</p>
+            <p class="eyebrow">{uiText(ui, "builder.eyebrow")}</p>
             <h1 id="page-title" ref={headingRef} tabIndex={-1}>
-              Adjust tone and context
+              {uiText(ui, "builder.title")}
             </h1>
-            <p>
-              The defaults work for most people. Change only what matters for
-              this situation; your source text stays outside PhraseGarden.
-            </p>
+            <p>{uiText(ui, "builder.intro")}</p>
           </div>
 
           <section class="builder-setup" aria-labelledby="current-setup-title">
             <div>
-              <p class="eyebrow">Current setup</p>
+              <p class="eyebrow">{uiText(ui, "builder.current")}</p>
               <h2 id="current-setup-title">
-                {publicLanguageName(configuration.languages.home.id)}
+                {publicLanguageName(ui, configuration.languages.home.id)}
                 <span aria-hidden="true"> → </span>
-                <span class="sr-only"> to </span>
-                {publicLanguageName(configuration.languages.target.id)}
+                <span class="sr-only">{uiText(ui, "global.to")}</span>
+                {publicLanguageName(ui, configuration.languages.target.id)}
                 <span class="setup-tool">
                   <span aria-hidden="true"> · </span>
-                  {toolName(configuration.recipe.id)}
+                  {toolName(ui, configuration.recipe.id)}
                 </span>
               </h2>
             </div>
@@ -1205,12 +1369,12 @@ export function App() {
               class="text-action"
               onClick={openHomeChoices}
             >
-              Change languages or task
+              {uiText(ui, "home.change")}
             </button>
           </section>
 
           {presentation.ok ? (
-            <SupportStatus compact provenance={presentation.result.provenance} />
+            <SupportStatus ui={ui} compact provenance={presentation.result.provenance} />
           ) : null}
 
           <form
@@ -1223,14 +1387,15 @@ export function App() {
             <div class="settings-weave">
               <fieldset class="settings-side settings-home">
                 <legend>
-                  <span>Conversation context (optional)</span>
+                  <span>{uiText(ui, "builder.contextLegend")}</span>
                   <bdi lang={homeProfile.ref.id} dir={homeProfile.direction}>
                     {homeProfile.autonym}
                   </bdi>
                 </legend>
                 <SelectField
+                  ui={ui}
                   id="relationship"
-                  label="Relationship"
+                  label={uiText(ui, "builder.relationship")}
                   value={configuration.socialContext.relationship}
                   values={RELATIONSHIPS}
                   onChange={(value) =>
@@ -1243,7 +1408,7 @@ export function App() {
                             relationship: value,
                           },
                         }) as RecipeConfiguration,
-                      "Relationship updated.",
+                      uiText(ui, "announce.relationship"),
                     )
                   }
                 />
@@ -1257,8 +1422,8 @@ export function App() {
                 <legend>
                   <span>
                     {configuration.settings.modality === "interpreting"
-                      ? "How each translated turn should work (optional)"
-                      : "How the result should sound (optional)"}
+                      ? uiText(ui, "builder.interpreterLegend")
+                      : uiText(ui, "builder.resultLegend")}
                   </span>
                   <bdi
                     lang={targetProfile.ref.id}
@@ -1268,8 +1433,9 @@ export function App() {
                   </bdi>
                 </legend>
                 <SelectField
+                  ui={ui}
                   id="register"
-                  label="Tone and formality"
+                  label={uiText(ui, "builder.register")}
                   value={
                     configuration.register.strategy === "preserve"
                       ? "preserve"
@@ -1286,15 +1452,16 @@ export function App() {
                               ? { strategy: "preserve" }
                               : { strategy: "adapt", level: value },
                         }) as RecipeConfiguration,
-                      "Tone and formality updated.",
+                      uiText(ui, "announce.register"),
                     )
                   }
                 />
 
                 {configuration.settings.modality === "written" ? (
                   <SelectField
+                    ui={ui}
                     id="written-detail"
-                    label="How much detail"
+                    label={uiText(ui, "builder.detail")}
                     value={configuration.settings.outputDetail}
                     values={WRITTEN_OUTPUT_DETAILS}
                     onChange={(value) =>
@@ -1304,15 +1471,16 @@ export function App() {
                             ...settings,
                             outputDetail: value,
                           })),
-                        "Answer detail updated.",
+                        uiText(ui, "announce.detail"),
                       )
                     }
                   />
                 ) : configuration.settings.modality === "live-voice" ? (
                   <>
                     <SelectField
+                      ui={ui}
                       id="correction-timing"
-                      label="When to correct me"
+                      label={uiText(ui, "builder.correctionTiming")}
                       value={configuration.settings.correction.timing}
                       values={VOICE_CORRECTION_TIMINGS}
                       onChange={(value) =>
@@ -1325,13 +1493,14 @@ export function App() {
                                 timing: value,
                               },
                             })),
-                          "When corrections happen was updated.",
+                          uiText(ui, "announce.correctionTiming"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="correction-focus"
-                      label="What to correct first"
+                      label={uiText(ui, "builder.correctionFocus")}
                       value={configuration.settings.correction.focus}
                       values={VOICE_CORRECTION_FOCI}
                       onChange={(value) =>
@@ -1344,16 +1513,17 @@ export function App() {
                                 focus: value,
                               },
                             })),
-                          "Correction priority updated.",
+                          uiText(ui, "announce.correctionFocus"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="pronunciation"
-                      label="Pronunciation help"
+                      label={uiText(ui, "builder.pronunciation")}
                       value={configuration.settings.pronunciation}
                       values={PRONUNCIATION_MODES}
-                      help="The tool must receive audio to assess what you actually pronounced."
+                      help={uiText(ui, "builder.audioHelp")}
                       onChange={(value) =>
                         setCommon(
                           (current) =>
@@ -1361,13 +1531,14 @@ export function App() {
                               ...settings,
                               pronunciation: value,
                             })),
-                          "Pronunciation setting updated.",
+                          uiText(ui, "announce.pronunciation"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="teaching-depth"
-                      label="Explanation detail"
+                      label={uiText(ui, "builder.teachingDepth")}
                       value={configuration.settings.teachingDepth}
                       values={TEACHING_DEPTHS}
                       onChange={(value) =>
@@ -1377,13 +1548,14 @@ export function App() {
                               ...settings,
                               teachingDepth: value,
                             })),
-                          "Teaching depth updated.",
+                          uiText(ui, "announce.teaching"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="voice-pace"
-                      label="Speaking pace"
+                      label={uiText(ui, "builder.pace")}
                       value={configuration.settings.pace}
                       values={VOICE_PACES}
                       onChange={(value) =>
@@ -1393,7 +1565,7 @@ export function App() {
                               ...settings,
                               pace: value,
                             })),
-                          "Voice pace updated.",
+                          uiText(ui, "announce.pace"),
                         )
                       }
                     />
@@ -1401,11 +1573,12 @@ export function App() {
                 ) : configuration.settings.modality === "interpreting" ? (
                   <>
                     <SelectField
+                      ui={ui}
                       id="interpreter-turn-mode"
-                      label="How much to interpret at once"
+                      label={uiText(ui, "builder.turnMode")}
                       value={configuration.settings.turnMode}
                       values={INTERPRETER_TURN_MODES}
-                      help="The other tool must receive the complete turn or chunk. These instructions cannot detect where it ends."
+                      help={uiText(ui, "builder.turnModeHelp")}
                       onChange={(value) =>
                         setCommon(
                           (current) =>
@@ -1413,16 +1586,17 @@ export function App() {
                               ...settings,
                               turnMode: value,
                             })),
-                          "Interpreter turn handling updated.",
+                          uiText(ui, "announce.turnMode"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="interpreter-clarification"
-                      label="If a turn is too unclear"
+                      label={uiText(ui, "builder.clarification")}
                       value={configuration.settings.clarification}
                       values={INTERPRETER_CLARIFICATIONS}
-                      help="Continuing carefully never means guessing missing meaning."
+                      help={uiText(ui, "builder.clarificationHelp")}
                       onChange={(value) =>
                         setCommon(
                           (current) =>
@@ -1430,7 +1604,7 @@ export function App() {
                               ...settings,
                               clarification: value,
                             })),
-                          "Interpreter clarification choice updated.",
+                          uiText(ui, "announce.clarification"),
                         )
                       }
                     />
@@ -1440,14 +1614,15 @@ export function App() {
             </div>
 
             <details class="safeguards advanced-settings">
-              <summary>Advanced settings</summary>
+              <summary>{uiText(ui, "builder.advanced")}</summary>
               <div class="details-grid">
                 <SelectField
+                  ui={ui}
                   id="hierarchy"
-                  label="Relative status"
+                  label={uiText(ui, "builder.hierarchy")}
                   value={configuration.socialContext.hierarchy}
                   values={HIERARCHIES}
-                  help="Leave this as Not specified if you are not sure."
+                  help={uiText(ui, "builder.hierarchyHelp")}
                   onChange={(value) =>
                     setCommon(
                       (current) =>
@@ -1458,14 +1633,15 @@ export function App() {
                             hierarchy: value,
                           },
                         }) as RecipeConfiguration,
-                      "Relative status updated.",
+                      uiText(ui, "announce.hierarchy"),
                     )
                   }
                 />
                 {configuration.settings.modality !== "interpreting" && (
                   <SelectField
+                    ui={ui}
                     id="ambiguity"
-                    label="If wording is unclear"
+                    label={uiText(ui, "builder.ambiguity")}
                     value={configuration.ambiguity}
                     values={AMBIGUITY_STRATEGIES}
                     onChange={(value) =>
@@ -1475,14 +1651,15 @@ export function App() {
                             ...current,
                             ambiguity: value,
                           }) as RecipeConfiguration,
-                        "Unclear-wording choice updated.",
+                        uiText(ui, "announce.ambiguity"),
                       )
                     }
                   />
                 )}
                 <SelectField
+                  ui={ui}
                   id="title-handling"
-                  label="Titles and honorifics"
+                  label={uiText(ui, "builder.titles")}
                   value={configuration.titleHandling}
                   values={TITLE_HANDLING_STRATEGIES}
                   onChange={(value) =>
@@ -1492,14 +1669,15 @@ export function App() {
                           ...current,
                           titleHandling: value,
                         }) as RecipeConfiguration,
-                      "Title and honorific choice updated.",
+                      uiText(ui, "announce.titles"),
                     )
                   }
                 />
                 {configuration.settings.modality !== "interpreting" && (
                   <SelectField
+                    ui={ui}
                     id="unknown-name"
-                    label="Names with an unknown reading"
+                    label={uiText(ui, "builder.unknownName")}
                     value={configuration.unknownName}
                     values={UNKNOWN_NAME_STRATEGIES}
                     onChange={(value) =>
@@ -1509,7 +1687,7 @@ export function App() {
                             ...current,
                             unknownName: value,
                           }) as RecipeConfiguration,
-                        "Unknown-name choice updated.",
+                        uiText(ui, "announce.unknownName"),
                       )
                     }
                   />
@@ -1525,20 +1703,19 @@ export function App() {
                     id="capability-settings-heading"
                     class="details-heading"
                   >
-                    What your language tool can do
+                    {uiText(ui, "builder.capabilities")}
                   </h2>
                   <p class="details-intro">
-                    If you do not know, leave I don't know. PhraseGarden will
-                    not assume the tool can hear, speak, notice pauses, or
-                    change speaking speed.
+                    {uiText(ui, "builder.capabilitiesIntro")}
                   </p>
                   <div class="details-grid">
                     <SelectField
+                      ui={ui}
                       id="user-evidence"
-                      label="What the tool receives from you"
+                      label={uiText(ui, "builder.userEvidence")}
                       value={configuration.destination.userEvidence}
                       values={USER_EVIDENCE_CAPABILITIES}
-                      help="The tool must receive audio to assess what you actually pronounced."
+                      help={uiText(ui, "builder.audioHelp")}
                       onChange={(value) =>
                         setCommon(
                           (current) =>
@@ -1549,13 +1726,14 @@ export function App() {
                                 userEvidence: value,
                               },
                             }) as RecipeConfiguration,
-                          "What the tool receives was updated.",
+                          uiText(ui, "announce.userEvidence"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="assistant-output"
-                      label="How the tool responds"
+                      label={uiText(ui, "builder.assistantOutput")}
                       value={configuration.destination.assistantOutput}
                       values={ASSISTANT_OUTPUT_CAPABILITIES}
                       onChange={(value) =>
@@ -1568,13 +1746,14 @@ export function App() {
                                 assistantOutput: value,
                               },
                             }) as RecipeConfiguration,
-                          "How the tool responds was updated.",
+                          uiText(ui, "announce.assistantOutput"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="interruption-signal"
-                      label="Can it detect interruptions?"
+                      label={uiText(ui, "builder.interruptions")}
                       value={configuration.destination.interruptionSignal}
                       values={SIGNAL_CAPABILITIES}
                       onChange={(value) =>
@@ -1587,13 +1766,14 @@ export function App() {
                                 interruptionSignal: value,
                               },
                             }) as RecipeConfiguration,
-                          "Interruption detection updated.",
+                          uiText(ui, "announce.interruptions"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="silence-signal"
-                      label="Can it detect silence?"
+                      label={uiText(ui, "builder.silence")}
                       value={configuration.destination.silenceSignal}
                       values={SIGNAL_CAPABILITIES}
                       onChange={(value) =>
@@ -1606,13 +1786,14 @@ export function App() {
                                 silenceSignal: value,
                               },
                             }) as RecipeConfiguration,
-                          "Silence detection updated.",
+                          uiText(ui, "announce.silence"),
                         )
                       }
                     />
                     <SelectField
+                      ui={ui}
                       id="playback-rate"
-                      label="Can it change speaking speed?"
+                      label={uiText(ui, "builder.playback")}
                       value={configuration.destination.playbackRateControl}
                       values={SIGNAL_CAPABILITIES}
                       onChange={(value) =>
@@ -1625,7 +1806,7 @@ export function App() {
                                 playbackRateControl: value,
                               },
                             }) as RecipeConfiguration,
-                          "Speaking-speed control updated.",
+                          uiText(ui, "announce.playback"),
                         )
                       }
                     />
@@ -1634,7 +1815,7 @@ export function App() {
               )}
             </details>
 
-            {!presentation.ok && <CompilerErrors issues={presentation.issues} />}
+            {!presentation.ok && <CompilerErrors ui={ui} issues={presentation.issues} />}
 
             <div class="form-actions">
               <button
@@ -1649,27 +1830,30 @@ export function App() {
                 }}
               >
                 {artifact === null
-                  ? "Change languages or task"
-                  : "Back to current instructions"}
+                  ? uiText(ui, "home.change")
+                  : uiText(ui, "builder.back")}
               </button>
               <button
                 type="submit"
                 class="primary-action"
                 disabled={!presentation.ok}
               >
-                {artifact === null ? "Make my instructions" : "Update instructions"}
+                {artifact === null
+                  ? uiText(ui, "home.make")
+                  : uiText(ui, "builder.update")}
               </button>
             </div>
             {confirmReplacePrompt && (
               <ReplacePromptConfirmation
+                ui={ui}
                 onKeep={() => navigateTo("review")}
                 onReplace={() => generatePrompt(true)}
               />
             )}
             {presentation.ok && (
               <details class="builder-protection">
-                <summary>See exactly what PhraseGarden will protect</summary>
-                <BehaviorSummary summary={presentation.summary} />
+                <summary>{uiText(ui, "builder.protection")}</summary>
+                <BehaviorSummary ui={ui} summary={presentation.summary} />
               </details>
             )}
           </form>
@@ -1679,23 +1863,21 @@ export function App() {
       {view === "review" && artifact !== null && (
         <main id="main-content" class="page review-page">
           <div class="page-heading review-heading">
-            <p class="eyebrow">Ready to use</p>
+            <p class="eyebrow">{uiText(ui, "review.eyebrow")}</p>
             <h1 id="page-title" ref={headingRef} tabIndex={-1}>
-              Your instructions are ready
+              {uiText(ui, "review.title")}
             </h1>
-            <p>
-              Copy these instructions into another AI or language tool.
-              PhraseGarden does not send or run them.
-            </p>
+            <p>{uiText(ui, "review.intro")}</p>
           </div>
 
           <ReviewDirection
+            ui={ui}
             configuration={artifact.result.normalizedConfiguration}
           />
 
           <div class="review-handoff-grid">
             <div class="review-notices">
-              <SupportStatus compact provenance={artifact.result.provenance} />
+              <SupportStatus ui={ui} compact provenance={artifact.result.provenance} />
 
               {hasReviewNotices && (
                 <section
@@ -1703,19 +1885,19 @@ export function App() {
                   aria-labelledby="limitations-title"
                   data-testid="limitations"
                 >
-                  <p class="eyebrow">Before you copy</p>
+                  <p class="eyebrow">{uiText(ui, "review.beforeCopy")}</p>
                   <h2 id="limitations-title" class="sr-only">
-                    Known limitations
+                    {uiText(ui, "review.limitationsTitle")}
                   </h2>
                   <ul>
                     {visibleLimitations.map((code) => (
                       <li key={code}>
-                        <strong>{LIMITATION_MESSAGES_EN[code] ?? code}</strong>
+                        <strong>{uiLimitationMessage(ui, code)}</strong>
                       </li>
                     ))}
                     {visibleWarnings.map((warning) => (
                       <li key={warning.code}>
-                        <span>{WARNING_MESSAGES_EN[warning.code]}</span>
+                        <span>{ui.warningMessages[warning.code]}</span>
                       </li>
                     ))}
                   </ul>
@@ -1728,20 +1910,19 @@ export function App() {
               aria-labelledby="handoff-title"
               data-testid="prompt-handoff"
             >
-              <p class="eyebrow">Next step</p>
-              <h2 id="handoff-title">Copy, then paste elsewhere</h2>
+              <p class="eyebrow">{uiText(ui, "review.next")}</p>
+              <h2 id="handoff-title">{uiText(ui, "review.handoffTitle")}</h2>
               <p class="handoff-lead">
-                Paste these instructions into a new AI chat or language tool
-                before you begin.
+                {uiText(ui, "review.handoffLead")}
               </p>
-              <div class="prompt-actions" aria-label="Instruction actions">
+              <div class="prompt-actions" aria-label={uiText(ui, "review.actionsAria")}>
                 <button
                   type="button"
                   class="primary-action"
                   onClick={() => void copyPrompt()}
                   data-testid="copy-prompt"
                 >
-                  Copy instructions
+                  {uiText(ui, "review.copy")}
                 </button>
                 <button
                   type="button"
@@ -1749,7 +1930,7 @@ export function App() {
                   onClick={downloadPrompt}
                   data-testid="download-prompt"
                 >
-                  Download text file
+                  {uiText(ui, "review.download")}
                 </button>
               </div>
               <div class="handoff-secondary-actions">
@@ -1758,7 +1939,7 @@ export function App() {
                   class="text-action"
                   onClick={() => navigateTo("builder")}
                 >
-                  Adjust tone or context
+                  {uiText(ui, "home.adjust")}
                 </button>
                 <button
                   type="button"
@@ -1768,19 +1949,17 @@ export function App() {
                     navigateTo("home");
                   }}
                 >
-                  Start another set
+                  {uiText(ui, "review.startAnother")}
                 </button>
               </div>
               <details class="handoff-steps">
-                <summary>Step-by-step</summary>
+                <summary>{uiText(ui, "review.steps")}</summary>
                 <ol>
-                  <li>Copy or download these instructions.</li>
-                  <li>
-                    Open a new conversation or instruction field in a
-                    compatible AI chat or language tool.
-                  </li>
+                  <li>{uiText(ui, "review.stepCopy")}</li>
+                  <li>{uiText(ui, "review.stepOpen")}</li>
                   <li>
                     {reviewUseInstruction(
+                      ui,
                       artifact.result.normalizedConfiguration.settings,
                     )}
                   </li>
@@ -1801,47 +1980,48 @@ export function App() {
                 class="destination-privacy"
                 data-testid="destination-privacy"
               >
-                Before you paste: the other tool's privacy policy applies.
-                PhraseGarden cannot control what it stores or how it handles{" "}
+                {uiText(ui, "review.privacyPrefix")}
                 {destinationPrivacyObject(
+                  ui,
                   artifact.result.normalizedConfiguration.settings.modality,
                 )}
               </p>
             </section>
           </div>
 
-          <BehaviorSummary
-            summary={artifact.summary}
-            title="What these instructions ask the tool to do"
-            review
-          />
+          {artifactSummary !== null && (
+            <BehaviorSummary
+              ui={ui}
+              summary={artifactSummary}
+              title={uiText(ui, "summary.reviewTitle")}
+              review
+            />
+          )}
 
           <section class="prompt-review" aria-labelledby="prompt-title">
             <div class="prompt-toolbar">
               <div>
-                <p class="eyebrow">Instruction text · English</p>
+                <p class="eyebrow">{uiText(ui, "prompt.eyebrow")}</p>
                 <h2 id="prompt-title">
                   {artifact.draft.modified
-                    ? "Your edited copy"
-                    : "Complete generated instructions"}
+                    ? uiText(ui, "prompt.editedTitle")
+                    : uiText(ui, "prompt.generatedTitle")}
                 </h2>
                 {artifact.draft.modified && (
                   <p class="modified-status" role="status">
-                    Edited on this device · this copy no longer matches the
-                    generated original
+                    {uiText(ui, "prompt.modified")}
                   </p>
                 )}
               </div>
             </div>
 
             <p id="complete-text-note" class="prompt-visibility-note">
-              Every line is present in the reading area below. Copy and
-              download include the complete text.
+              {uiText(ui, "prompt.completeNote")}
             </p>
 
             {artifact.editing ? (
               <label class="edited-prompt-label" for="edited-prompt">
-                <span>Your edited copy</span>
+                <span>{uiText(ui, "prompt.editedTitle")}</span>
                 <textarea
                   ref={editorRef}
                   id="edited-prompt"
@@ -1896,7 +2076,7 @@ export function App() {
                     )
                   }
                 >
-                  Edit these instructions
+                  {uiText(ui, "prompt.edit")}
                 </button>
               )}
               <button
@@ -1911,7 +2091,7 @@ export function App() {
                   }
                 }}
               >
-                Restore generated instructions
+                {uiText(ui, "prompt.restore")}
               </button>
             </div>
 
@@ -1922,10 +2102,9 @@ export function App() {
                 aria-labelledby="regenerate-title"
                 aria-describedby="regenerate-description"
               >
-                <h3 id="regenerate-title">Discard your edits?</h3>
+                <h3 id="regenerate-title">{uiText(ui, "prompt.discardTitle")}</h3>
                 <p id="regenerate-description">
-                  This will discard your edits and restore the original
-                  generated instructions for this session.
+                  {uiText(ui, "prompt.discardBody")}
                 </p>
                 <div>
                   <button
@@ -1934,14 +2113,14 @@ export function App() {
                     class="secondary-action"
                     onClick={keepEditedCopy}
                   >
-                    Keep my edits
+                    {uiText(ui, "prompt.keep")}
                   </button>
                   <button
                     type="button"
                     class="primary-action"
                     onClick={restoreCanonical}
                   >
-                    Discard edits and restore
+                    {uiText(ui, "prompt.discard")}
                   </button>
                 </div>
               </div>
@@ -1949,20 +2128,17 @@ export function App() {
           </section>
 
           <details class="provenance">
-            <summary>Technical details and versions</summary>
-            <p>
-              These details identify exactly how the original instructions were
-              made. If you edit them, the details do not verify your changes.
-            </p>
+            <summary>{uiText(ui, "provenance.title")}</summary>
+            <p>{uiText(ui, "provenance.intro")}</p>
             <dl>
               <div>
-                <dt>Compiler</dt>
+                <dt>{uiText(ui, "provenance.compiler")}</dt>
                 <dd>
                   <code>{artifact.result.provenance.compilerVersion}</code>
                 </dd>
               </div>
               <div>
-                <dt>Policy</dt>
+                <dt>{uiText(ui, "provenance.policy")}</dt>
                 <dd>
                   <code>
                     {artifact.result.provenance.compilerPolicyVersion}
@@ -1970,7 +2146,7 @@ export function App() {
                 </dd>
               </div>
               <div>
-                <dt>Recipe</dt>
+                <dt>{uiText(ui, "provenance.recipe")}</dt>
                 <dd>
                   <code>
                     {artifact.result.provenance.recipe.id}@
@@ -1979,7 +2155,7 @@ export function App() {
                 </dd>
               </div>
               <div>
-                <dt>Profiles</dt>
+                <dt>{uiText(ui, "provenance.profiles")}</dt>
                 <dd>
                   <code>
                     {artifact.result.provenance.homeProfile.id}@
@@ -1990,7 +2166,7 @@ export function App() {
                 </dd>
               </div>
               <div>
-                <dt>Pair pack</dt>
+                <dt>{uiText(ui, "provenance.pairPack")}</dt>
                 <dd>
                   <code>
                     {artifact.result.provenance.pairPack === "none"
@@ -2000,7 +2176,7 @@ export function App() {
                 </dd>
               </div>
               <div>
-                <dt>Support</dt>
+                <dt>{uiText(ui, "provenance.support")}</dt>
                 <dd>
                   <code>
                     {artifact.result.provenance.supportTier} ·{" "}
@@ -2009,7 +2185,7 @@ export function App() {
                 </dd>
               </div>
               <div>
-                <dt>Prompt surface</dt>
+                <dt>{uiText(ui, "provenance.promptSurface")}</dt>
                 <dd>
                   <code>
                     {artifact.result.provenance.promptSurface.id}@
@@ -2019,16 +2195,16 @@ export function App() {
                 </dd>
               </div>
               <div>
-                <dt>Summary catalog</dt>
+                <dt>{uiText(ui, "provenance.summaryCatalog")}</dt>
                 <dd>
                   <code>
-                    {artifact.summary.catalog.locale}@
-                    {artifact.summary.catalog.version}
+                    {artifactSummary?.catalog.locale}@
+                    {artifactSummary?.catalog.version}
                   </code>
                 </dd>
               </div>
               <div>
-                <dt>Language registry</dt>
+                <dt>{uiText(ui, "provenance.registry")}</dt>
                 <dd>
                   <code>
                     {artifact.result.provenance.languageRegistry.version}
@@ -2039,7 +2215,7 @@ export function App() {
                 </dd>
               </div>
               <div>
-                <dt>Known limitations</dt>
+                <dt>{uiText(ui, "provenance.limitations")}</dt>
                 <dd>
                   <code>{artifact.result.limitationCodes.join(", ")}</code>
                 </dd>
@@ -2053,14 +2229,14 @@ export function App() {
               class="primary-action"
               onClick={() => void copyPrompt()}
             >
-              Copy instructions
+              {uiText(ui, "review.copy")}
             </button>
             <button
               type="button"
               class="text-action"
               onClick={() => navigateTo("builder")}
             >
-              Adjust tone or context
+              {uiText(ui, "home.adjust")}
             </button>
             <button
               type="button"
@@ -2070,7 +2246,7 @@ export function App() {
                 navigateTo("home");
               }}
             >
-              Start another set
+              {uiText(ui, "review.startAnother")}
             </button>
           </div>
         </main>

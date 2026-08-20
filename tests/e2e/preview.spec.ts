@@ -33,6 +33,91 @@ function requestAudit(page: Page): {
   return { requests, webSockets };
 }
 
+async function browserLocationAndStorage(page: Page): Promise<{
+  readonly search: string;
+  readonly hash: string;
+  readonly local: readonly (readonly [string, string | null])[];
+  readonly session: readonly (readonly [string, string | null])[];
+}> {
+  return page.evaluate(() => {
+    const entries = (storage: Storage) =>
+      Array.from({ length: storage.length }, (_, index) => storage.key(index))
+        .filter((key): key is string => key !== null)
+        .sort()
+        .map((key) => [key, storage.getItem(key)] as const);
+    return {
+      search: globalThis.location.search,
+      hash: globalThis.location.hash,
+      local: entries(globalThis.localStorage),
+      session: entries(globalThis.sessionStorage),
+    };
+  });
+}
+
+async function expectLocalPresentationChange(
+  page: Page,
+  audit: ReturnType<typeof requestAudit>,
+  change: () => Promise<void>,
+): Promise<void> {
+  const requestsBefore = audit.requests.length;
+  const webSocketsBefore = audit.webSockets.length;
+  const browserStateBefore = await browserLocationAndStorage(page);
+  await change();
+  expect(audit.requests).toHaveLength(requestsBefore);
+  expect(audit.webSockets).toHaveLength(webSocketsBefore);
+  expect(await browserLocationAndStorage(page)).toEqual(browserStateBefore);
+}
+
+async function expectNarrowLanguageEntry(
+  page: Page,
+  makeButtonName: string,
+  label: string,
+): Promise<void> {
+  const dimensions = await page.evaluate(() => ({
+    client: document.documentElement.clientWidth,
+    scroll: document.documentElement.scrollWidth,
+  }));
+  expect(
+    dimensions.scroll,
+    `${label}: ${dimensions.scroll} > ${dimensions.client}`,
+  ).toBeLessThanOrEqual(dimensions.client + 1);
+
+  const entryActions = page
+    .getByTestId("language-entry")
+    .getByRole("button");
+  await expect(entryActions).toHaveCount(2);
+  for (let index = 0; index < 2; index += 1) {
+    const box = await entryActions.nth(index).boundingBox();
+    expect(box, `${label}: language action ${index + 1}`).not.toBeNull();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(320);
+  }
+
+  const makeButton = page.getByRole("button", {
+    name: makeButtonName,
+    exact: true,
+  });
+  await expect(makeButton).toBeVisible();
+  const makeButtonBox = await makeButton.boundingBox();
+  expect(makeButtonBox, `${label}: primary action`).not.toBeNull();
+  expect(makeButtonBox!.y + makeButtonBox!.height).toBeLessThanOrEqual(900);
+}
+
+async function expectReviewDirection(
+  page: Page,
+  home: string,
+  target: string,
+  tool: string,
+): Promise<void> {
+  const segments = page
+    .getByTestId("review-direction")
+    .locator(":scope > span");
+  await expect(segments.nth(0)).toHaveText(home);
+  await expect(segments.nth(3)).toHaveText(target);
+  await expect(segments.nth(6)).toHaveText(tool);
+}
+
 async function openBuilder(page: Page): Promise<void> {
   await page
     .getByRole("button", { name: "Adjust tone or context" })
@@ -72,6 +157,183 @@ async function generate(page: Page): Promise<void> {
     }),
   ).toBeFocused();
 }
+
+test("language entry applies untouched presets, then preserves settings and prompt bytes", async ({
+  context,
+  page,
+}) => {
+  const audit = requestAudit(page);
+  await context.grantPermissions(["clipboard-read", "clipboard-write"], {
+    origin: "http://127.0.0.1:4173",
+  });
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+  await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
+  await expect(page.locator(".home-start-card h2")).toContainText("English");
+  await expect(page.locator(".home-start-card h2")).toContainText("Japanese");
+  await expect(page.locator(".ready-tool")).toHaveText("Translate writing");
+  await expectNarrowLanguageEntry(
+    page,
+    "Make my instructions",
+    "English language entry",
+  );
+  await expectNoAxeViolations(page, "English language entry");
+
+  await expectLocalPresentationChange(page, audit, async () => {
+    await page
+      .getByRole("button", {
+        name: "Start in Japanese with Japanese to English written translation.",
+      })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  });
+  await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+  await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
+  await expect(page.locator(".home-start-card h2")).toContainText("日本語");
+  await expect(page.locator(".home-start-card h2")).toContainText("英語");
+  await expect(page.locator(".ready-tool")).toHaveText("文章を翻訳");
+  await expect(
+    page.getByRole("button", {
+      name: "日本語で始めます。日本語から英語への文章翻訳を選びます。",
+    }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expectNarrowLanguageEntry(page, "指示文を作る", "Japanese language entry");
+  await expectNoAxeViolations(page, "Japanese language entry");
+
+  await page.getByRole("button", { name: "言語や用途を変更" }).click();
+  await expect(page.getByLabel("元の文章の言語")).toHaveValue("ja");
+  await expect(page.getByLabel("翻訳先の言語")).toHaveValue("en");
+  await expect(
+    page.getByRole("radio", { name: /文章を翻訳/ }),
+  ).toBeChecked();
+
+  await expectLocalPresentationChange(page, audit, async () => {
+    await page
+      .getByRole("button", {
+        name: "英語で始めます。英語から日本語への文章翻訳を選びます。",
+      })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  });
+  await expect(page.locator(".home-start-card h2")).toContainText("English");
+  await expect(page.locator(".home-start-card h2")).toContainText("Japanese");
+  await expect(page.locator(".ready-tool")).toHaveText("Translate writing");
+
+  await page
+    .getByRole("button", { name: "Change languages or task" })
+    .click();
+  await expect(page.getByLabel("Text is in")).toHaveValue("en");
+  await expect(page.getByLabel("Translate to")).toHaveValue("ja");
+  await expect(
+    page.getByRole("radio", { name: /Translate writing/ }),
+  ).toBeChecked();
+
+  await page
+    .getByRole("button", { name: "Adjust tone or context" })
+    .click();
+  await page.getByLabel("Relationship").selectOption("friends");
+  await expect(page.getByTestId("language-entry")).toContainText(
+    "Page language",
+  );
+
+  await expectLocalPresentationChange(page, audit, async () => {
+    await page
+      .getByRole("button", {
+        name: "Show PhraseGarden in Japanese. Translation settings and instructions will not change.",
+      })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  });
+  await expect(page.locator(".builder-setup h2")).toContainText("英語");
+  await expect(page.locator(".builder-setup h2")).toContainText("日本語");
+  await expect(page.getByLabel("関係")).toHaveValue("friends");
+  await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "指示文を作る" }).click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "指示文ができました" }),
+  ).toBeFocused();
+  const canonical = await page.getByTestId("canonical-prompt").textContent();
+  expect(canonical).toContain("For English→Japanese");
+  await expectReviewDirection(page, "英語", "日本語", "文章を翻訳");
+  await expect(page.getByText("指示文 · 英語", { exact: true })).toBeVisible();
+  await expect(page.getByTestId("canonical-prompt")).toHaveAttribute(
+    "lang",
+    "en",
+  );
+  await expect(page.getByTestId("canonical-prompt")).toHaveAttribute(
+    "dir",
+    "ltr",
+  );
+  await expect(page.locator(".support-badge")).toHaveAttribute("lang", "en");
+  await expect(page.locator(".support-badge")).toHaveAttribute("dir", "ltr");
+
+  await page.getByRole("button", { name: "この指示文を編集" }).click();
+  const japaneseEditor = page.getByRole("textbox", { name: "編集したコピー" });
+  await expect(japaneseEditor).toHaveValue(canonical!);
+  await expect(japaneseEditor).toHaveAttribute("lang", "en");
+  await expect(japaneseEditor).toHaveAttribute("dir", "ltr");
+  const edited = `${canonical!}User-added exact byte marker.\n`;
+  await japaneseEditor.fill(edited);
+  await expect(japaneseEditor).toHaveValue(edited);
+
+  await expectLocalPresentationChange(page, audit, async () => {
+    await page
+      .getByRole("button", {
+        name: "PhraseGardenを英語で表示します。翻訳設定と指示文は変わりません。",
+      })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  });
+  const englishLocaleAction = page.getByRole("button", {
+    name: "Show PhraseGarden in English. Translation settings and instructions will not change.",
+  });
+  await expect(englishLocaleAction).toBeFocused();
+  const englishEditor = page.getByRole("textbox", { name: "Your edited copy" });
+  await expect(englishEditor).toHaveValue(edited);
+  await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
+  await expectReviewDirection(
+    page,
+    "English",
+    "Japanese (日本語)",
+    "Translate writing",
+  );
+  await expect(page.getByTestId("replace-prompt-confirmation")).toHaveCount(0);
+  await page.getByTestId("copy-prompt").click();
+  expect(
+    normalizeClipboardText(
+      await page.evaluate(() => navigator.clipboard.readText()),
+    ),
+  ).toBe(edited);
+  const downloadEvent = page.waitForEvent("download");
+  await page.getByTestId("download-prompt").click();
+  const download = await downloadEvent;
+  expect(readFileSync((await download.path())!, "utf8")).toBe(edited);
+
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: "Make my instructions" }).click();
+  const freshGenerated = await page
+    .getByTestId("canonical-prompt")
+    .textContent();
+  await expectLocalPresentationChange(page, audit, async () => {
+    await page
+      .getByRole("button", {
+        name: "Show PhraseGarden in Japanese. Translation settings and instructions will not change.",
+      })
+      .click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  });
+  await expect(page.getByTestId("canonical-prompt")).toHaveText(
+    freshGenerated!,
+  );
+  await expectReviewDirection(page, "英語", "日本語", "文章を翻訳");
+  await expect(page.getByTestId("replace-prompt-confirmation")).toHaveCount(0);
+});
 
 test("direct creation and the unchanged optional-settings path compile identical bytes", async ({
   page,
@@ -1207,6 +1469,26 @@ test("keyboard path, focus order, narrow reflow, bidi labels, and reduced motion
   ).toBeLessThanOrEqual(page.viewportSize()!.height);
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to main content" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", { name: "PhraseGarden home" }),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", {
+      name: "Start in English with English to Japanese written translation.",
+    }),
+  ).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(
+    page.getByRole("button", {
+      name: "Start in Japanese with Japanese to English written translation.",
+    }),
+  ).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await page.keyboard.press("Shift+Tab");
+  await page.keyboard.press("Shift+Tab");
+  await expect(page.getByRole("link", { name: "Skip to main content" })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(
     page.getByRole("heading", {
@@ -1409,6 +1691,21 @@ test("forced colors preserves focus, selection, truth, actions, and narrow reflo
   expect(
     await page.evaluate(() => matchMedia("(forced-colors: active)").matches),
   ).toBe(true);
+
+  const currentLanguage = page.getByRole("button", {
+    name: "Start in English with English to Japanese written translation.",
+  });
+  await expect(currentLanguage).toHaveAttribute("aria-pressed", "true");
+  await currentLanguage.focus();
+  const currentLanguageStyle = await currentLanguage.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      outlineStyle: style.outlineStyle,
+      outlineWidth: Number.parseFloat(style.outlineWidth),
+    };
+  });
+  expect(currentLanguageStyle.outlineStyle).not.toBe("none");
+  expect(currentLanguageStyle.outlineWidth).toBeGreaterThanOrEqual(2);
 
   const fastPath = page.getByRole("button", { name: "Make my instructions" });
   await fastPath.focus();

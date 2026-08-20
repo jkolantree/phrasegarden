@@ -18,7 +18,7 @@ function choiceMessages(
   );
 }
 
-export const SUMMARY_EN_CATALOG: SummaryCatalog = {
+const SUMMARY_EN_AUTHORED: SummaryCatalog = {
   locale: "en",
   version: SUMMARY_EN_VERSION,
   messages: [
@@ -196,3 +196,22 @@ export const SUMMARY_EN_CATALOG: SummaryCatalog = {
     }),
   ],
 };
+
+function freezeSummaryCatalog(catalog: SummaryCatalog): SummaryCatalog {
+  return Object.freeze({
+    locale: catalog.locale,
+    version: catalog.version,
+    messages: Object.freeze(
+      catalog.messages.map((entry) =>
+        Object.freeze({
+          id: entry.id,
+          parts: Object.freeze(
+            entry.parts.map((part) => Object.freeze({ ...part })),
+          ),
+        }),
+      ),
+    ),
+  });
+}
+
+export const SUMMARY_EN_CATALOG = freezeSummaryCatalog(SUMMARY_EN_AUTHORED);

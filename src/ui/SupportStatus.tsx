@@ -1,14 +1,17 @@
 import { useId } from "preact/hooks";
 
 import type { ArtifactProvenance } from "../domain";
+import { uiText, type UiLocaleCatalog } from "../locales";
 
 interface SupportStatusProps {
   readonly provenance: ArtifactProvenance;
+  readonly ui: UiLocaleCatalog;
   readonly compact?: boolean;
 }
 
 export function SupportStatus({
   provenance,
+  ui,
   compact = false,
 }: SupportStatusProps) {
   const preview = provenance.supportTier === "preview";
@@ -23,13 +26,15 @@ export function SupportStatus({
     >
       <p id={labelId} class="support-tier">
         <span class="status-marker" aria-hidden="true" />
-        <span>{preview ? "Guidance: Built in" : "Guidance: General only"}</span>
-        <span class="support-badge">{preview ? "Preview" : "Generic"}</span>
+        <span>
+          {uiText(ui, preview ? "support.previewLabel" : "support.genericLabel")}
+        </span>
+        <span class="support-badge" lang="en" dir="ltr">
+          {uiText(ui, preview ? "support.previewBadge" : "support.genericBadge")}
+        </span>
       </p>
       <p class="support-detail">
-        {preview
-          ? "External language review: incomplete."
-          : "No pair-specific guidance or independent language review for this exact direction."}
+        {uiText(ui, preview ? "support.previewDetail" : "support.genericDetail")}
       </p>
     </section>
   );

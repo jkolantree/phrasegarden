@@ -34,7 +34,8 @@ The complete direction specifies later surfaces, but each implementation gate ex
 | Interpreter | Gate 3 item 4 |
 | Advanced controls | Gate 3 item 5 |
 | Save, Your recipes, library, import/export, fragments, clear data | Gate 4 |
-| Japanese interface selector and locale | Gate 5 |
+| English/Japanese language-entry vertical | Approved next-preview source package; development-only until Japanese review |
+| Additional interface locales and full locale hardening | Gate 5 |
 
 Controls and navigation for a later gate are absent, not disabled or advertised.
 
@@ -48,7 +49,18 @@ Controls and navigation for a later gate are absent, not disabled or advertised.
   `Session only · not saved`. Recipe choices, generated prompts, and local
   edits remain in memory only and disappear on refresh or close. This does not
   describe the ordinary asset request needed to load the hosted page.
-- Interface-locale control appears only when the Japanese interface exists.
+- A prominent strip immediately below the header begins with `Start in your
+  language`. Before semantic work it offers native-button actions presented as
+  conspicuous text links: `English → 日本語` and `日本語 → English`. After work
+  begins it is relabeled `Page language` and makes no preset claim.
+- The active choice is conveyed by text, `aria-pressed`, border, and forced-
+  colors focus/current treatment rather than color alone. Embedded language
+  runs carry exact language attributes; the two actions remain at least 44 px.
+- At 320 × 900 the strip reflows without horizontal scrolling and the direct
+  creation action remains in the initial viewport. Informative copy is not
+  hidden to recover height.
+- Locale changes keep focus on the activated control and announce whether a
+  fresh starting direction was applied or existing work was preserved.
 - Header content remains usable at 400% zoom and wraps rather than truncates.
 
 ### Homepage
@@ -196,7 +208,11 @@ Japanese never inherits uppercase transformation, italics, or Latin tracking. Mi
 ## Accessibility and internationalization
 
 - Every page has one `main`, one clear heading hierarchy, a skip link, native landmarks, and descriptive document title.
-- Pair order and Swap result are announced in text. Autonyms remain searchable alongside English names.
+- Pair order and Swap result are announced in text. Structured autonyms remain
+  searchable with exact language and direction metadata. Native select options
+  use the localized public name, an isolated autonym, and `dir=auto` because
+  native options cannot contain language-tagged child spans; manual
+  assistive-technology qualification remains required.
 - Zoom/reflow targets: 200% without loss; 400% at 1280 × 1024 without two-dimensional page scrolling.
 - Screen-reader task order matches visual order in both bilateral and stacked layouts.
 - IME composition never triggers compilation, validation, or keyboard shortcuts before `compositionend`.

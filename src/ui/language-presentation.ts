@@ -2,26 +2,25 @@ import {
   SEARCHABLE_LANGUAGE_PROFILE_CATALOG,
   type SearchableLanguageProfile,
 } from "../packs";
+import { uiLanguageName, type UiLocaleCatalog } from "../locales";
 
 const FIRST_STRONG_ISOLATE = "\u2068";
 const POP_DIRECTIONAL_ISOLATE = "\u2069";
 
-const PUBLIC_LANGUAGE_ENTRIES = [
-  ["zh-Hant-TW", "Chinese, Traditional (Taiwan)"],
-  ["en", "English"],
-  ["fr", "French"],
-  ["de", "German"],
-  ["he", "Hebrew"],
-  ["id", "Indonesian"],
-  ["it", "Italian"],
-  ["ja", "Japanese"],
-  ["tlh", "Klingon"],
-  ["pt", "Portuguese (region not specified)"],
-  ["es", "Spanish"],
-  ["yi", "Yiddish"],
+const PUBLIC_LANGUAGE_IDS = [
+  "zh-Hant-TW",
+  "en",
+  "fr",
+  "de",
+  "he",
+  "id",
+  "it",
+  "ja",
+  "tlh",
+  "pt",
+  "es",
+  "yi",
 ] as const;
-
-const publicNameById = new Map<string, string>(PUBLIC_LANGUAGE_ENTRIES);
 
 function requiredProfile(id: string): SearchableLanguageProfile {
   const profile = SEARCHABLE_LANGUAGE_PROFILE_CATALOG.find(
@@ -34,30 +33,30 @@ function requiredProfile(id: string): SearchableLanguageProfile {
 }
 
 if (
-  publicNameById.size !== PUBLIC_LANGUAGE_ENTRIES.length ||
-  PUBLIC_LANGUAGE_ENTRIES.length !== SEARCHABLE_LANGUAGE_PROFILE_CATALOG.length ||
+  new Set(PUBLIC_LANGUAGE_IDS).size !== PUBLIC_LANGUAGE_IDS.length ||
+  PUBLIC_LANGUAGE_IDS.length !== SEARCHABLE_LANGUAGE_PROFILE_CATALOG.length ||
   SEARCHABLE_LANGUAGE_PROFILE_CATALOG.some(
-    (profile) => !publicNameById.has(profile.ref.id),
+    (profile) => !PUBLIC_LANGUAGE_IDS.includes(profile.ref.id as never),
   )
 ) {
   throw new Error("Public language presentation catalog is not exact");
 }
 
 export const PUBLIC_LANGUAGE_PROFILE_CATALOG: readonly SearchableLanguageProfile[] =
-  Object.freeze(PUBLIC_LANGUAGE_ENTRIES.map(([id]) => requiredProfile(id)));
+  Object.freeze(PUBLIC_LANGUAGE_IDS.map((id) => requiredProfile(id)));
 
-export function publicLanguageName(id: string): string {
-  const name = publicNameById.get(id);
-  if (name === undefined) {
-    throw new Error(`Missing public language name: ${id}`);
-  }
-  return name;
+export function publicLanguageName(
+  catalog: UiLocaleCatalog,
+  id: string,
+): string {
+  return uiLanguageName(catalog, id);
 }
 
 export function publicLanguageOptionLabel(
+  catalog: UiLocaleCatalog,
   profile: SearchableLanguageProfile,
 ): string {
-  const publicName = publicLanguageName(profile.ref.id);
+  const publicName = publicLanguageName(catalog, profile.ref.id);
   if (publicName === profile.autonym) {
     return publicName;
   }

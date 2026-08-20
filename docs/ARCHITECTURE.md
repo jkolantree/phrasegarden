@@ -89,6 +89,31 @@ Generic output omits section 6 and all profile/pair linguistic clauses. It may r
 
 The domain emits semantic summary items with stable IDs and values. A pure locale renderer maps those items through a bundled locale catalog. Missing locale messages fail validation; UI components never compose substitute claims. Changing interface locale changes only presentation, not the canonical prompt or semantic summary.
 
+The application owns `interfaceLocale` and the one-way session phase
+`starting → preserve-work`. Both are presentation/application state outside
+`RecipeConfiguration`. While the phase is `starting`, the exact bundled
+English or Japanese language-entry action materializes a fresh Written
+Translator selection (`en→ja` or `ja→en`) without generating. Any successful
+language, task, option, generation, or edit action enters `preserve-work` for
+the rest of the page session; later locale actions then re-render only the
+closed UI and summary catalogs. Reload reconstructs English and the normal
+English→Japanese defaults. No locale is inferred from the host, stored, put in
+a URL, or sent to the compiler.
+
+UI catalogs are immutable, versioned, exact-key bundles. English defines the
+closed message, option, public-language-name, warning, limitation, and summary
+identifier sets. Every exposed locale must match them exactly, preserve
+placeholder names, and validate at module initialization. There is no English
+fallback, generic humanization, runtime translation, `Intl` canonicalization,
+or dynamic locale fetch. Structured autonym markup retains its own `lang`,
+`dir`, and bidi isolation. Flattened localized summaries use the locale's
+public language names plus directional isolates. Native `option` elements
+cannot contain language-tagged child spans, so each uses a localized public
+name, an isolated autonym, and `dir=auto`; that platform-control exception
+requires manual assistive-technology qualification. The document
+language/title/description follow the UI catalog; the generated-prompt surface
+and editor remain explicit English LTR content.
+
 The application retains the compiler's immutable canonical output separately from the editable textarea value. The first UI edit sets application state `artifactState: user-modified`; artifact provenance continues to identify the source compilation but the app removes any byte-equivalence claim and emits its own notice. The compiler never observes editing state. Regenerate is explicit and never silently overwrites edits.
 
 Canonical prompt/download bytes are UTF-8 without BOM, LF line endings, and one terminal LF. The initial hard budget is 12,000 UTF-8 bytes; warning starts at 9,000 bytes. An export adapter with a known platform instruction limit uses the lower of 12,000 bytes and 80% of that documented limit. No platform limit is assumed for the generic portable download.

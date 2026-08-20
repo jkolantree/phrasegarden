@@ -19,6 +19,9 @@ sent to project servers.
 ## Data on the device
 
 - Selected settings, the generated prompt, and a local edit live in page memory.
+- The selected interface locale and whether the untouched start preset is
+  still available also live only in page memory. Locale choice is not inferred
+  from the browser, written to the URL, or persisted.
 - Nothing is written to cookies, `localStorage`, `sessionStorage`, IndexedDB, or
   a service worker cache.
 - Refreshing or closing the page clears that state.
@@ -32,6 +35,10 @@ A hosted edition must initially request its HTML, JavaScript, and CSS from the
 static host. Hosting infrastructure, including GitHub Pages if approved, may
 retain ordinary request metadata under its own policies. PhraseGarden does not
 add a tracker or send runtime API requests after those assets load.
+
+Both English and Japanese interface catalogs ship inside the same application
+asset. Switching the page language performs no fetch and sends no recipe,
+language direction, prompt, or locale value to the host.
 
 The production page uses a restrictive content-security policy, self-hosted
 assets, `connect-src 'none'`, and no third-party fonts, images, scripts, CDNs, or

@@ -1,6 +1,6 @@
 # PhraseGarden project state
 
-Updated: 2026-08-19
+Updated: 2026-08-20
 
 ## Current outcome
 
@@ -15,6 +15,31 @@ accessibility semantics, browser regressions, release identity, and official
 immutable Node 24 GitHub Action pins. It does not change compiler output,
 prompt snapshots, language identities, pair guidance, recipes, support tiers,
 or the privacy model.
+
+## Active bilingual source package
+
+The next-preview source content adds a prominent English/Japanese language-
+entry strip, complete closed English and development Japanese UI catalogs, and
+locale-specific behavior summaries. An untouched session maps English to fresh
+English→Japanese Written defaults and Japanese to fresh Japanese→English
+Written defaults without generating. After any semantic mutation or
+generation, locale selection changes presentation only and preserves exact
+settings, prompts, and edits. The prompt surface remains English LTR.
+
+Local evidence on these source bytes: 343/343 Vitest tests, both TypeScript
+checks, Vite build, release-output audit, and 15/15 sequential Edge/axe journeys
+passed. At 320×900 the English direct action ends at 880.140625 px and the
+Japanese action at 774.421875 px; both locale controls are 140×47.6875 px and
+the page has no horizontal overflow. English and Japanese mobile screenshots
+were inspected directly. These results establish deterministic development
+behavior. By themselves they do not establish qualified Japanese authorship or
+review, manual assistive-technology behavior, WCAG conformance, a containing
+Git checkpoint, a package, deployment, public bytes, tag, or GitHub Release.
+
+Git identity may establish the source checkpoint only for these unchanged
+reviewed bytes. A later, separately authorized release cycle must select a new
+version and bind qualified Japanese review before exposing that interface
+publicly. Preview 7 source/package/public identities remain immutable.
 
 ## Exact local Preview 7 package
 
@@ -70,7 +95,8 @@ public-byte mismatch, or any need to rewrite an earlier release.
 
 ## Deferred
 
-Manual screen-reader, real-device IME, manual forced-colors, moderated first-run
-usability, local recipe storage/import/sharing, Japanese UI localization,
-durable offline refresh, model evaluation, and evidence-qualified
-Community/Reviewed/Flagship tiers remain separate work.
+Qualified human Japanese review, manual screen-reader, real-device IME, manual
+forced-colors, moderated first-run usability, local recipe storage/import/
+sharing, durable offline refresh, model evaluation, additional interface
+locales, and evidence-qualified Community/Reviewed/Flagship tiers remain
+separate work.

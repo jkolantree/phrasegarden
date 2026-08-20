@@ -19,7 +19,11 @@ import {
   VOICE_PACES,
   WRITTEN_OUTPUT_DETAILS,
 } from "../../src/domain";
-import { OPTION_LABELS_EN } from "../../src/locales";
+import {
+  OPTION_LABELS_EN,
+  UI_EN_CATALOG,
+  UI_JA_CATALOG,
+} from "../../src/locales";
 import {
   PUBLIC_LANGUAGE_PROFILE_CATALOG,
   publicLanguageName,
@@ -65,7 +69,7 @@ describe("plain-language UI copy", () => {
     expect(
       PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => [
         profile.ref.id,
-        publicLanguageName(profile.ref.id),
+        publicLanguageName(UI_EN_CATALOG, profile.ref.id),
       ]),
     ).toEqual([
       ["zh-Hant-TW", "Chinese, Traditional (Taiwan)"],
@@ -86,7 +90,7 @@ describe("plain-language UI copy", () => {
   it("keeps canonical tags out of visible labels and isolates autonyms", () => {
     const labels = PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => ({
       id: profile.ref.id,
-      label: publicLanguageOptionLabel(profile),
+      label: publicLanguageOptionLabel(UI_EN_CATALOG, profile),
     }));
     expect(labels).toEqual([
       { id: "zh-Hant-TW", label: "Chinese, Traditional (Taiwan) — ⁨正體中文（臺灣）⁩" },
@@ -109,5 +113,43 @@ describe("plain-language UI copy", () => {
       expect(label).not.toContain(`(${id})`);
       expect(label).not.toMatch(/[\u{1f1e6}-\u{1f1ff}]/u);
     }
+  });
+
+  it("presents deterministic development-only Japanese language names", () => {
+    expect(
+      PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => [
+        profile.ref.id,
+        publicLanguageName(UI_JA_CATALOG, profile.ref.id),
+      ]),
+    ).toEqual([
+      ["zh-Hant-TW", "中国語（繁体字・台湾）"],
+      ["en", "英語"],
+      ["fr", "フランス語"],
+      ["de", "ドイツ語"],
+      ["he", "ヘブライ語"],
+      ["id", "インドネシア語"],
+      ["it", "イタリア語"],
+      ["ja", "日本語"],
+      ["tlh", "クリンゴン語"],
+      ["pt", "ポルトガル語（地域未指定）"],
+      ["es", "スペイン語"],
+      ["yi", "イディッシュ語"],
+    ]);
+
+    const english = PUBLIC_LANGUAGE_PROFILE_CATALOG.find(
+      (profile) => profile.ref.id === "en",
+    );
+    const japanese = PUBLIC_LANGUAGE_PROFILE_CATALOG.find(
+      (profile) => profile.ref.id === "ja",
+    );
+    expect(english).toBeDefined();
+    expect(japanese).toBeDefined();
+    if (english === undefined || japanese === undefined) {
+      return;
+    }
+    expect(publicLanguageOptionLabel(UI_JA_CATALOG, english)).toBe(
+      "英語 — ⁨English⁩",
+    );
+    expect(publicLanguageOptionLabel(UI_JA_CATALOG, japanese)).toBe("日本語");
   });
 });

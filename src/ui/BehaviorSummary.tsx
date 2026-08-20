@@ -1,7 +1,9 @@
 import type { RenderedSummary } from "../domain";
+import { uiText, type UiLocaleCatalog } from "../locales";
 
 interface BehaviorSummaryProps {
   readonly summary: RenderedSummary;
+  readonly ui: UiLocaleCatalog;
   readonly title?: string;
   readonly review?: boolean;
 }
@@ -27,7 +29,8 @@ function SummaryList({
 
 export function BehaviorSummary({
   summary,
-  title = "These instructions ask the tool to",
+  ui,
+  title = uiText(ui, "summary.defaultTitle"),
   review = false,
 }: BehaviorSummaryProps) {
   const preserves = summary.items.filter((item) =>
@@ -48,28 +51,28 @@ export function BehaviorSummary({
       aria-labelledby="behavior-summary-title"
       data-testid="behavior-summary"
     >
-      <p class="eyebrow">Your choices</p>
+      <p class="eyebrow">{uiText(ui, "summary.eyebrow")}</p>
       <h2 id="behavior-summary-title">{title}</h2>
       <div class="summary-groups">
         <section>
-          <h3>Keep</h3>
+          <h3>{uiText(ui, "summary.keep")}</h3>
           <SummaryList
             items={preserves}
-            emptyText="No items to keep are listed."
+            emptyText={uiText(ui, "summary.keepEmpty")}
           />
         </section>
         <section>
-          <h3>Change only when you ask</h3>
+          <h3>{uiText(ui, "summary.adapt")}</h3>
           <SummaryList
             items={adapts}
-            emptyText="No optional changes selected."
+            emptyText={uiText(ui, "summary.adaptEmpty")}
           />
         </section>
         <section>
-          <h3>Follow these choices</h3>
+          <h3>{uiText(ui, "summary.behavior")}</h3>
           <SummaryList
             items={behavior}
-            emptyText="No other choices are listed."
+            emptyText={uiText(ui, "summary.behaviorEmpty")}
           />
         </section>
       </div>
