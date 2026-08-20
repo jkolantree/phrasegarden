@@ -1,7 +1,7 @@
 # PhraseGarden release workflow
 
 Status: accepted working procedure
-Updated: 2026-08-19
+Updated: 2026-08-20
 
 ## Goal and authority boundary
 
@@ -19,8 +19,9 @@ future authorization boundaries:
 2. **Publication:** push or promote only the exact approved source and named
    public surfaces. Authorization must name the repository, source SHA, version,
    each included tag or release asset, Pages target, and rollback artifact.
-   Omitted surfaces are not implied; the Preview 7 plan includes Pages but no
-   tag or GitHub Release.
+   Omitted surfaces are not implied. Preview 8 source work authorizes no push,
+   Pages deployment, tag, or GitHub Release; each later external plan must name
+   its exact identities and bytes.
 
 Neither authorization implies the other. No package may infer permission for a
 remote write from the release goal.
@@ -34,10 +35,12 @@ On 2026-08-20 the user explicitly reprioritized the complete English/Japanese
 language-entry vertical ahead of Gate 4 to address first-run comprehension.
 This is a development-order exception, not a Gate 5 completion claim. The
 foundation and Japanese catalog may be implemented as sequential logical
-source packages under that authorization; public exposure still requires an
-exact-byte qualified human Japanese review and a separately authorized
-versioned release cycle. No later locale, persistence, service worker, tag,
-GitHub Release, or deployment is implied.
+source packages under that authorization. The Japanese catalog may ship as
+explicitly unreviewed Preview content, but qualified-human review remains
+required for any Reviewed/Flagship or linguistic-correctness claim. Public
+exposure still requires a separately authorized versioned release cycle. No
+later locale, persistence, service worker, tag, GitHub Release, or deployment
+is implied.
 
 | Order | Package | Budget | Exit |
 |---:|---|---:|---|
@@ -50,7 +53,7 @@ GitHub Release, or deployment is implied.
 | 7 | `G4.5` URL-fragment sharing | 450–650 | Exact privacy allowlist and request-boundary proof |
 | 8 | `G4-X` Gate 4 qualification | evidence only | Ownership, recovery, migration, and privacy matrix passes |
 | 9 | `G5.1` UI-locale foundation | 500–700 | Complete typed English catalog; prompt bytes unchanged |
-| 10 | `G5.2` Japanese interface | 500–700 | Complete Japanese catalog with explicit review claim |
+| 10 | `G5.2` Japanese interface | 500–700 | Complete Japanese catalog with explicit Preview provenance and no review claim |
 | 11 | `G5.3` i18n/accessibility hardening | 400–650 | IME, bidi, CJK, grapheme, zoom, motion, and AT evidence |
 | 12 | `G5.4` durable offline | 350–550 | Atomic same-origin cache, upgrade, and rollback behavior |
 | 13 | `G5.5` CSP/privacy/output hardening | 350–550 | No unintended request or release-output disclosure |
@@ -65,8 +68,8 @@ Gate 4 identity/collision semantics, qualified Japanese review evidence,
 service-worker activation, stable support-tier contract, stable version, human
 reviewer governance, usability-data collection, optional model evaluation, and
 the exact publication plan remain just-in-time decisions. ADR-038 now fixes the
-English/Japanese locale and start-preset policy; it does not establish the
-human review required for public exposure.
+English/Japanese locale and start-preset policy; it does not establish human
+review or authorize any claim that depends on one.
 
 ## Package execution
 
@@ -124,19 +127,19 @@ increased are not progress by themselves.
 
 ## Freeze, build, and same-byte promotion
 
-The active Preview 7 procedure derives complete committed-source identity with
-the pinned release adapter. Preview 3 through Preview 6 adapters remain
+The active Preview 8 procedure derives complete committed-source identity with
+the pinned release adapter. Preview 3 through Preview 7 adapters remain
 available for historical verification:
 
 ```text
-python -B scripts/preview7-package.py freeze-source --source-commit <S7>
-python -B scripts/preview7-package.py verify-source --source-commit <S7>
+python -B scripts/preview8-package.py freeze-source --source-commit <S8>
+python -B scripts/preview8-package.py verify-source --source-commit <S8>
 ```
 
-`S7` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
+`S8` is exact 40-lowercase-SHA-1 `HEAD` in a physical standalone repository.
 The first command exclusively creates the fixed ignored
-`artifacts/release/preview7-source-manifest.json`; the second reconstructs and
-byte-compares it without rewriting. The canonical closed JSON binds `S7`, its
+`artifacts/release/preview8-source-manifest.json`; the second reconstructs and
+byte-compares it without rewriting. The canonical closed JSON binds `S8`, its
 tree, and every regular `100644` blob by portable path, mode, length, and
 SHA-256. It is derived from size/type-preflighted and typed-rehashed Git
 objects. Exact index and bounded raw-worktree checks are equality gates only.
@@ -155,22 +158,22 @@ profiles, packs, recipes, authored surfaces, catalogs, builder, validators,
 tests, fixtures and ledger snapshot, rubric/configuration, and model settings
 if any. The complete-tree source manifest is that source inventory;
 hand-maintained path lists are not. Qualification records reference its hash. A
-schema-1 release manifest records declared source `S7` and hashes distributable
-bytes only. The exact seven-path packaging commit has sole parent `S7`; its
+schema-1 release manifest records declared source `S8` and hashes distributable
+bytes only. The exact seven-path packaging commit has sole parent `S8`; its
 release-evidence record binds the source-manifest hash and qualification
 results alongside that manifest, archive, and checksum append. Tool stdout is
 diagnostic, not qualification evidence. No deterministic layer thereby proves
 that a human review occurred or that a linguistic conclusion is true.
 
-The Preview 7 release build happens once. Tests, archive creation, checksum
+The Preview 8 release build happens once. Tests, archive creation, checksum
 generation, independent review, draft-asset capture, and promotion all consume
 those exact bytes. Pages CI extracts, verifies, tests, and deploys the exact
 checked-in archive; it must not silently rebuild a second deployment artifact.
 Any byte mismatch stops publication.
 
-The required Preview 7 sequence is: exact uncommitted source set → `S7` →
+The required Preview 8 sequence is: exact uncommitted source set → `S8` →
 source qualification → one build → deterministic stage → independent review →
-same-byte promotion → exact `P7` packaging child → Pages run → public-byte
+same-byte promotion → exact `P8` packaging child → Pages run → public-byte
 comparison. The workflow's official GitHub Actions remain pinned by immutable
 commit SHA and use their Node 24-backed releases; that infrastructure update
 does not change product behavior or establish any later step in this sequence.

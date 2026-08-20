@@ -5,12 +5,12 @@ PhraseGarden application server.
 
 ## What the application does not collect
 
-The PhraseGarden `0.1.0-preview.7` source candidate has no backend,
+The PhraseGarden `0.1.0-preview.8` source candidate has no backend,
 database, authentication, advertising, behavioral analytics, telemetry,
 runtime AI provider, feedback form, or public free-text submission. It does not
 request microphone, camera, location, or notification permissions. Its source
-identity does not establish that Preview 7 has been packaged or deployed;
-privacy behavior is unchanged from Preview 6.
+identity does not establish that Preview 8 has been packaged or deployed;
+privacy behavior is unchanged from Preview 7.
 
 The builder does not contain a source-text field. Examples, relationship
 details, generated prompt contents, edits, audio, and learning history are not

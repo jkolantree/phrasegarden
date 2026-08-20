@@ -1,7 +1,7 @@
 # PhraseGarden product contract
 
 Status: Gate 0 source of truth  
-Updated: 2026-08-19
+Updated: 2026-08-20
 
 ## Thesis
 
@@ -63,21 +63,18 @@ Users cannot select or upgrade a tier. The public Preview derives `Preview` only
 
 ## MVP
 
-The `0.1.0-preview.7` source candidate contains Written Translator,
+The `0.1.0-preview.8` source candidate contains Written Translator,
 Live Voice Coach, and one-way Interpreter for bundled language profiles, with
 Preview English↔Japanese guidance and conservative Generic fallback. It carries
-forward Preview 6's exact prompt, compiler, recipe, profile, pair-pack,
-support-label, and privacy behavior. Home, Builder, and Review each expose one
-clearly named language-support guidance area, and Review exposes the complete
-generated instructions as a named document for accessibility software. The
-candidate also adds automated forced-colors regressions and updates pinned
-GitHub Actions to official Node 24-backed commits; the Action update changes
-release infrastructure, not product semantics. Source presence does not
-establish a Preview 7 package, deployment, tag, or GitHub Release. It does not
+forward Preview 7's exact prompt, compiler, recipe, profile, pair-pack,
+support-label, and privacy behavior. It adds complete English and Japanese page
+interfaces, deterministic start-in-your-language behavior, and a persistent
+unreviewed-interface disclosure whenever Japanese is active. Source presence
+does not establish a Preview 8 package, deployment, tag, or GitHub Release. It does not
 claim Gate 3 exit, stable readiness, manual assistive-technology coverage,
 WCAG conformance, or external linguistic review.
 
-Preview 7 retains identity-only profiles for French, German,
+Preview 8 retains identity-only profiles for French, German,
 Italian, Spanish, and region-unspecified Portuguese. These profiles add no
 language-specific prompt clause, pair pack, pronunciation claim, dialect
 claim, or review tier.
@@ -88,28 +85,32 @@ reversible; Review is the informed-use handoff where support, limitations,
 destination compatibility, paste order, and destination privacy are visible
 before Copy and Download.
 
-PhraseGarden `0.1.0-preview.7` is memory-only and intentionally excludes bidirectional or
+PhraseGarden `0.1.0-preview.8` is memory-only and intentionally excludes bidirectional or
 simultaneous interpreting, local recipe storage, import/export, sharing,
 service-worker caching, accounts, telemetry, runtime model calls, public
 submissions, and evidence-qualified tier promotion.
 
-The approved next-preview source work adds a prominent English/Japanese
+The Preview 8 source adds a prominent English/Japanese
 language-entry control. Before the visitor changes a semantic setting or makes
 instructions, choosing English applies fresh Written Translator defaults for
 English→Japanese and choosing Japanese applies fresh defaults for
 Japanese→English. After semantic work begins, the same controls change page
 presentation only and never replace configuration, generated instructions, or
 edits. They do not generate automatically, persist a locale, or change support
-tier. Japanese interface copy remains development-only until a qualified human
-review is bound to its exact catalog bytes.
+tier. Japanese interface copy may ship only as a visibly disclosed,
+`public-unreviewed-preview` locale. Qualified-speaker review is not a
+publication prerequisite for that label, but remains required before any claim
+that the interface is reviewed, qualified, approved, or equivalent in quality
+to the English source interface.
 
 V1 ships one reviewed English generated-instruction surface. It is an explicit versioned authored artifact, separate from interface, home, and target language, and is never machine-localized at runtime. Japanese interface users can inspect, edit, copy, and download that English prompt; a Japanese generated-instruction edition requires its own later authored snapshots and semantic review.
 
 ## Later
 
 - Additional reviewed, community, or flagship directional pair packs with published review evidence.
-- Additional complete, reviewed interface locales and reviewed
-  generated-instruction editions.
+- Additional complete interface locales, with each locale's copy-review status
+  stated independently; reviewed interface and generated-instruction editions
+  require their own evidence.
 - More modality recipes after Interpreter.
 - Contribution tooling beyond the Gate 6 specification and governance documents.
 - Optional local-only sensitive context, if separately contracted and excluded from sharing by default.

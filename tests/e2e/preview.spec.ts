@@ -173,6 +173,7 @@ test("language entry applies untouched presets, then preserves settings and prom
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
+  await expect(page.getByTestId("interface-copy-review")).toHaveCount(0);
   await expect(page.locator(".home-start-card h2")).toContainText("English");
   await expect(page.locator(".home-start-card h2")).toContainText("Japanese");
   await expect(page.locator(".ready-tool")).toHaveText("Translate writing");
@@ -196,6 +197,18 @@ test("language entry applies untouched presets, then preserves settings and prom
   await expect(page.locator(".home-start-card h2")).toContainText("日本語");
   await expect(page.locator(".home-start-card h2")).toContainText("英語");
   await expect(page.locator(".ready-tool")).toHaveText("文章を翻訳");
+  await expect(page.getByTestId("interface-copy-review")).toContainText(
+    "日本語表示について",
+  );
+  await expect(page.getByTestId("interface-copy-review")).toContainText(
+    "資格を確認した日本語話者によるレビューがまだ完了していません",
+  );
+  await expect(page.getByTestId("interface-copy-review")).toContainText(
+    "上の英語表示ボタンで英語に戻せます",
+  );
+  await expect(page.locator(".sr-only[role='status']")).toContainText(
+    "日本語表示は試用版",
+  );
   await expect(
     page.getByRole("button", {
       name: "日本語で始めます。日本語から英語への文章翻訳を選びます。",
@@ -252,6 +265,7 @@ test("language entry applies untouched presets, then preserves settings and prom
   await expect(page.locator(".builder-setup h2")).toContainText("日本語");
   await expect(page.getByLabel("関係")).toHaveValue("friends");
   await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
+  await expect(page.getByTestId("interface-copy-review")).toBeVisible();
 
   await page.getByRole("button", { name: "指示文を作る" }).click();
   await expect(
@@ -271,6 +285,10 @@ test("language entry applies untouched presets, then preserves settings and prom
   );
   await expect(page.locator(".support-badge")).toHaveAttribute("lang", "en");
   await expect(page.locator(".support-badge")).toHaveAttribute("dir", "ltr");
+  await expect(page.getByTestId("interface-copy-review")).toBeVisible();
+  await expect(page.getByTestId("support-status")).not.toContainText(
+    "日本語表示について",
+  );
 
   await page.getByRole("button", { name: "この指示文を編集" }).click();
   const japaneseEditor = page.getByRole("textbox", { name: "編集したコピー" });
@@ -293,6 +311,7 @@ test("language entry applies untouched presets, then preserves settings and prom
     name: "Show PhraseGarden in English. Translation settings and instructions will not change.",
   });
   await expect(englishLocaleAction).toBeFocused();
+  await expect(page.getByTestId("interface-copy-review")).toHaveCount(0);
   const englishEditor = page.getByRole("textbox", { name: "Your edited copy" });
   await expect(englishEditor).toHaveValue(edited);
   await expect(page.getByTestId("canonical-prompt")).toHaveCount(0);
@@ -331,6 +350,7 @@ test("language entry applies untouched presets, then preserves settings and prom
   await expect(page.getByTestId("canonical-prompt")).toHaveText(
     freshGenerated!,
   );
+  await expect(page.getByTestId("interface-copy-review")).toBeVisible();
   await expectReviewDirection(page, "英語", "日本語", "文章を翻訳");
   await expect(page.getByTestId("replace-prompt-confirmation")).toHaveCount(0);
 });
@@ -1696,6 +1716,18 @@ test("forced colors preserves focus, selection, truth, actions, and narrow reflo
     name: "Start in English with English to Japanese written translation.",
   });
   await expect(currentLanguage).toHaveAttribute("aria-pressed", "true");
+  const fastPath = page.getByRole("button", { name: "Make my instructions" });
+  await fastPath.focus();
+  const selectedUnfocusedStyle = await currentLanguage.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      borderWidth: Number.parseFloat(style.borderTopWidth),
+      outlineStyle: style.outlineStyle,
+      outlineWidth: Number.parseFloat(style.outlineWidth),
+    };
+  });
+  expect(selectedUnfocusedStyle.borderWidth).toBeGreaterThanOrEqual(2);
+  expect(selectedUnfocusedStyle.outlineStyle).toBe("none");
   await currentLanguage.focus();
   const currentLanguageStyle = await currentLanguage.evaluate((element) => {
     const style = getComputedStyle(element);
@@ -1706,8 +1738,10 @@ test("forced colors preserves focus, selection, truth, actions, and narrow reflo
   });
   expect(currentLanguageStyle.outlineStyle).not.toBe("none");
   expect(currentLanguageStyle.outlineWidth).toBeGreaterThanOrEqual(2);
+  expect(currentLanguageStyle.outlineStyle).not.toBe(
+    selectedUnfocusedStyle.outlineStyle,
+  );
 
-  const fastPath = page.getByRole("button", { name: "Make my instructions" });
   await fastPath.focus();
   const focusStyle = await fastPath.evaluate((element) => {
     const style = getComputedStyle(element);

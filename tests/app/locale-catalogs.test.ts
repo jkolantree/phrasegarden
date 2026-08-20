@@ -31,6 +31,8 @@ import {
   LIMITATION_MESSAGES_JA,
   OPTION_LABELS_EN,
   OPTION_LABELS_JA,
+  INTERFACE_LOCALE_IDS,
+  UI_COPY_REVIEW_STATUSES,
   UI_EN_CATALOG,
   UI_JA_CATALOG,
   UI_MESSAGES_EN,
@@ -94,8 +96,10 @@ function authoredLimitationCodes(): readonly string[] {
   ].filter((code, index, codes) => codes.indexOf(code) === index).sort();
 }
 
-describe("English and development-only Japanese interface catalogs", () => {
+describe("English source and public unreviewed-preview Japanese interface catalogs", () => {
   it("has exact, nonblank key parity across every localized map", () => {
+    expect(Object.isFrozen(INTERFACE_LOCALE_IDS)).toBe(true);
+    expect(Object.isFrozen(UI_COPY_REVIEW_STATUSES)).toBe(true);
     for (const [english, japanese] of [
       [UI_MESSAGES_EN, UI_MESSAGES_JA],
       [OPTION_LABELS_EN, OPTION_LABELS_JA],
@@ -108,10 +112,17 @@ describe("English and development-only Japanese interface catalogs", () => {
       expectNonBlankValues(japanese);
     }
     for (const catalog of [
+      UI_EN_CATALOG,
+      UI_JA_CATALOG,
       UI_EN_CATALOG.summaryCatalog,
       UI_JA_CATALOG.summaryCatalog,
     ]) {
       expect(Object.isFrozen(catalog)).toBe(true);
+    }
+    for (const catalog of [
+      UI_EN_CATALOG.summaryCatalog,
+      UI_JA_CATALOG.summaryCatalog,
+    ]) {
       expect(Object.isFrozen(catalog.messages)).toBe(true);
       for (const message of catalog.messages) {
         expect(Object.isFrozen(message)).toBe(true);
@@ -119,6 +130,12 @@ describe("English and development-only Japanese interface catalogs", () => {
         expect(message.parts.every((part) => Object.isFrozen(part))).toBe(true);
       }
     }
+    expect(UI_EN_CATALOG.copyReviewStatus).toBe("source-interface");
+    expect(UI_JA_CATALOG.copyReviewStatus).toBe(
+      "public-unreviewed-preview",
+    );
+    expect(UI_JA_CATALOG.version).toBe("1.0.0-preview.1");
+    expect(UI_JA_CATALOG.summaryCatalog.version).toBe("1.0.0-preview.1");
   });
 
   it("covers every exposed option and bundled public language in both catalogs", () => {
@@ -173,6 +190,12 @@ describe("English and development-only Japanese interface catalogs", () => {
         extra: "unsupported",
       } as never),
     ).toThrow("Invalid UI locale catalog keys");
+    expect(() =>
+      defineUiLocaleCatalog({
+        ...UI_EN_CATALOG,
+        copyReviewStatus: "reviewed-without-evidence",
+      } as never),
+    ).toThrow("Invalid interface copy review status: en");
   });
 
   it("renders one compiled result in either interface without changing its bytes or identity", () => {
@@ -208,7 +231,7 @@ describe("English and development-only Japanese interface catalogs", () => {
 
     expect(english.value.catalog.locale).toBe("en");
     expect(japanese.value.catalog.locale).toBe("ja");
-    expect(japanese.value.catalog.version).toContain("development");
+    expect(japanese.value.catalog.version).toBe("1.0.0-preview.1");
     expect(japanese.value.items.map((item) => item.id)).toEqual(
       english.value.items.map((item) => item.id),
     );

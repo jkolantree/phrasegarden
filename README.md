@@ -18,13 +18,13 @@ Open the public Prompt Studio at
 [jkolantree.github.io/phrasegarden](https://jkolantree.github.io/phrasegarden/).
 Earlier versioned releases and downloadable assets are available from the
 [PhraseGarden releases](https://github.com/jkolantree/phrasegarden/releases).
-The `0.1.0-preview.7` source candidate carries forward Preview 6's exact
-prompt, compiler, language, support-label, and privacy behavior. It adds clearly
-named language-support guidance on Home, Builder, and Review, and gives
-accessibility software a named document for the complete generated
-instructions. It also adds automated forced-colors checks and updates the
-pinned GitHub Actions to their official Node 24-backed commits. Those Action
-changes affect build and publication infrastructure only. This source record
+The `0.1.0-preview.8` source candidate adds a prominent English/Japanese page-
+language choice and a complete Japanese Preview interface. On an untouched
+page, choosing a language also applies a useful English↔Japanese starting
+direction; after work begins, it changes presentation only and preserves exact
+settings and prompt edits. The Japanese interface has not completed qualified
+human review, and the portable generated instructions remain English. This
+source record
 does not establish its containing Git checkpoint, a package, deployment, tag,
 or GitHub Release; each requires its own version-bound evidence.
 
@@ -49,8 +49,12 @@ PhraseGarden never asks for the words you want to translate. Paste the
 generated instructions into a language tool of your choice, then provide source text
 there.
 
-## What Preview 7 includes
+## What Preview 8 includes
 
+- Complete English and Japanese page interfaces, with the Japanese catalog
+  explicitly shipped as an unreviewed Preview
+- A conspicuous start-in-your-language choice that never overwrites work after
+  a visitor changes settings, generates instructions, or edits them
 - English→Japanese and Japanese→English Preview guidance
 - Conservative Generic generation for all other bundled directions
 - Identity-only profiles for French, German, Italian, Spanish, and
@@ -73,7 +77,9 @@ there.
 - No backend, account, database, telemetry, advertising, runtime AI, service
   worker, local recipe storage, or share payload
 
-The Preview 7 interface and generated instruction surface are English-only.
+The generated instruction surface is English-only. The Japanese page interface
+does not imply qualified human review of its copy or of the English↔Japanese
+pair guidance.
 Read the [product limitations](docs/LIMITATIONS.md) before use.
 
 ## Support labels
@@ -82,7 +88,7 @@ Read the [product limitations](docs/LIMITATIONS.md) before use.
 |---|---|
 | Preview | An exact built-in directed pair pack is versioned, but external linguistic review is incomplete. |
 | Generic | No exact pair pack is selected; only universal, conservative instructions are emitted. |
-| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 7 cannot assign them. |
+| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 8 cannot assign them. |
 
 A user or imported configuration cannot choose or upgrade its tier.
 
@@ -107,7 +113,8 @@ recipe configuration
 - `src/domain`: pure types, validation, materialization, resolution, compiler
 - `src/packs`: versioned profiles and the English↔Japanese Preview pack
 - `src/recipes`: Written, Voice, Interpreter, policy, and English prompt surface
-- `src/locales`: English interface, warning, limitation, and summary strings
+- `src/locales`: closed English and Japanese interface, warning, limitation,
+  and summary catalogs
 - `src/app` and `src/ui`: memory-only Preact presentation and interactions
 - `tests`: deterministic, snapshot, browser, privacy, and accessibility checks
 

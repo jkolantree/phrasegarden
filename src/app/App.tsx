@@ -653,6 +653,7 @@ function LanguageEntry({
   const starting = phase === "starting";
   const titleId = "language-entry-title";
   const helpId = "language-entry-help";
+  const copyReviewTitleId = "interface-copy-review-title";
   const entries = [
     {
       locale: "en" as const,
@@ -720,6 +721,19 @@ function LanguageEntry({
             </button>
           ))}
         </div>
+        {ui.copyReviewStatus === "public-unreviewed-preview" && (
+          <aside
+            class="interface-copy-review"
+            role="note"
+            aria-labelledby={copyReviewTitleId}
+            data-testid="interface-copy-review"
+          >
+            <strong id={copyReviewTitleId}>
+              {uiText(ui, "entry.copyReviewTitle")}
+            </strong>
+            <span>{uiText(ui, "entry.copyReviewBody")}</span>
+          </aside>
+        )}
       </div>
     </section>
   );

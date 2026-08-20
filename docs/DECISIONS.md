@@ -816,3 +816,40 @@ reviewed English `instructions-en` surface.
 English fallback. Development Japanese copy is not proof of qualified human
 review; publication requires a separately bound review and release
 authorization. Other interface locales remain absent until complete.
+
+## ADR-039 — An unreviewed interface locale may ship only with a persistent disclosure
+
+Status: Accepted
+Date: 2026-08-20
+Supersedes: ADR-038's qualified-review prerequisite for Japanese interface publication only
+
+**Context:** The Japanese catalog is complete, deterministic, and covered by
+development review and automated checks, but no qualified Japanese speaker is
+available to review it now. Withholding the entire locale is a product choice,
+not a deterministic correctness requirement. Model capability and well-formed
+catalog metadata still do not prove human review or linguistic correctness.
+
+**Decision:** Japanese may ship in a prerelease with catalog status
+`public-unreviewed-preview`. Whenever Japanese is active, the global
+language-entry strip persistently states that qualified-speaker review is
+incomplete and identifies the adjacent English action as the recovery path.
+The locale-change announcement repeats that boundary. The English catalog uses
+`source-interface`, which makes no human-review claim.
+
+Interface-copy status is immutable presentation metadata. It does not enter
+recipe configuration, compiler inputs, prompt provenance, sharing, pair-pack
+resolution, or support-tier derivation. No feedback form, telemetry, runtime
+translation, model call, network request, or storage is added. A wording
+correction identifies the exact locale version/message, preserves a regression,
+bumps the catalog version, and ships only in a successor artifact.
+
+**Rationale:** A conspicuously unreviewed prerelease gives Japanese readers the
+working interface without fabricating evidence or confusing page-copy quality
+with direction-specific prompt support.
+
+**Consequences:** Qualified human review is no longer required for public
+exposure under this exact status. It remains required before describing the
+Japanese interface as reviewed, qualified, approved, or equivalent in quality
+to English. The English↔Japanese pair remains Preview, every Generic direction
+remains Generic, and Gate 5, WCAG, stable-readiness, and human-linguistic claims
+remain unestablished.

@@ -27,6 +27,7 @@ PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
 PREVIEW5_SPEC = RELEASE_SPECS["preview5"]
 PREVIEW6_SPEC = RELEASE_SPECS["preview6"]
 PREVIEW7_SPEC = RELEASE_SPECS["preview7"]
+PREVIEW8_SPEC = RELEASE_SPECS["preview8"]
 verify_checksums = MODULE["verify_checksums"]
 require_checksum = MODULE["require_checksum"]
 load_manifest = MODULE["load_manifest"]
@@ -279,13 +280,16 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
             unrelated_p6.write_bytes(b"x" * (MAX_MANIFEST_BYTES + 1))
             unrelated_p7 = root / PREVIEW7_SPEC.final_manifest
             unrelated_p7.write_bytes(b"x" * (MAX_MANIFEST_BYTES + 1))
+            unrelated_p8 = root / PREVIEW8_SPEC.final_manifest
+            unrelated_p8.write_bytes(b"x" * (MAX_MANIFEST_BYTES + 1))
             (root / CHECKSUM_PATH).write_text(
                 f"{digest(archive.read_bytes())}  {archive.relative_to(root).as_posix()}\n"
                 f"{digest(manifest_path.read_bytes())}  {manifest_path.relative_to(root).as_posix()}\n"
                 f"{digest(unrelated.read_bytes())}  {PREVIEW4_SPEC.final_manifest.as_posix()}\n"
                 f"{digest(unrelated_p5.read_bytes())}  {PREVIEW5_SPEC.final_manifest.as_posix()}\n"
                 f"{digest(unrelated_p6.read_bytes())}  {PREVIEW6_SPEC.final_manifest.as_posix()}\n"
-                f"{digest(unrelated_p7.read_bytes())}  {PREVIEW7_SPEC.final_manifest.as_posix()}\n",
+                f"{digest(unrelated_p7.read_bytes())}  {PREVIEW7_SPEC.final_manifest.as_posix()}\n"
+                f"{digest(unrelated_p8.read_bytes())}  {PREVIEW8_SPEC.final_manifest.as_posix()}\n",
                 encoding="utf-8",
             )
             arguments = [
@@ -301,7 +305,7 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
                              (old.returncode, old.stdout, old.stderr))
             self.assertEqual((root / "dist" / "index.html").read_bytes(), old_output)
             shutil.rmtree(root / "dist")
-            for spec_id in ("preview4", "preview5", "preview6", "preview7"):
+            for spec_id in ("preview4", "preview5", "preview6", "preview7", "preview8"):
                 with self.subTest(spec_id=spec_id):
                     strict = self.invoke(
                         ROOT / "scripts" / f"{spec_id}-verify-release-archive.py",
@@ -357,7 +361,7 @@ class PinnedAdapterCompatibilityTest(unittest.TestCase):
         self.assertEqual(core.returncode, 1)
         self.assertEqual(core.stderr.replace(b"\r\n", b"\n"),
                          b"release verifier core requires a pinned adapter\n")
-        for spec_id in ("preview4", "preview5", "preview6", "preview7"):
+        for spec_id in ("preview4", "preview5", "preview6", "preview7", "preview8"):
             with self.subTest(spec_id=spec_id):
                 strict = self.invoke(
                     ROOT / "scripts" / f"{spec_id}-verify-release-archive.py",
@@ -674,6 +678,9 @@ class PackagingCommitValidationTest(unittest.TestCase):
         preview7_exact = (Path(CHECKSUM_PATH), PREVIEW7_SPEC.final_archive,
                           PREVIEW7_SPEC.final_manifest)
         validate_packaging_arguments(PREVIEW7_SPEC, *preview7_exact)
+        preview8_exact = (Path(CHECKSUM_PATH), PREVIEW8_SPEC.final_archive,
+                          PREVIEW8_SPEC.final_manifest)
+        validate_packaging_arguments(PREVIEW8_SPEC, *preview8_exact)
         for changed in [
             (exact[0], Path("other/archive.zip"), exact[2]),
             (exact[0], exact[1], Path("other/manifest.json")),
@@ -685,6 +692,8 @@ class PackagingCommitValidationTest(unittest.TestCase):
             (exact[0], exact[1], PREVIEW6_SPEC.final_manifest),
             (exact[0], PREVIEW7_SPEC.final_archive, exact[2]),
             (exact[0], exact[1], PREVIEW7_SPEC.final_manifest),
+            (exact[0], PREVIEW8_SPEC.final_archive, exact[2]),
+            (exact[0], exact[1], PREVIEW8_SPEC.final_manifest),
             ("./SHA256SUMS", ARCHIVE_PATH, MANIFEST_PATH),
             (CHECKSUM_PATH, ARCHIVE_PATH.replace("/", "\\"), MANIFEST_PATH),
             (CHECKSUM_PATH, ARCHIVE_PATH, MANIFEST_PATH.replace("/", "//", 1)),
@@ -702,7 +711,10 @@ class PackagingCommitValidationTest(unittest.TestCase):
     def test_packaging_manifest_identity_is_exact_for_each_spec(self) -> None:
         preview3 = manifest_for("index.html", b"fixture")
         validate_manifest_identity(PREVIEW3_SPEC, preview3)
-        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC):
+        for spec in (
+            PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC,
+            PREVIEW8_SPEC,
+        ):
             with self.subTest(spec=spec.id):
                 with self.assertRaisesRegex(ValueError, "releaseVersion"):
                     validate_manifest_identity(spec, preview3)
@@ -749,6 +761,14 @@ class PackagingCommitValidationTest(unittest.TestCase):
         )
         self.assertEqual(
             release_input_limit(PREVIEW7_SPEC, preview7_manifest), MAX_MANIFEST_BYTES
+        )
+        preview8_manifest = PREVIEW8_SPEC.final_manifest.as_posix()
+        self.assertEqual(
+            release_input_limit(PREVIEW7_SPEC, preview8_manifest),
+            MAX_CHECKSUM_TARGET_BYTES,
+        )
+        self.assertEqual(
+            release_input_limit(PREVIEW8_SPEC, preview8_manifest), MAX_MANIFEST_BYTES
         )
     def test_exact_parent_and_path_set_are_required(self) -> None:
         source = "0" * 40
@@ -801,7 +821,10 @@ class PackagingCommitValidationTest(unittest.TestCase):
         nonregular.assert_called_once()
 
     def test_strict_source_identities_are_predecessor_bound(self) -> None:
-        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC):
+        for spec in (
+            PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC,
+            PREVIEW8_SPEC,
+        ):
             with self.subTest(spec=spec.id):
                 ledger = release_parent_ledger(spec)
                 version = spec.required_package_version
@@ -846,7 +869,14 @@ class PackagingCommitValidationTest(unittest.TestCase):
             validate_release_ledger_state(PREVIEW7_SPEC, current),
             fixture_ledger_rows(current),
         )
-        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC):
+        self.assertEqual(
+            validate_release_ledger_state(PREVIEW8_SPEC, current),
+            fixture_ledger_rows(current),
+        )
+        for spec in (
+            PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC,
+            PREVIEW8_SPEC,
+        ):
             with self.subTest(spec=spec.id):
                 parent = release_parent_ledger(spec)
                 self.assertEqual(
@@ -984,7 +1014,10 @@ class PackagingCommitValidationTest(unittest.TestCase):
                 os.chdir(original)
 
     def test_strict_packaging_commits_bind_qualified_predecessors(self) -> None:
-        for spec in (PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC):
+        for spec in (
+            PREVIEW4_SPEC, PREVIEW5_SPEC, PREVIEW6_SPEC, PREVIEW7_SPEC,
+            PREVIEW8_SPEC,
+        ):
             with self.subTest(spec=spec.id), tempfile.TemporaryDirectory(
                 prefix=f"phrasegarden-{spec.id}-package-"
             ) as directory:

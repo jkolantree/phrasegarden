@@ -1,5 +1,45 @@
 # Release notes
 
+## 0.1.0-preview.8 — start in English or Japanese
+
+Status: source target; package, deployment, tag, GitHub Release, and public-byte
+status require separate version-bound evidence
+
+### Product behavior
+
+- Adds a prominent English/Japanese page-language choice. On an untouched page,
+  English applies fresh English→Japanese Written defaults and Japanese applies
+  fresh Japanese→English Written defaults without generating instructions.
+- After any setting change, generation, or edit, page-language changes preserve
+  exact configuration, generated instructions, and edited text.
+- Ships complete closed English and Japanese page catalogs. The Japanese
+  catalog is Preview content without qualified-human review; this release makes
+  no claim that its wording or the pair guidance is linguistically reviewed.
+- Keeps the generated portable prompt on the existing English authored surface.
+  Interface language, home language, target language, and prompt language remain
+  separate identities.
+
+### Deterministic boundary
+
+- Carries forward exact compiler, prompt, recipe, profile, pair-pack,
+  support-tier, privacy, and runtime-network behavior.
+- Keeps English↔Japanese at Preview and every direction without an exact pair
+  pack at Generic. Users and imported settings cannot select or upgrade a tier.
+- Adds only a closed Preview 8 release specification, literal pinned adapters,
+  exact Preview 7 predecessor bindings, and a no-build Pages selector.
+
+### Evidence boundary
+
+Preview 7 remains immutable: 2,188-byte checksum ledger / SHA-256
+`FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A`,
+187,305-byte Pages ZIP / SHA-256
+`715ED188561505D1531FA903EC85EE742A34AE0A6646C9E61190D0D79FFD9513`,
+and 976-byte manifest / SHA-256
+`87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA`.
+No Preview 8 source checkpoint, package, deployment, public-byte result, human
+linguistic review, accessibility conformance, tag, or GitHub Release follows
+from this source note.
+
 ## 0.1.0-preview.7 — clearer accessibility semantics and Node 24 release pins
 
 Status: source candidate; package, deployment, tag, and GitHub Release status

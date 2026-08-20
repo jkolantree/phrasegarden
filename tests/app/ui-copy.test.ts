@@ -23,6 +23,8 @@ import {
   OPTION_LABELS_EN,
   UI_EN_CATALOG,
   UI_JA_CATALOG,
+  UI_MESSAGES_EN,
+  UI_MESSAGES_JA,
 } from "../../src/locales";
 import {
   PUBLIC_LANGUAGE_PROFILE_CATALOG,
@@ -115,7 +117,7 @@ describe("plain-language UI copy", () => {
     }
   });
 
-  it("presents deterministic development-only Japanese language names", () => {
+  it("presents deterministic public-preview Japanese language names", () => {
     expect(
       PUBLIC_LANGUAGE_PROFILE_CATALOG.map((profile) => [
         profile.ref.id,
@@ -151,5 +153,21 @@ describe("plain-language UI copy", () => {
       "英語 — ⁨English⁩",
     );
     expect(publicLanguageOptionLabel(UI_JA_CATALOG, japanese)).toBe("日本語");
+  });
+
+  it("states the Japanese interface review boundary and English recovery exactly", () => {
+    expect(UI_EN_CATALOG.copyReviewStatus).toBe("source-interface");
+    expect(UI_JA_CATALOG.copyReviewStatus).toBe(
+      "public-unreviewed-preview",
+    );
+    expect(UI_MESSAGES_EN["entry.copyReviewBody"]).toBe(
+      "The Japanese interface is a preview. It has not been reviewed by a qualified Japanese speaker. If anything is unclear, use English above.",
+    );
+    expect(UI_MESSAGES_JA["entry.copyReviewTitle"]).toBe(
+      "日本語表示について",
+    );
+    expect(UI_MESSAGES_JA["entry.copyReviewBody"]).toBe(
+      "日本語表示は試用版です。この画面の日本語は、資格を確認した日本語話者によるレビューがまだ完了していません。分かりにくい場合は、上の英語表示ボタンで英語に戻せます。",
+    );
   });
 });

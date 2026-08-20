@@ -2,101 +2,80 @@
 
 Updated: 2026-08-20
 
-## Current outcome
+## Current layer
 
-PhraseGarden `0.1.0-preview.7` is the active local source candidate and has an
-exact local package content record. Source checkpoint
-`S7=465f0516e58f1270529923027013565881be76e9` has tree
-`8fc64ad4edf9f941aa8b370b8777f28c200bf7af` and sole parent
-`d0922651db3bef58215ea130876d88bd54b8e3bc`.
+PhraseGarden `0.1.0-preview.8` is the active release-source target. Its exact
+product parent is the clean bilingual checkpoint
+`f0583569aa2441fb6d34d4c40a6e3e0e0233d363`, tree
+`ba5d9d1799da39a2915a47a5d2559a64df850226`.
 
-Preview 6 remains the immutable deployed predecessor. Preview 7 changes
-accessibility semantics, browser regressions, release identity, and official
-immutable Node 24 GitHub Action pins. It does not change compiler output,
-prompt snapshots, language identities, pair guidance, recipes, support tiers,
-or the privacy model.
+The bilingual product provides a complete English `source-interface` catalog,
+a complete Japanese `public-unreviewed-preview` page catalog, a prominent
+start-in-your-language choice, and deterministic preservation of settings,
+generated instructions, and edits after work begins. The generated portable
+prompt remains English LTR. The Japanese catalog has no qualified-human review;
+publication must not promote that copy, the pair pack, or either direction to
+Reviewed or Flagship.
 
-## Active bilingual source package
+The current source package combines the completed locale-status and disclosure
+UI, catalog, styling, accessibility, and interaction-test changes with Preview
+8 release identity, adapters, public policy documents, workflow selection, and
+closed release tests. It does not change compiler, generated prompt, recipe,
+profile, pair-pack, support-tier, persistence, network, or privacy behavior.
 
-The next-preview source content adds a prominent English/Japanese language-
-entry strip, complete closed English and development Japanese UI catalogs, and
-locale-specific behavior summaries. An untouched session maps English to fresh
-English→Japanese Written defaults and Japanese to fresh Japanese→English
-Written defaults without generating. After any semantic mutation or
-generation, locale selection changes presentation only and preserves exact
-settings, prompts, and edits. The prompt surface remains English LTR.
+## Exact Preview 7 predecessor
 
-Local evidence on these source bytes: 343/343 Vitest tests, both TypeScript
-checks, Vite build, release-output audit, and 15/15 sequential Edge/axe journeys
-passed. At 320×900 the English direct action ends at 880.140625 px and the
-Japanese action at 774.421875 px; both locale controls are 140×47.6875 px and
-the page has no horizontal overflow. English and Japanese mobile screenshots
-were inspected directly. These results establish deterministic development
-behavior. By themselves they do not establish qualified Japanese authorship or
-review, manual assistive-technology behavior, WCAG conformance, a containing
-Git checkpoint, a package, deployment, public bytes, tag, or GitHub Release.
-
-Git identity may establish the source checkpoint only for these unchanged
-reviewed bytes. A later, separately authorized release cycle must select a new
-version and bind qualified Japanese review before exposing that interface
-publicly. Preview 7 source/package/public identities remain immutable.
-
-## Exact local Preview 7 package
+Local Git identifies `P7=580aa6e270dc211626e5a7b2bec7afe0acdfd262` as
+the exact seven-path child of
+`S7=465f0516e58f1270529923027013565881be76e9`. The local remote-tracking ref
+also names `P7`; no fresh network or public-byte observation is claimed here.
 
 | Artifact | Bytes | SHA-256 |
 |---|---:|---|
-| Source manifest | 34,329 | `674146B0F73C41321A7D4E47949ABA8643F2C038C1C48DDBB305766E1AEAA1DE` |
 | Pages ZIP | 187,305 | `715ED188561505D1531FA903EC85EE742A34AE0A6646C9E61190D0D79FFD9513` |
 | Release manifest | 976 | `87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA` |
 | `SHA256SUMS` | 2,188 | `FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A` |
 
-The ledger preserves the exact 1,952-byte Preview 6 ledger, SHA-256
-`82CBC32E5606F827765983271B248CD7C4788DFE57AB703FD1B94A55432B9C4E`,
-then appends only the Preview 7 ZIP row followed by its manifest row. One
-successful owner-context promotion copied the independently reviewed stage to
-the three final paths without regeneration; direct byte comparison passed.
+Preview 8 must preserve all 2,188 ledger bytes and both Preview 7 artifacts,
+then append only its own ZIP row followed by its manifest row.
 
-## Local evidence boundary
+## Completed evidence
 
-The exact source passed 329 application tests, 58 Python release/security
-tests, 41 workflow and claim-policy tests, both TypeScript checks, a Node 24
-build, release audits, 14 sequential Edge/axe journeys, and two independent
-source reviews. The one release build and canonical stage then passed matching
-pre/post audits, all 14 browser journeys, package verification, and independent
-product/accessibility/language and security/archive reviews.
+- The bilingual product checkpoint passed 343/343 Vitest tests, both
+  TypeScript checks, a Vite build, release-output audit, and 15/15 sequential
+  Edge/axe journeys before this release-source package began.
+- English and Japanese mobile screenshots were inspected. At 320×900 both
+  locale actions exceeded 44 CSS px, both direct actions remained within the
+  initial viewport, and the page had no horizontal overflow.
+- Two independent read-only development reviews returned no open P1/P2/P3 on
+  the exact bilingual checkpoint after one bounded repair cycle.
 
-These results establish local deterministic structure and reviewed bytes. They
-do not establish Preview 7's containing package commit, Actions run,
-deployment, current public bytes, tag, GitHub Release, WCAG conformance,
-manual assistive-technology behavior, or external linguistic review.
+These are deterministic development results. They do not establish qualified
+human Japanese review, WCAG conformance, broad device behavior, Preview 8
+source or package identity, deployment, current public bytes, a tag, or a
+GitHub Release.
 
-This source-state record alone establishes no Preview 7 checkpoint; Git
-identity separately establishes `S7`. Likewise, this package content record
-does not self-establish `P7` or any public state.
+## Next eligible actions
 
-## Authority sequence
+1. Finish and verify the exact Preview 8 release-source allowlist.
+2. Create one local source checkpoint `S8` with sole parent
+   `f0583569aa2441fb6d34d4c40a6e3e0e0233d363`.
+3. Freeze and qualify its complete-tree source manifest.
+4. Build once, audit and browser-test those bytes, stage once, independently
+   review, and promote the same bytes once.
+5. Create one exact seven-path `P8` child and run the committed-package
+   verifier against a fresh extraction.
+6. Stop for an exact remote/publication authorization.
 
-If no source receipt exists, source qualification must finish before any
-package content record; exact `S7` already has that separately bound receipt.
-
-1. An external zero-finding review receipt for the exact seven package paths
-   permits those unchanged bytes to be checkpointed as the sole-parent child
-   of `S7`.
-2. Git identity plus the pinned committed-package verifier and fresh extraction
-   alone establish local package commit `P7`.
-3. A fresh remote baseline permits one `S7 → P7` main push. The no-build Pages
-   run and exact public HTML/CSS/JavaScript downloads separately establish
-   deployment and public-byte authority.
-4. No Preview 7 tag or GitHub Release is part of this cycle.
-
-Stop on byte or scope drift, another build or promotion, wrong parent or path,
-open review finding, verifier failure, remote drift, CI/deployment failure,
-public-byte mismatch, or any need to rewrite an earlier release.
+Stop on source-scope drift; any checked-in Preview 1–7 artifact, checksum-row,
+closed-specification, or Git-history drift; a failed deterministic gate;
+another build or promotion; a review or tier overclaim; remote drift; or an
+inability to preserve the exact predecessor.
 
 ## Deferred
 
-Qualified human Japanese review, manual screen-reader, real-device IME, manual
-forced-colors, moderated first-run usability, local recipe storage/import/
-sharing, durable offline refresh, model evaluation, additional interface
-locales, and evidence-qualified Community/Reviewed/Flagship tiers remain
-separate work.
+Qualified human Japanese review, manual screen-reader and real-device IME
+matrices, manual forced-colors inspection, moderated usability, local recipe
+storage/import/sharing, durable offline refresh, model evaluation, additional
+interface locales, and evidence-qualified Community/Reviewed/Flagship tiers
+remain separate work.

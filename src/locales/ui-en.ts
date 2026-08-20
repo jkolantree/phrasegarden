@@ -150,6 +150,9 @@ export const UI_MESSAGES_EN = Object.freeze({
   "entry.pageHelp":
     "This changes the page only. Your translation settings and instructions stay the same.",
   "entry.current": "Current",
+  "entry.copyReviewTitle": "About the Japanese interface",
+  "entry.copyReviewBody":
+    "The Japanese interface is a preview. It has not been reviewed by a qualified Japanese speaker. If anything is unclear, use English above.",
   "entry.englishStartAria":
     "Start in English with English to Japanese written translation.",
   "entry.japaneseStartAria":
@@ -161,11 +164,11 @@ export const UI_MESSAGES_EN = Object.freeze({
   "entry.englishStartAnnouncement":
     "PhraseGarden is now in English. Starting setup: English to Japanese, Translate writing. Generated instructions remain in English.",
   "entry.japaneseStartAnnouncement":
-    "PhraseGarden is now in Japanese. Starting setup: Japanese to English, Translate writing. Generated instructions remain in English.",
+    "PhraseGarden is now in Japanese. Starting setup: Japanese to English, Translate writing. Generated instructions remain in English. The Japanese interface is a preview and has not been reviewed by a qualified Japanese speaker.",
   "entry.englishPageAnnouncement":
     "PhraseGarden is now in English. Translation settings and instructions were not changed.",
   "entry.japanesePageAnnouncement":
-    "PhraseGarden is now in Japanese. Translation settings and instructions were not changed.",
+    "PhraseGarden is now in Japanese. Translation settings and instructions were not changed. The Japanese interface is a preview and has not been reviewed by a qualified Japanese speaker.",
   "home.heroTitle": "Keep your meaning when AI translates.",
   "home.heroCopy":
     "Choose languages and what you want to do. PhraseGarden makes reusable instructions for another AI chat or language tool. Copy the instructions there, then send the words you want translated.",

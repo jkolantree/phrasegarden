@@ -1,9 +1,9 @@
 import type { SummaryCatalog } from "../domain";
 import { SUMMARY_EN_CATALOG } from "./summary-en";
 
-// Development-only Japanese copy. This version is intentionally not a claim
-// of qualified-speaker review or directed-pair support qualification.
-export const SUMMARY_JA_VERSION = "1.0.0-development.1";
+// Public unreviewed-preview Japanese copy. This version is intentionally not a
+// claim of qualified-speaker review or directed-pair support qualification.
+export const SUMMARY_JA_VERSION = "1.0.0-preview.1";
 
 type Message = SummaryCatalog["messages"][number];
 type MessagePart = Message["parts"][number];

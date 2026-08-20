@@ -276,16 +276,25 @@ CLOSED_SPEC_PATHS = {
                  "release/phrasegarden-0.1.0-preview.7-pages-manifest.json",
                  "docs/evidence/releases/0.1.0-preview.7.md",
                  "docs/work-packages/PREVIEW-7-PUBLICATION.md"),
+    "preview8": ("artifacts/release/preview8-source-manifest.json",
+                 "artifacts/release/preview8-package-stage",
+                 "release/phrasegarden-0.1.0-preview.8-pages.zip",
+                 "release/phrasegarden-0.1.0-preview.8-pages-manifest.json",
+                 "docs/evidence/releases/0.1.0-preview.8.md",
+                 "docs/work-packages/PREVIEW-8-PUBLICATION.md"),
 }
 
 def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
-    if tuple(specs) != ("preview3", "preview4", "preview5", "preview6", "preview7"):
+    if tuple(specs) != (
+        "preview3", "preview4", "preview5", "preview6", "preview7", "preview8"
+    ):
         fail("E-RELEASE-SPEC", "release specification IDs are not exact")
     expected = (("preview3", "0.1.0-preview.3"),
                 ("preview4", "0.1.0-preview.4"),
                 ("preview5", "0.1.0-preview.5"),
                 ("preview6", "0.1.0-preview.6"),
-                ("preview7", "0.1.0-preview.7"))
+                ("preview7", "0.1.0-preview.7"),
+                ("preview8", "0.1.0-preview.8"))
     identity_paths: list[str] = []
     for (spec_id, version), (key, spec) in zip(expected, specs.items(), strict=True):
         if (key != spec_id or spec.id != spec_id
@@ -310,7 +319,7 @@ def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
             fail("E-RELEASE-SPEC", "release specification path is invalid")
     if len({path.lower() for path in identity_paths}) != len(identity_paths):
         fail("E-RELEASE-SPEC", "release specification paths collide")
-    preview3, preview4, preview5, preview6, preview7 = specs.values()
+    preview3, preview4, preview5, preview6, preview7, preview8 = specs.values()
     if (preview3.parent_ledger_binding is not None or preview3.predecessor_bindings
             or preview4.parent_ledger_binding != (1244,
                 "E65D2D74EF7374B65E12B7898F54D83164093C267B090D0E4E7EC95B578DEA2A")
@@ -339,7 +348,14 @@ def validate_release_specs(specs: Mapping[str, ReleaseSpec]) -> None:
                 (preview6.final_archive, 186851,
                  "6A2DC1E364F42B64D54034E734233CB09A9166A01F9C6591D182AB40CA81EA55"),
                 (preview6.final_manifest, 976,
-                 "B9753A9286D3C8E662ABB7A9244817BFA7EAA2382B262794816527C765074F7E"))):
+                 "B9753A9286D3C8E662ABB7A9244817BFA7EAA2382B262794816527C765074F7E"))
+            or preview8.parent_ledger_binding != (2188,
+                "FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A")
+            or preview8.predecessor_bindings != (
+                (preview7.final_archive, 187305,
+                 "715ED188561505D1531FA903EC85EE742A34AE0A6646C9E61190D0D79FFD9513"),
+                (preview7.final_manifest, 976,
+                 "87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA"))):
         fail("E-RELEASE-SPEC", "release predecessor policy is invalid")
 
 _preview3 = make_release_spec("preview3", "0.1.0-preview.3")
@@ -383,12 +399,23 @@ _preview7 = make_release_spec(
         (_preview6.final_manifest, 976,
          "B9753A9286D3C8E662ABB7A9244817BFA7EAA2382B262794816527C765074F7E")),
 )
+_preview8 = make_release_spec(
+    "preview8", "0.1.0-preview.8",
+    parent_ledger_binding=(2188,
+        "FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A"),
+    predecessor_bindings=(
+        (_preview7.final_archive, 187305,
+         "715ED188561505D1531FA903EC85EE742A34AE0A6646C9E61190D0D79FFD9513"),
+        (_preview7.final_manifest, 976,
+         "87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA")),
+)
 RELEASE_SPECS: Mapping[str, ReleaseSpec] = MappingProxyType({
     _preview3.id: _preview3,
     _preview4.id: _preview4,
     _preview5.id: _preview5,
     _preview6.id: _preview6,
     _preview7.id: _preview7,
+    _preview8.id: _preview8,
 })
 validate_release_specs(RELEASE_SPECS)
 PREVIEW3_SPEC = RELEASE_SPECS["preview3"]
@@ -396,6 +423,7 @@ PREVIEW4_SPEC = RELEASE_SPECS["preview4"]
 PREVIEW5_SPEC = RELEASE_SPECS["preview5"]
 PREVIEW6_SPEC = RELEASE_SPECS["preview6"]
 PREVIEW7_SPEC = RELEASE_SPECS["preview7"]
+PREVIEW8_SPEC = RELEASE_SPECS["preview8"]
 
 def resolve_release_spec(spec_id: str) -> ReleaseSpec:
     if type(spec_id) is not str or spec_id not in RELEASE_SPECS:

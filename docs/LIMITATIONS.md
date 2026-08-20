@@ -1,12 +1,10 @@
 # Product limitations
 
-This source tree defines a PhraseGarden `0.1.0-preview.7` candidate. It carries
-forward Preview 6's exact prompt, compiler, language,
-support-label, and privacy behavior. It adds named language-support guidance in
-Home, Builder, and Review, gives the complete generated instructions named
-document semantics for accessibility software, adds automated forced-colors
-regressions, and updates pinned release Actions to official Node 24-backed
-commits. Source presence does not establish a Preview 7 package, deployment,
+This source tree defines a PhraseGarden `0.1.0-preview.8` candidate. It carries
+forward Preview 7's exact prompt, compiler, language profiles, pair guidance,
+support labels, and privacy behavior. It adds complete English and Japanese
+page interfaces plus deterministic start-in-your-language behavior. Source
+presence does not establish a Preview 8 package, deployment,
 tag, or GitHub Release. Those states require version-bound evidence and the
 corresponding public repository state.
 
@@ -20,11 +18,15 @@ corresponding public repository state.
 - French, German, Italian, Spanish, and region-unspecified Portuguese are
   bundled as identity-only Generic profiles. `pt` does not mean Brazilian,
   European, neutral, or dialect-reviewed Portuguese; `pt-BR` and `pt-PT` are
-  not supported by the `0.1.0-preview.7` source candidate.
+  not supported by the `0.1.0-preview.8` source candidate.
 - The bundled canonical registry is a small supported set, not a claim of
   universal language coverage. A valid BCP 47 tag that is not in the exact
   registry is unsupported.
-- The interface and generated instruction surface are English-only.
+- The page interface is available in English and Japanese. The Japanese
+  catalog is an explicitly unreviewed Preview: deterministic completeness and
+  automated checks do not establish qualified-human review or linguistic
+  correctness.
+- The generated instruction surface remains English-only in both interfaces.
 - Profile and pair content cannot establish that a human review occurred or
   that a linguistic conclusion is correct. Formal evidence qualification and
   tier resolution are deferred.
@@ -73,7 +75,7 @@ corresponding public repository state.
   `985.984375` px in a 320 × 900 Review viewport, beyond the required `900` px.
   Preview 6's version-bound Pages qualification established the corrected
   predecessor with Copy at no more than `800` px while retaining truthful
-  support and limitation notices before it. Preview 7 must qualify its own
+  support and limitation notices before it. Preview 8 must qualify its own
   built bytes; source inheritance alone does not transfer that result.
 - The in-app manual localhost inspection was blocked by that browser surface's
   local-URL policy. Sequential Edge journeys, explicit focus assertions, and

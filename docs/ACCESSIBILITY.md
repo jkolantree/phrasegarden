@@ -65,12 +65,21 @@ the named complete-instruction document through browser role-and-name queries.
 These are source changes and automated regression checks, not a packaged or
 deployed Preview 7, a manual forced-colors inspection, or a screen-reader pass.
 
+## Preview 8 Japanese interface
+
+The Preview 8 source includes a complete Japanese interface catalog with a
+persistent named disclosure that qualified-speaker review is incomplete. The
+adjacent English control is its immediate recovery path and preserves settings,
+generated instructions, and edits. Automated catalog, keyboard, axe, reflow,
+IME, and byte-preservation checks are development evidence; they do not prove
+human Japanese quality or manual assistive-technology behavior.
+
 ## Known gaps
 
 Automated checks do not replace human assistive-technology testing. Preview 3
 evidence does not include an independent screen-reader matrix, a real-device
 IME matrix, forced-colors manual inspection, or broad browser/OS coverage. The
-interface is not yet localized into Japanese.
+Japanese interface has not been reviewed by a qualified Japanese speaker.
 
 After publication, accessibility reports should include the page, browser,
 assistive technology, expected result, actual result, and reproduction steps.

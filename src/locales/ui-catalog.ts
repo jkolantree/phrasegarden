@@ -26,13 +26,20 @@ import {
 import { SUMMARY_EN_CATALOG } from "./summary-en";
 import { SUMMARY_JA_CATALOG } from "./summary-ja";
 
-export const INTERFACE_LOCALE_IDS = ["en", "ja"] as const;
+export const INTERFACE_LOCALE_IDS = Object.freeze(["en", "ja"] as const);
 export type InterfaceLocaleId = (typeof INTERFACE_LOCALE_IDS)[number];
+
+export const UI_COPY_REVIEW_STATUSES = Object.freeze([
+  "source-interface",
+  "public-unreviewed-preview",
+] as const);
+export type UiCopyReviewStatus = (typeof UI_COPY_REVIEW_STATUSES)[number];
 
 export interface UiLocaleCatalog {
   readonly locale: InterfaceLocaleId;
   readonly version: string;
   readonly direction: "ltr" | "rtl";
+  readonly copyReviewStatus: UiCopyReviewStatus;
   readonly messages: UiMessageCatalog;
   readonly optionLabels: OptionLabelCatalog;
   readonly languageNames: LanguageNameCatalog;
@@ -109,6 +116,7 @@ export function defineUiLocaleCatalog(
       locale: "",
       version: "",
       direction: "",
+      copyReviewStatus: "",
       messages: "",
       optionLabels: "",
       languageNames: "",
@@ -126,6 +134,9 @@ export function defineUiLocaleCatalog(
   }
   if (candidate.direction !== "ltr" && candidate.direction !== "rtl") {
     throw new Error(`Invalid interface direction: ${candidate.locale}`);
+  }
+  if (!UI_COPY_REVIEW_STATUSES.includes(candidate.copyReviewStatus)) {
+    throw new Error(`Invalid interface copy review status: ${candidate.locale}`);
   }
   requireTextMap("UI message", UI_MESSAGES_EN, candidate.messages);
   requireTextMap("option label", OPTION_LABELS_EN, candidate.optionLabels);
@@ -169,8 +180,9 @@ export function defineUiLocaleCatalog(
 
 export const UI_EN_CATALOG = defineUiLocaleCatalog({
   locale: "en",
-  version: "1.0.0",
+  version: "1.1.0",
   direction: "ltr",
+  copyReviewStatus: "source-interface",
   messages: UI_MESSAGES_EN,
   optionLabels: OPTION_LABELS_EN,
   languageNames: LANGUAGE_NAMES_EN,
@@ -181,8 +193,9 @@ export const UI_EN_CATALOG = defineUiLocaleCatalog({
 
 export const UI_JA_CATALOG = defineUiLocaleCatalog({
   locale: "ja",
-  version: "1.0.0-development",
+  version: "1.0.0-preview.1",
   direction: "ltr",
+  copyReviewStatus: "public-unreviewed-preview",
   messages: UI_MESSAGES_JA,
   optionLabels: OPTION_LABELS_JA,
   languageNames: LANGUAGE_NAMES_JA,

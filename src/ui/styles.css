@@ -274,6 +274,24 @@ code {
   gap: var(--space-2);
 }
 
+.interface-copy-review {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  margin: 0;
+  padding-block-start: var(--space-1);
+  border-block-start: 1px solid var(--warm-rule);
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.interface-copy-review strong {
+  flex: 0 0 auto;
+  color: var(--ink);
+}
+
 .language-entry-action {
   display: grid;
   min-inline-size: 9.75rem;
@@ -1591,6 +1609,16 @@ code {
     padding-inline: calc(var(--space-2) - 1px);
   }
 
+  .interface-copy-review {
+    display: block;
+    padding-block-start: var(--space-2);
+  }
+
+  .interface-copy-review strong {
+    display: block;
+    margin-block-end: 0.125rem;
+  }
+
   .hero {
     padding-block: var(--space-3) var(--space-4);
   }
@@ -1748,17 +1776,13 @@ code {
     outline-offset: 2px;
   }
 
-  .language-entry-action[aria-pressed="true"] {
-    outline: 2px solid Highlight;
-    outline-offset: 2px;
-  }
-
   button:disabled {
     opacity: 1;
   }
 
   .language-rail,
   .language-entry,
+  .interface-copy-review,
   .language-entry-action,
   .settings-side,
   .home-start-card,

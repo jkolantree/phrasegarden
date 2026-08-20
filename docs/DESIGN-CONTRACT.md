@@ -34,7 +34,7 @@ The complete direction specifies later surfaces, but each implementation gate ex
 | Interpreter | Gate 3 item 4 |
 | Advanced controls | Gate 3 item 5 |
 | Save, Your recipes, library, import/export, fragments, clear data | Gate 4 |
-| English/Japanese language-entry vertical | Approved next-preview source package; development-only until Japanese review |
+| English/Japanese language-entry vertical | Preview 8 source package; Japanese may be public only with persistent unreviewed-interface disclosure |
 | Additional interface locales and full locale hardening | Gate 5 |
 
 Controls and navigation for a later gate are absent, not disabled or advertised.
@@ -61,6 +61,10 @@ Controls and navigation for a later gate are absent, not disabled or advertised.
   hidden to recover height.
 - Locale changes keep focus on the activated control and announce whether a
   fresh starting direction was applied or existing work was preserved.
+- While Japanese is active, the strip persistently names the Japanese
+  interface as a trial edition whose qualified-speaker review is incomplete.
+  It points to the adjacent English action as the recovery path. This named
+  note stays visually and semantically separate from direction support.
 - Header content remains usable at 400% zoom and wraps rather than truncates.
 
 ### Homepage
@@ -196,6 +200,8 @@ Japanese never inherits uppercase transformation, italics, or Latin tracking. Mi
   language review is not complete. Generic says that only general guidance is
   used and no guidance was written for this exact direction.
 - Evidence-qualified tiers supply their verified review date/evidence scope. The UI never fabricates a review date or treats Preview as review evidence.
+- Interface-copy review status is not a support tier. An unreviewed Japanese
+  interface neither promotes nor demotes the selected direction.
 - Home/target rails, tier colors, or decorative join marks never substitute for the text.
 
 ## Motion

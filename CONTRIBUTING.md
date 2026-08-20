@@ -34,6 +34,17 @@ qualification, and the future tier resolver are deferred. A language
 contribution may be discussed and tested, but it cannot acquire a higher tier
 until that separate governance work is approved and implemented.
 
+An interface-copy review status is separate from pair support. Japanese may be
+published as `public-unreviewed-preview` only with its visible disclosure; that
+status is not evidence of a human review and cannot promote a pair tier.
+
+For an interface-wording correction, preserve the exact locale, catalog
+version, message ID, and failing text; add a regression; change the smallest
+catalog entry; and advance the affected catalog version. Never rewrite already
+published bytes or relabel an unreviewed catalog as reviewed. PhraseGarden has
+no in-app report form or free-text submission path; do not add one as part of a
+wording correction.
+
 ## Failure-directed changes
 
 For a compiler, recipe, language, pair, interface, or accessibility failure:

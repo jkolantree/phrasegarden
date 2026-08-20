@@ -17,11 +17,15 @@ const projectStatePath = join(repository, "docs/PROJECT-STATE.md");
 const publicationManifestPath = join(repository, "docs/PUBLICATION-MANIFEST.md");
 const releaseNotesPath = join(repository, "docs/RELEASE-NOTES.md");
 const releaseWorkflowPath = join(repository, "docs/RELEASE-WORKFLOW.md");
-const preview7SourceContractPath = join(repository, "docs/work-packages/PREVIEW-7-SOURCE-IDENTITY.md");
+const preview8SourceContractPath = join(repository, "docs/work-packages/PREVIEW-8-SOURCE-IDENTITY.md");
 const publicationContractPath = join(repository, "docs/work-packages/PREVIEW-4-PUBLICATION.md");
 const preview7ClaimSources = [
   ["docs/evidence/releases/0.1.0-preview.7.md", join(repository, "docs/evidence/releases/0.1.0-preview.7.md")],
   ["docs/work-packages/PREVIEW-7-PUBLICATION.md", join(repository, "docs/work-packages/PREVIEW-7-PUBLICATION.md")],
+] as const;
+const preview8ClaimSources = [
+  ["docs/evidence/releases/0.1.0-preview.8.md", join(repository, "docs/evidence/releases/0.1.0-preview.8.md")],
+  ["docs/work-packages/PREVIEW-8-PUBLICATION.md", join(repository, "docs/work-packages/PREVIEW-8-PUBLICATION.md")],
 ] as const;
 const workspaces: string[] = [];
 const csp = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'";
@@ -93,7 +97,7 @@ describe("release filesystem audit", () => {
       ["docs/PUBLICATION-MANIFEST.md", publicationManifestPath],
       ["docs/RELEASE-NOTES.md", releaseNotesPath],
       ["docs/RELEASE-WORKFLOW.md", releaseWorkflowPath],
-      ["docs/work-packages/PREVIEW-7-SOURCE-IDENTITY.md", preview7SourceContractPath],
+      ["docs/work-packages/PREVIEW-8-SOURCE-IDENTITY.md", preview8SourceContractPath],
       ["docs/work-packages/PREVIEW-4-PUBLICATION.md", publicationContractPath],
     ] as const;
     const publicClaims = new Map(publicClaimSources.map(
@@ -114,10 +118,11 @@ describe("release filesystem audit", () => {
         stable: [
           "Earlier versioned releases and downloadable assets",
           "does not establish its containing Git checkpoint, a package, deployment, tag,\nor GitHub Release",
-          "## What Preview 7 includes",
-          "The Preview 7 interface and generated instruction surface are English-only.",
-          "Preview 7 cannot assign them",
-          "named language-support guidance on Home, Builder, and Review",
+          "## What Preview 8 includes",
+          "The generated instruction surface is English-only.",
+          "Preview 8 cannot assign them",
+          "prominent English/Japanese page-\nlanguage choice",
+          "explicitly shipped as an unreviewed Preview",
           "Exact Preview 3\nInterpreter regression hashes",
         ],
       },
@@ -127,6 +132,8 @@ describe("release filesystem audit", () => {
           "Checks run for this candidate",
           "candidate has not completed an independent screen-reader matrix",
           "local candidate because that surface",
+          "## Next-preview Japanese interface",
+          "The next-preview source includes a complete Japanese interface catalog",
         ],
         stable: [
           "Checks recorded for Preview 3",
@@ -138,6 +145,10 @@ describe("release filesystem audit", () => {
           "Preview 6 later\npassed its version-bound Pages qualification",
           "## Preview 7 source-candidate coverage",
           "not a packaged or\ndeployed Preview 7",
+          "## Preview 8 Japanese interface",
+          "The Preview 8 source includes a complete Japanese interface catalog",
+          "qualified-speaker review is incomplete",
+          "Japanese interface has not been reviewed by a qualified Japanese speaker",
         ],
       },
       {
@@ -152,9 +163,11 @@ describe("release filesystem audit", () => {
           "has not yet been packaged",
         ],
         stable: [
-          "This source tree defines a PhraseGarden `0.1.0-preview.7` candidate",
-          "Source presence does not establish a Preview 7 package, deployment,\ntag, or GitHub Release",
-          "not supported by the `0.1.0-preview.7` source candidate",
+          "This source tree defines a PhraseGarden `0.1.0-preview.8` candidate",
+          "Source\npresence does not establish a Preview 8 package, deployment,\ntag, or GitHub Release",
+          "not supported by the `0.1.0-preview.8` source candidate",
+          "The page interface is available in English and Japanese",
+          "generated instruction surface remains English-only",
           "The immutable Preview 5 package did not deploy",
           "Automated forced-colors emulation checks visible",
           "Preview 6's version-bound Pages qualification established the corrected\n  predecessor",
@@ -166,8 +179,8 @@ describe("release filesystem audit", () => {
         name: "docs/PRIVACY.md",
         returned: ["This candidate has no backend"],
         stable: [
-          "PhraseGarden `0.1.0-preview.7` source candidate has no backend",
-          "privacy behavior is unchanged from Preview 6",
+          "PhraseGarden `0.1.0-preview.8` source candidate has no backend",
+          "privacy behavior is unchanged from Preview 7",
         ],
       },
       {
@@ -179,14 +192,21 @@ describe("release filesystem audit", () => {
           "The proposed Preview 3 also adds",
           "The candidate is memory-only",
           "carries forward the reviewed one-way",
-        ],
-        stable: [
           "The `0.1.0-preview.7` source candidate contains",
-          "Source presence does not\nestablish a Preview 7 package, deployment, tag, or GitHub Release",
-          "one-way Interpreter for bundled language profiles",
+          "Source presence does not\nestablish a Preview 7 package",
           "Preview 7 retains identity-only profiles",
           "PhraseGarden `0.1.0-preview.7` is memory-only",
-          "named language-support guidance area",
+        ],
+        stable: [
+          "The `0.1.0-preview.8` source candidate contains",
+          "Source presence\ndoes not establish a Preview 8 package, deployment, tag, or GitHub Release",
+          "one-way Interpreter for bundled language profiles",
+          "Preview 8 retains identity-only profiles",
+          "PhraseGarden `0.1.0-preview.8` is memory-only",
+          "In Builder, see the language-support guidance",
+          "`public-unreviewed-preview` locale",
+          "Qualified-speaker review is not a\npublication prerequisite for that label",
+          "one reviewed English generated-instruction surface",
         ],
       },
       {
@@ -202,12 +222,14 @@ describe("release filesystem audit", () => {
           "push, tag, release, Pages, and CI-write state must be established from version-bound public evidence",
         ],
         stable: [
-          "PhraseGarden `0.1.0-preview.7` is the active local source candidate",
-          "Preview 6 remains the immutable deployed predecessor",
-          "`82CBC32E5606F827765983271B248CD7C4788DFE57AB703FD1B94A55432B9C4E`",
-          "This source-state record alone establishes no Preview 7 checkpoint",
-          "## Authority sequence",
-          "If no source receipt exists",
+          "PhraseGarden `0.1.0-preview.8` is the active release-source target",
+          "## Exact Preview 7 predecessor",
+          "`FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A`",
+          "complete English `source-interface` catalog",
+          "complete Japanese `public-unreviewed-preview` page catalog",
+          "Japanese catalog has no qualified-human review",
+          "generated portable\nprompt remains English LTR",
+          "## Next eligible actions",
         ],
       },
       {
@@ -227,11 +249,18 @@ describe("release filesystem audit", () => {
           "- Preview 3 public prerelease:",
           "- Preview 4 public prerelease:",
           "- Preview 5 has no tag or GitHub Release",
-          "- Preview 6 is the exact immutable Pages predecessor",
-          "- Preview 7 is a source candidate",
+          "- Preview 7 is the exact immutable local package predecessor",
+          "- Preview 8 is a source target",
           "- Preview 1 historical release:",
           "- `release/phrasegarden-0.1.0-preview.7-pages.zip`",
           "- `release/phrasegarden-0.1.0-preview.7-pages-manifest.json`",
+          "Future qualified `release/phrasegarden-0.1.0-preview.8-pages.zip`",
+          "Future qualified `release/phrasegarden-0.1.0-preview.8-pages-manifest.json`",
+          "## Preview 8 source and Pages boundary",
+          "Source: one exact source checkpoint `S8`",
+          "Package: one exact seven-path child `P8`",
+          "Preview 8 archive without rebuilding it",
+          "Japanese interface\nhas not completed qualified-human review",
           "## Preview 7 source and Pages boundary",
           "Source: one exact source checkpoint `S7`",
           "Package: one exact seven-path child `P7`",
@@ -255,8 +284,12 @@ describe("release filesystem audit", () => {
           "Preview 3 remains the byte-qualified public prerelease",
         ],
         stable: [
+          "## 0.1.0-preview.8 — start in English or Japanese",
+          "Status: source target; package, deployment, tag, GitHub Release, and public-byte",
+          "Japanese\n  catalog is Preview content without qualified-human review",
+          "generated portable prompt on the existing English authored surface",
+          "exact Preview 7 predecessor bindings",
           "## 0.1.0-preview.7 — clearer accessibility semantics and Node 24 release pins",
-          "Status: source candidate; package, deployment, tag, and GitHub Release status",
           "named language-support guidance",
           "official GitHub Actions commits to their Node 24-backed",
           "Status: prerelease record; publication status is version-bound",
@@ -286,26 +319,29 @@ describe("release filesystem audit", () => {
           "sole parent `S`",
         ],
         stable: [
-          "python -B scripts/preview7-package.py freeze-source --source-commit <S7>",
-          "python -B scripts/preview7-package.py verify-source --source-commit <S7>",
-          "artifacts/release/preview7-source-manifest.json",
-          "binds `S7`, its",
-          "declared source `S7`",
-          "sole parent `S7`",
-          "Preview 3 through Preview 6 adapters remain\navailable",
+          "python -B scripts/preview8-package.py freeze-source --source-commit <S8>",
+          "python -B scripts/preview8-package.py verify-source --source-commit <S8>",
+          "artifacts/release/preview8-source-manifest.json",
+          "binds `S8`, its",
+          "declared source `S8`",
+          "sole parent `S8`",
+          "Preview 3 through Preview 7 adapters remain\navailable",
+          "explicitly unreviewed Preview content",
           "deploys the exact\nchecked-in archive; it must not silently rebuild",
         ],
       },
       {
-        name: "docs/work-packages/PREVIEW-7-SOURCE-IDENTITY.md",
+        name: "docs/work-packages/PREVIEW-8-SOURCE-IDENTITY.md",
         returned: [],
         stable: [
           "Status: source contract; no package or public authority",
-          "exactly these 23 changed or new paths",
-          "Preview 6 remains the exact immutable Pages predecessor",
-          "separates Git, package, deployment, tag, and GitHub Release authority",
-          "exact source candidate\n→ exact S7 checkpoint",
-          "No step borrows authority from an earlier one",
+          "Version target: `0.1.0-preview.8`",
+          "changes exactly these 31 paths",
+          "Preview 7 ledger: 2,188 bytes",
+          "The English catalog is the `source-interface`",
+          "Only the Japanese catalog is `public-unreviewed-preview`",
+          "exact 31-path source delta → S8",
+          "separately authorized Pages action",
         ],
       },
       {
@@ -332,14 +368,16 @@ describe("release filesystem audit", () => {
     const combinedClaims = [
       ...publicClaims.values(),
       ...readExactClaimPair(preview7ClaimSources),
+      ...readExactClaimPair(preview8ClaimSources),
     ].join("\n");
     for (const prohibited of [
-      /Preview (?:5|6|7) (?:assigns|is) (?:Community|Reviewed|Flagship)\b/i,
+      /Preview (?:5|6|7|8) (?:assigns|is) (?:Community|Reviewed|Flagship)\b/i,
       /English↔Japanese (?:has completed|completed|passed) external linguistic review/i,
-      /Preview (?:5|6|7) (?:is|has been) WCAG conformant/i,
-      /Preview (?:5|6|7) (?:passed|completed) an independent screen-reader matrix/i,
-      /Preview 7 (?:is|has been) (?:published|deployed)\b/i,
-      /Current Pages (?:serves|runs) Preview 7/i,
+      /Japanese (?:interface|catalog) (?:has completed|completed|passed|received) (?:qualified[- ]human|qualified[- ]speaker|human) review/i,
+      /Preview (?:5|6|7|8) (?:is|has been) WCAG conformant/i,
+      /Preview (?:5|6|7|8) (?:passed|completed) an independent screen-reader matrix/i,
+      /Preview 8 (?:is|has been) (?:published|deployed)\b/i,
+      /Current Pages (?:serves|runs) Preview 8/i,
     ]) expect(combinedClaims).not.toMatch(prohibited);
   });
 
@@ -464,12 +502,12 @@ describe("Pages workflow policy", () => {
   const workflow = readFileSync(workflowPath, "utf8").replaceAll("\r\n", "\n");
   const commands = [...workflow.matchAll(/^\s+(?:-\s+)?run:\s*(?:>-\n((?: {10}.+\n?)+)|([^\n]+))/gm)]
     .map((match) => (match[2] ?? match[1]?.trim() ?? "").replace(/\n\s+/g, " "));
-  const p6Manifest = "release/phrasegarden-0.1.0-preview.6-pages-manifest.json";
-  const p6Archive = "release/phrasegarden-0.1.0-preview.6-pages.zip";
   const p7Manifest = "release/phrasegarden-0.1.0-preview.7-pages-manifest.json";
   const p7Archive = "release/phrasegarden-0.1.0-preview.7-pages.zip";
+  const p8Manifest = "release/phrasegarden-0.1.0-preview.8-pages-manifest.json";
+  const p8Archive = "release/phrasegarden-0.1.0-preview.8-pages.zip";
   const occurrences = (value: string): number => workflow.split(value).length - 1;
-  const workflowPolicyHash = "E07D598B9269397EE1A4C0CA0C7E5350F12C3EF286CAB9A909803A19D0A37FAC";
+  const workflowPolicyHash = "636354BE5FD69DF3C2C14F8E731FE4AB8B279EA1C7497BF71CD5A62322BB0E90";
   const packageDocument = JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
     version: string; scripts: Record<string, string>;
   };
@@ -508,9 +546,9 @@ describe("Pages workflow policy", () => {
     ["packaging identity bypass", (source) => source.replace(
       "          --require-packaging-commit", "          ")],
     ["changed active archive", (source) => source.replace(
-      `          --archive ${p7Archive}`, `          --archive ${p6Archive}`)],
+      `          --archive ${p8Archive}`, `          --archive ${p7Archive}`)],
     ["changed active manifest", (source) => source.replace(
-      `          --manifest ${p7Manifest}`, `          --manifest ${p6Manifest}`)],
+      `          --manifest ${p8Manifest}`, `          --manifest ${p7Manifest}`)],
     ["elevated verify permission", (source) => source.replace(
       "    permissions:\n      contents: read", "    permissions:\n      contents: read\n      issues: write")],
     ["added schedule", (source) => source.replace(
@@ -536,9 +574,9 @@ describe("Pages workflow policy", () => {
     })).toThrow();
   });
 
-  it("pins authority and the complete Preview 7 command chain", () => {
+  it("pins authority and the complete Preview 8 command chain", () => {
     exactWorkflow(workflow);
-    expect(packageDocument.version).toBe("0.1.0-preview.7");
+    expect(packageDocument.version).toBe("0.1.0-preview.8");
     exactPackageScripts(packageScripts);
     const uses = [...workflow.matchAll(/^\s+(?:-\s+)?uses:\s+([^\s#]+)/gm)].map((match) => match[1]);
     expect(uses).toEqual([
@@ -563,21 +601,21 @@ describe("Pages workflow policy", () => {
       "pnpm install --frozen-lockfile",
       "python3 -m unittest discover -s tests/release -p 'test_*.py'",
       "pnpm test", "pnpm typecheck",
-      `python3 scripts/preview7-verify-release-archive.py --archive ${p7Archive} --manifest ${p7Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
-      `node scripts/release-audit.mjs ${p7Manifest}`,
+      `python3 scripts/preview8-verify-release-archive.py --archive ${p8Archive} --manifest ${p8Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
+      `node scripts/release-audit.mjs ${p8Manifest}`,
       "pnpm exec playwright install chromium", "pnpm test:e2e:dist",
-      `node scripts/release-audit.mjs ${p7Manifest}`,
+      `node scripts/release-audit.mjs ${p8Manifest}`,
     ]);
     const extractionStep = workflow.split(/\n(?=      - )/).find((step) => step.includes("Extract the exact qualified Pages archive"));
     expect(extractionStep).toBe([
       "      - name: Extract the exact qualified Pages archive", "        run: >-",
-      "          python3 scripts/preview7-verify-release-archive.py",
-      `          --archive ${p7Archive}`, `          --manifest ${p7Manifest}`,
+      "          python3 scripts/preview8-verify-release-archive.py",
+      `          --archive ${p8Archive}`, `          --manifest ${p8Manifest}`,
       "          --checksums SHA256SUMS", "          --output dist",
       "          --require-packaging-commit",
     ].join("\n"));
     const active = commands.join("\n");
-    expect(active).not.toMatch(/preview\.[3456]|preview[56]-|scripts\/verify-release-archive\.py|scripts\/release_archive_verifier\.py|--(?:release|version|spec)\b/);
+    expect(active).not.toMatch(/preview\.[3-7]|preview[3-7]-|scripts\/verify-release-archive\.py|scripts\/release_archive_verifier\.py|--(?:release|version|spec)\b/);
     expect(active).not.toMatch(/pnpm (?:run )?build\b/);
     const extract = workflow.indexOf("--require-packaging-commit");
     const firstAudit = workflow.indexOf("node scripts/release-audit.mjs");
@@ -598,11 +636,11 @@ describe("Pages workflow policy", () => {
     expect(paths).toEqual([
       ".github/workflows/pages.yml", "SHA256SUMS", "index.html",
       "package.json", "pnpm-lock.yaml", "playwright.config.ts",
-      p6Manifest, p6Archive, p7Manifest, p7Archive, "scripts/**",
+      p7Manifest, p7Archive, p8Manifest, p8Archive, "scripts/**",
       "src/**", "tests/**", "tsconfig.json", "tsconfig.domain.json",
       "vite.config.ts", "vitest.config.ts",
     ]);
-    expect([occurrences(p6Manifest), occurrences(p6Archive)]).toEqual([1, 1]);
-    expect([occurrences(p7Manifest), occurrences(p7Archive)]).toEqual([4, 2]);
+    expect([occurrences(p7Manifest), occurrences(p7Archive)]).toEqual([1, 1]);
+    expect([occurrences(p8Manifest), occurrences(p8Archive)]).toEqual([4, 2]);
   });
 });

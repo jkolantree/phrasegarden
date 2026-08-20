@@ -103,7 +103,12 @@ a URL, or sent to the compiler.
 UI catalogs are immutable, versioned, exact-key bundles. English defines the
 closed message, option, public-language-name, warning, limitation, and summary
 identifier sets. Every exposed locale must match them exactly, preserve
-placeholder names, and validate at module initialization. There is no English
+placeholder names, carry one closed `copyReviewStatus`, and validate at module
+initialization. `source-interface` makes no human-review claim;
+`public-unreviewed-preview` requires a persistent plain-language disclosure and
+an English-switch recovery path. This presentation-only status never enters
+recipe configuration, compiler inputs, prompt provenance, sharing, pair-pack
+resolution, or support-tier derivation. There is no English
 fallback, generic humanization, runtime translation, `Intl` canonicalization,
 or dynamic locale fetch. Structured autonym markup retains its own `lang`,
 `dir`, and bidi isolation. Flattened localized summaries use the locale's
@@ -113,6 +118,12 @@ name, an isolated autonym, and `dir=auto`; that platform-control exception
 requires manual assistive-technology qualification. The document
 language/title/description follow the UI catalog; the generated-prompt surface
 and editor remain explicit English LTR content.
+
+When Japanese is active, its unreviewed-interface disclosure stays in the
+global language-entry strip on Home, Builder, and Review. It is a named note,
+not a support badge or compiler warning. The adjacent English locale action is
+the immediate recovery path and changes presentation without replacing any
+configuration, canonical prompt, or edited copy.
 
 The application retains the compiler's immutable canonical output separately from the editable textarea value. The first UI edit sets application state `artifactState: user-modified`; artifact provenance continues to identify the source compilation but the app removes any byte-equivalence claim and emits its own notice. The compiler never observes editing state. Regenerate is explicit and never silently overwrites edits.
 

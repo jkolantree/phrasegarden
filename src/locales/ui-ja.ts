@@ -6,8 +6,9 @@ import type {
   UiMessageCatalog,
 } from "./ui-en";
 
-// Development-only Japanese copy. Presence in the bundle is not evidence of
-// qualified-speaker review and does not change any directed-pair support tier.
+// Public unreviewed-preview Japanese copy. Presence in the bundle is not
+// evidence of qualified-speaker review and does not change any directed-pair
+// support tier.
 export const LIMITATION_MESSAGES_JA = Object.freeze({
   "L-PREVIEW-EXTERNAL-REVIEW":
     "この翻訳方向では、PhraseGardenに組み込まれたガイドを使います。独立した言語レビューは完了していません。",
@@ -151,6 +152,9 @@ export const UI_MESSAGES_JA = Object.freeze({
   "entry.pageHelp":
     "ページの表示だけを変更します。翻訳設定と指示文は変わりません。",
   "entry.current": "選択中",
+  "entry.copyReviewTitle": "日本語表示について",
+  "entry.copyReviewBody":
+    "日本語表示は試用版です。この画面の日本語は、資格を確認した日本語話者によるレビューがまだ完了していません。分かりにくい場合は、上の英語表示ボタンで英語に戻せます。",
   "entry.englishStartAria":
     "英語で始めます。英語から日本語への文章翻訳を選びます。",
   "entry.japaneseStartAria":
@@ -162,11 +166,11 @@ export const UI_MESSAGES_JA = Object.freeze({
   "entry.englishStartAnnouncement":
     "PhraseGardenを英語表示に変更しました。初期設定は英語から日本語への「文章を翻訳」です。作成される指示文は英語です。",
   "entry.japaneseStartAnnouncement":
-    "PhraseGardenを日本語表示に変更しました。初期設定は日本語から英語への「文章を翻訳」です。作成される指示文は英語です。",
+    "PhraseGardenを日本語表示に変更しました。初期設定は日本語から英語への「文章を翻訳」です。作成される指示文は英語です。日本語表示は試用版で、資格を確認した日本語話者によるレビューはまだ完了していません。",
   "entry.englishPageAnnouncement":
     "PhraseGardenを英語表示に変更しました。翻訳設定と指示文は変更していません。",
   "entry.japanesePageAnnouncement":
-    "PhraseGardenを日本語表示に変更しました。翻訳設定と指示文は変更していません。",
+    "PhraseGardenを日本語表示に変更しました。翻訳設定と指示文は変更していません。日本語表示は試用版で、資格を確認した日本語話者によるレビューはまだ完了していません。",
   "home.heroTitle": "AIで翻訳しても、意図をそのままに。",
   "home.heroCopy":
     "言語とやりたいことを選ぶと、PhraseGardenが別のAIチャットや言語ツールで繰り返し使える指示文を作ります。指示文をそのツールに貼り付けてから、翻訳したい言葉を送ってください。",

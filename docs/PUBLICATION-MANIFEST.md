@@ -1,7 +1,7 @@
 # Publication manifest
 
 This manifest defines the authorized public repository contents and source
-target for PhraseGarden `0.1.0-preview.7`. This source record does not establish
+target for PhraseGarden `0.1.0-preview.8`. This source record does not establish
 its containing checkpoint, a package, deployment, tag, or GitHub Release. Earlier
 repository, release, license, and Pages evidence remains immutable. Actual
 package, publication, and deployment status is established only by
@@ -17,10 +17,11 @@ version-bound release evidence and corresponding public state.
 - Preview 3 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.3>
 - Preview 4 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.4>
 - Preview 5 has no tag or GitHub Release
-- Preview 6 is the exact immutable Pages predecessor and has no tag or GitHub
-  Release
-- Preview 7 is a source candidate; its Pages-only plan has no tag or GitHub
-  Release
+- Preview 6 has no tag or GitHub Release
+- Preview 7 is the exact immutable local package predecessor and has no tag or
+  GitHub Release; current public bytes require fresh observation
+- Preview 8 is a source target. No tag, GitHub Release, deployment, or public
+  byte is established or authorized by this document
 - Preview 1 historical release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place
@@ -48,6 +49,8 @@ version-bound release evidence and corresponding public state.
 - `release/phrasegarden-0.1.0-preview.6-pages-manifest.json`
 - `release/phrasegarden-0.1.0-preview.7-pages.zip`
 - `release/phrasegarden-0.1.0-preview.7-pages-manifest.json`
+- Future qualified `release/phrasegarden-0.1.0-preview.8-pages.zip`
+- Future qualified `release/phrasegarden-0.1.0-preview.8-pages-manifest.json`
 - `samples/0.1.0-preview.1/**`
 - `scripts/**`
 - `src/**`
@@ -79,6 +82,39 @@ qualifies all release archives, manifests, and the published prompt
 samples. An archive is not by itself evidence of hosted release-download
 identity or UI-mediated download identity. Repository refs, release assets,
 and production responses require separate remote verification.
+
+## Preview 8 source and Pages boundary
+
+- Version: `0.1.0-preview.8`
+- Product parent: exact bilingual checkpoint
+  `f0583569aa2441fb6d34d4c40a6e3e0e0233d363`
+- Authority boundary: this source record alone establishes no `S8`, `P8`,
+  Preview 8 archive, deployment, tag, GitHub Release, or public byte
+- Source: one exact source checkpoint `S8` and its complete-tree source
+  manifest, established only by Git and source-qualification evidence
+- Package: one exact seven-path child `P8` with sole parent `S8`, established
+  only by Git and committed-package verification
+- Immutable predecessor checksum ledger: 2,188 bytes, SHA-256
+  `FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A`
+- Immutable predecessor Pages archive: 187,305 bytes, SHA-256
+  `715ED188561505D1531FA903EC85EE742A34AE0A6646C9E61190D0D79FFD9513`
+- Immutable predecessor manifest: 976 bytes, SHA-256
+  `87296B9F800D3821437F9C15EB461522D5D790CB07EF5EA540E60C896F2E46BA`
+- Planned Pages behavior: extract, verify, test, and deploy the exact checked-in
+  Preview 8 archive without rebuilding it
+- Pages target: <https://jkolantree.github.io/phrasegarden/>
+- Git tag and GitHub Release: separate external actions requiring exact later
+  authorization; neither is implied here
+
+Preview 8 contains an English `source-interface` with no human-review claim and
+a Japanese `public-unreviewed-preview` page interface. The Japanese interface
+has not completed qualified-human review, the generated portable prompt remains
+English, and no language direction is promoted beyond its compiler-derived
+Preview or Generic tier.
+
+The identity chain is exact source set → `S8` → one build → deterministic
+stage → independent review → same-byte promotion → exact `P8` child → Pages →
+public-byte comparison. No earlier link proves a later one.
 
 ## Preview 7 source and Pages boundary
 
