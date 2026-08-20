@@ -753,21 +753,26 @@ accessibility conformance, linguistic truth, or public identity.
 | `P9-PKG-04` | Containing `P9` has sole parent S9, exact seven paths, and passes the pinned verifier plus fresh extraction comparison. | completed before the exact Pages run; P9 is immutable |
 | `P9-PUB-01` | A separately authorized Pages run extracts without rebuilding, passes Linux Chromium/axe, deploys, and is followed by public-byte comparison. | returned: run `32416506948` extracted/audited, then finished 13/15; both failures were the same untouched-English Home bottom `823.75 > 800`; Japanese Linux unknown; upload/deploy skipped; post-run public comparison recorded exact P7 at that time; no tag or GitHub Release |
 
-### Preview 10 cross-platform Home recovery source target
+### Preview 10 cross-platform Home recovery and local package
 
-Source authority: immutable returned
-`P9=8c0b90bba230e7b83b507b42a928c76e3f80a156` and
-`PREVIEW-10-SOURCE-IDENTITY.md`. No `S10`, build, package, browser result,
-deployment, or public-byte state follows from this source contract. Preview 10
-changes only the causal narrow, short-screen CSS wrap and spacing budget,
-truthful status documents, and additive release identity/mechanics. The exact
-source topology is 20 paths; the later package topology is seven paths.
+Source: exact `S10=8638314b7e189adab6af5c957b4ae17ecbf4f2c8`, tree
+`89ca296708e5d2be8a98a3f8b26f7e7ca5a6ea2d`, sole parent immutable returned
+`P9=8c0b90bba230e7b83b507b42a928c76e3f80a156`, its 39,694-byte
+complete-tree manifest, the reviewed three-file distributable, and
+`PREVIEW-10-PUBLICATION.md`. Preview 10 changes only the causal narrow,
+short-screen CSS wrap and spacing budget, truthful status documents, and
+additive release identity/mechanics. Local qualification does not establish
+the exact seven-path content verdict, containing P10 commit, Linux workflow,
+deployment, current public bytes, tag, or GitHub Release.
 
 | ID | Deterministic or evidence owner | State / next boundary |
 |---|---|---|
-| `P10-SRC-01` | Exact 20-path S10 has sole parent P9 and a qualified complete-tree source manifest. | established only by exact S10 checkpoint, sole-parent proof, manifest, qualification, and independent review |
-| `P10-UX-01` | At 320 × 900, English and Japanese Home primary-action bottoms are each at most 800 px and affected actions remain at least 44 px high. | established separately by same-byte local and exact Linux evidence; no locale result may be claimed unless that state is reached and measured |
-| `P10-UX-02` | The CSS correction preserves all content, semantic/focus order, disclosure, scrolling, horizontal reflow, axe checks, and 400%-equivalent behavior. | established only by the named gates on exact S10 bytes |
-| `P10-BOUNDARY-01` | Application markup/copy, locale catalogs, prompt bytes, configuration, compiler, recipes, profiles, pair packs, tiers, persistence, privacy, runtime network behavior, dependencies, and historical artifacts remain unchanged. | enforced by the exact allowlist, protected-path scan, and independent review |
-| `P10-PKG-01` | One build, deterministic stage, independent review, same-byte promotion, and exact seven-path P10 child preserve the exact P9 ledger/archive/manifest prefix. | established only by one build, stage, review, promotion, and exact seven-path child; no source-stage package claim |
-| `P10-PUB-01` | A separately authorized Pages run extracts without rebuilding, passes all Linux journeys, deploys, and is followed by public-byte comparison. | external authorization and public evidence required; this source package authorizes no tag or GitHub Release |
+| `P10-SRC-01` | Exact 20-path S10 has sole parent P9 and a complete-tree source manifest binding 203 files and 3,216,413 bytes. | verified / manifest `AFF4182D…3C1A`; source fingerprint `9BA79DBD…15E9C`; independent PASS |
+| `P10-UX-01` | At 320 × 900, English and Japanese Home primary-action bottoms are each at most 800 px and affected actions remain at least 44 px high. | verified locally on exact dist / 15/15 Chromium/axe and 15/15 Edge/axe; Linux remains workflow-owned |
+| `P10-UX-02` | The CSS correction preserves all content, semantic/focus order, disclosure, scrolling, horizontal reflow, axe checks, and 400%-equivalent behavior. | same exact-dist browser runs plus 346/346 deterministic application tests |
+| `P10-BOUNDARY-01` | Application markup/copy, locale catalogs, prompt bytes, configuration, compiler, recipes, profiles, pair packs, tiers, persistence, privacy, runtime network behavior, dependencies, and historical artifacts remain unchanged. | exact 20-path reviews and protected-path/diff scans PASS |
+| `P10-PKG-01` | One build and canonical stage preserve the 2,660-byte P9 ledger and append only P10 ZIP then manifest. | JS `2C44D107…B621C4`; CSS `4C96B5E1…16190B`; HTML `5CE7FB56…E9CB6`; two stage PASSes |
+| `P10-PKG-02` | One same-byte promotion copies reviewed stage to final ZIP, manifest, and ledger. | ZIP `8797B5DC…32C3B`; manifest `02A05699…FFB3D`; ledger `47924CA5…1DE0`; direct equality |
+| `P10-PKG-03` | Exact seven-path package content receives independent review before checkpoint. | established only by an external exact-byte receipt |
+| `P10-PKG-04` | Containing P10 has sole parent S10, exact seven paths, and passes the pinned verifier plus fresh extraction comparison. | established only by Git and committed-verifier evidence after P10 exists |
+| `P10-PUB-01` | A separately authorized Pages run extracts without rebuilding, passes all Linux journeys, deploys, and is followed by public-byte comparison. | fresh external authorization and public evidence required; this package authorizes no tag or GitHub Release |

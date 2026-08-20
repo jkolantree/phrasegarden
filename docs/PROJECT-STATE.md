@@ -4,11 +4,27 @@ Updated: 2026-08-20
 
 ## Current layer
 
-PhraseGarden `0.1.0-preview.10` is the active source target. It is a new
-CSS-only recovery from immutable Preview 9 package commit
-`8c0b90bba230e7b83b507b42a928c76e3f80a156`. No `S10`, Preview 10 build,
+PhraseGarden `0.1.0-preview.10` now has an exact reviewed source checkpoint and
+an exact promoted local package content record. Source `S10` is
+`8638314b7e189adab6af5c957b4ae17ecbf4f2c8`, tree
+`89ca296708e5d2be8a98a3f8b26f7e7ca5a6ea2d`, with sole parent immutable
+Preview 9 package commit `8c0b90bba230e7b83b507b42a928c76e3f80a156`.
+Its complete-tree source manifest is 39,694 bytes, binds 203 `100644` files and
+3,216,413 payload bytes, and has SHA-256
+`AFF4182D02DC89B55247CB3990D3BD4643F0D37D3757905890BA1219396C3C1A`.
+
+The local package content is not by itself a containing `P10` Git identity,
+committed-package verification, workflow run, deployment, public-byte result,
+tag, or GitHub Release. Those outcomes require their own named evidence.
+
+The source-phase statement
+“PhraseGarden `0.1.0-preview.10` is the active source target” remains the
+historical description of that earlier boundary. Likewise:
+No `S10`, Preview 10 build,
 package, browser result, deployment, public-byte result, tag, or GitHub Release
-exists merely because this source contract exists.
+exists merely because the source contract exists. The exact Git and local
+qualification evidence above, rather than that contract alone, establishes the
+later local states.
 
 The product still provides a complete English `source-interface` catalog and a
 complete Japanese `public-unreviewed-preview` page catalog. Japanese is
@@ -22,18 +38,37 @@ region-unspecified.
 
 The exact source contract is
 `docs/work-packages/PREVIEW-10-SOURCE-IDENTITY.md`. Its closed 20-path topology
-contains these eleven public/status documents, one narrow-screen stylesheet,
+contains eleven public/status documents, one narrow-screen stylesheet,
 and eight additive release-mechanics paths. Product behavior changes only in
 the causal narrow, short-screen CSS wrap and spacing budget. Application
 markup, interface copy, locale catalogs, configuration, prompt bytes, compiler,
 recipes, profiles, pair packs, support tiers, persistence, privacy, runtime
 network behavior, dependencies, and historical artifacts remain unchanged.
 
-The existing 320 × 900 acceptance gate remains strict: each English and
-Japanese Home primary action must end no more than `800` px from the viewport
-top while actions remain at least 44 px high and all content, semantic/focus
-order, disclosure, reflow, and scrolling remain available. The exact Linux run
-must reach and measure both locales before either result can be claimed.
+One Node 24.19.0 / pnpm 11.9.0 build from exact S10 produced three files. The
+release audit passed before and after 15/15 local Chromium/axe and 15/15 local
+Edge/axe journeys on those same bytes. The unchanged 320 × 900 acceptance gate
+measured both English and Japanese Home states at no more than `800` px while
+actions remained at least 44 px high and content, semantic/focus order,
+disclosure, reflow, and scrolling remained available. The first Chromium
+launch was invalid because an obsolete local Vite process held port 4173; it
+ran no product journey, changed no bytes, and was excluded before the isolated
+passing run.
+
+The exact promoted files are:
+
+| Artifact | Bytes | SHA-256 |
+|---|---:|---|
+| Pages ZIP | 242,282 | `8797B5DCD7C14E40DEF582AD6E8AD5D76E859C4C008CE409F8A51A8951732C3B` |
+| Release manifest | 978 | `02A05699FD3111AB826DA0FE6C5F114DB9CE97C88AEE5BC601D84284AEBFFB3D` |
+| `SHA256SUMS` | 2,898 | `47924CA550AA612F2468C9944EB3740295AF93AB18EA62AB9143D1903C691DE0` |
+
+The ledger preserves the exact 2,660-byte Preview 9 prefix and appends only the
+Preview 10 ZIP row followed by its manifest row. Source review and both
+independent stage reviews returned zero open P1/P2/P3. Promotion copied the
+reviewed stage directly; all three final files are byte-equal to it. The exact
+seven-path packaging record is defined by
+`docs/work-packages/PREVIEW-10-PUBLICATION.md`.
 
 ## Immutable Preview 9 returned candidate
 
@@ -94,22 +129,20 @@ result also remains immutable.
 
 Follow the earliest unmet condition:
 
-1. If the exact 20-path source delta lacks a zero-finding independent read-only
-   review, bind and review those unchanged bytes.
-2. If the source is reviewed but no `S10` exists, checkpoint those exact paths
-   once with sole parent P9, create and verify its complete-tree manifest, and
-   run the declared source-qualification gates.
-3. If S10 is qualified but has no reviewed local package, build once, run the
-   full deterministic and same-dist local Chromium/axe and Edge/axe gates with
-   both 320 × 900 locale states measured, then stage, review, and promote the
-   unchanged bytes once.
-4. If the reviewed local package exists but no `P10` exists, independently
-   review the exact seven packaging paths, checkpoint them once with sole
-   parent S10, and run the committed-package verifier.
-5. If committed P10 verification passes, stop for exact remote/publication
-   authorization. An authorized no-build Pages run must pass both Linux locale
-   states before upload or deployment, then any deployed public bytes must be
-   compared. This package authorizes no tag or GitHub Release.
+1. If these exact seven packaging paths lack an external zero-finding
+   read-only review, bind and review their unchanged bytes.
+2. If that review passes and the containing `P10` Git commit does not yet
+   establish them, checkpoint exactly the seven paths once with sole parent
+   S10; do not edit the reviewed content to record the review.
+3. If P10 exists but committed-package verification is not yet established,
+   run the pinned Preview 10 verifier into a fresh ignored extraction and prove
+   extraction, ZIP, manifest, and qualified `dist` equality.
+4. If local P10 verification passes, stop for fresh exact remote/push/Pages
+   authorization. Only then preflight the remote and public baseline, push the
+   exact S10→P10 chain, monitor the single automatic no-build Pages run, and
+   compare any deployed public HTML/CSS/JavaScript bytes.
+
+This package authorizes no tag or GitHub Release.
 
 Stop on a missing or extra path, changed predecessor or historical byte,
 hidden/clipped/reordered content, an action below 44 px, a Home primary-action
