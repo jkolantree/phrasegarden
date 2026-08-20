@@ -19,6 +19,7 @@ const releaseNotesPath = join(repository, "docs/RELEASE-NOTES.md");
 const releaseWorkflowPath = join(repository, "docs/RELEASE-WORKFLOW.md");
 const preview8SourceContractPath = join(repository, "docs/work-packages/PREVIEW-8-SOURCE-IDENTITY.md");
 const preview9SourceContractPath = join(repository, "docs/work-packages/PREVIEW-9-SOURCE-IDENTITY.md");
+const preview10SourceContractPath = join(repository, "docs/work-packages/PREVIEW-10-SOURCE-IDENTITY.md");
 const publicationContractPath = join(repository, "docs/work-packages/PREVIEW-4-PUBLICATION.md");
 const preview7ClaimSources = [
   ["docs/evidence/releases/0.1.0-preview.7.md", join(repository, "docs/evidence/releases/0.1.0-preview.7.md")],
@@ -31,6 +32,10 @@ const preview8ClaimSources = [
 const preview9ClaimSources = [
   ["docs/evidence/releases/0.1.0-preview.9.md", join(repository, "docs/evidence/releases/0.1.0-preview.9.md")],
   ["docs/work-packages/PREVIEW-9-PUBLICATION.md", join(repository, "docs/work-packages/PREVIEW-9-PUBLICATION.md")],
+] as const;
+const preview10ClaimSources = [
+  ["docs/evidence/releases/0.1.0-preview.10.md", join(repository, "docs/evidence/releases/0.1.0-preview.10.md")],
+  ["docs/work-packages/PREVIEW-10-PUBLICATION.md", join(repository, "docs/work-packages/PREVIEW-10-PUBLICATION.md")],
 ] as const;
 const workspaces: string[] = [];
 const csp = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none'; worker-src 'none'";
@@ -104,6 +109,7 @@ describe("release filesystem audit", () => {
       ["docs/RELEASE-WORKFLOW.md", releaseWorkflowPath],
       ["docs/work-packages/PREVIEW-8-SOURCE-IDENTITY.md", preview8SourceContractPath],
       ["docs/work-packages/PREVIEW-9-SOURCE-IDENTITY.md", preview9SourceContractPath],
+      ["docs/work-packages/PREVIEW-10-SOURCE-IDENTITY.md", preview10SourceContractPath],
       ["docs/work-packages/PREVIEW-4-PUBLICATION.md", publicationContractPath],
     ] as const;
     const publicClaims = new Map(publicClaimSources.map(
@@ -122,16 +128,22 @@ describe("release filesystem audit", () => {
           "The `0.1.0-preview.3` source adds",
           "## What Preview 8 includes",
           "Preview 8 cannot assign them",
+          "alone establishes no `S9`, package, deployment, tag, or GitHub Release",
+          "## What Preview 9 preserves and corrects",
         ],
         stable: [
           "Earlier versioned releases and downloadable assets",
-          "alone establishes no `S9`, package, deployment, tag, or GitHub Release",
-          "## What Preview 9 preserves and corrects",
+          "`32416506948` also returned 13/15 Linux Chromium journeys",
+          "same untouched-English Home action at `823.75` px",
+          "Japanese Linux state was not reached",
+          "not a refreshed claim about the current\nhosted page",
+          "alone establishes no `S10`, package, deployment, tag, or GitHub Release",
+          "## What Preview 10 preserves and corrects",
           "The generated instruction surface is English-only.",
-          "Preview 9 cannot assign them",
+          "Preview 10 cannot assign them",
           "prominent English/Japanese page-language choice",
           "explicitly labeled as an unreviewed Preview",
-          "primary-action bottom at\n`1024.828125` px in a 320 × 900 viewport",
+          "causal narrow, short-screen CSS wrap and spacing budget",
           "bottom no more than\n  800 px from the viewport top",
           "Exact Preview 3\nInterpreter regression hashes",
         ],
@@ -145,6 +157,7 @@ describe("release filesystem audit", () => {
           "## Next-preview Japanese interface",
           "The next-preview source includes a complete Japanese interface catalog",
           "not a packaged or\ndeployed Preview 7",
+          "## Preview 9 narrow Home recovery target",
         ],
         stable: [
           "Checks recorded for Preview 3",
@@ -159,8 +172,12 @@ describe("release filesystem audit", () => {
           "## Preview 8 Japanese interface",
           "The Preview 8 source includes a complete Japanese interface catalog",
           "qualified-speaker review is incomplete",
-          "## Preview 9 narrow Home recovery target",
-          "must end no more than `800` px from the viewport top",
+          "## Preview 9 returned Pages run",
+          "exact Actions run `32416506948`",
+          "same untouched-English Home primary-action bottom at `823.75` px",
+          "Japanese Linux state was not reached",
+          "## Preview 10 narrow Home recovery target",
+          "must each\nend no more than `800` px from the viewport top",
           "Those are acceptance targets, not results",
           "Japanese interface has not been reviewed by a qualified Japanese speaker",
         ],
@@ -175,11 +192,13 @@ describe("release filesystem audit", () => {
           "not supported identities in this candidate",
           "The current local candidate has",
           "has not yet been packaged",
+          "The PhraseGarden `0.1.0-preview.9` source target carries forward Preview 8's",
+          "Preview 9 must qualify its own built bytes",
         ],
         stable: [
-          "The PhraseGarden `0.1.0-preview.9` source target carries forward Preview 8's",
-          "This document establishes no exact\n`S9`, package, deployment, tag, or GitHub Release",
-          "not supported by the `0.1.0-preview.9` source target",
+          "The PhraseGarden `0.1.0-preview.10` source target carries forward Preview 9's",
+          "establishes no exact `S10`, package, deployment, tag, or GitHub Release",
+          "not supported by the `0.1.0-preview.10` source target",
           "The page interface is available in English and Japanese",
           "generated instruction surface remains English-only",
           "The immutable Preview 5 package did not deploy",
@@ -187,18 +206,26 @@ describe("release filesystem audit", () => {
           "Preview 6's version-bound Pages qualification established the corrected\n  predecessor",
           "The immutable Preview 8 package also did not deploy",
           "post-run public\n  bytes remained exact Preview 7",
-          "Preview 9 must qualify its own built bytes",
+          "exact Actions run `32416506948`",
+          "untouched-English Home primary-action bottom at `823.75` px",
+          "Japanese Linux state was not\n  reached",
+          "Preview 10 qualification requires its own built bytes",
           "code review does not itself establish package, publication, deployment, or",
           "version-bound release\n  evidence for those separate claims",
         ],
       },
       {
         name: "docs/PRIVACY.md",
-        returned: ["This candidate has no backend"],
-        stable: [
+        returned: [
+          "This candidate has no backend",
           "PhraseGarden `0.1.0-preview.9` source target has no backend",
-          "narrow-screen recovery changes no privacy behavior from Preview 8",
-          "Preview 8 Pages run uploaded and deployed nothing",
+        ],
+        stable: [
+          "PhraseGarden `0.1.0-preview.10` source target has no backend",
+          "contract does not establish an exact `S10`, package, or deployment",
+          "CSS-only narrow-screen recovery changes no privacy behavior from Preview\n9",
+          "failed Preview 8 and Preview 9 Pages runs uploaded and deployed nothing",
+          "not a refreshed claim about current hosted bytes",
         ],
       },
       {
@@ -216,13 +243,16 @@ describe("release filesystem audit", () => {
           "PhraseGarden `0.1.0-preview.7` is memory-only",
           "The `0.1.0-preview.8` source candidate contains",
           "PhraseGarden `0.1.0-preview.8` is memory-only",
-        ],
-        stable: [
           "The `0.1.0-preview.9` source target contains",
           "This contract establishes no exact `S9`, package, deployment, tag",
+        ],
+        stable: [
+          "The `0.1.0-preview.10` source target contains",
+          "This contract\nestablishes no exact `S10`, package, deployment, tag",
           "one-way Interpreter for bundled language profiles",
-          "Preview 9 retains identity-only profiles",
-          "PhraseGarden `0.1.0-preview.9` is memory-only",
+          "Preview 10 retains identity-only profiles",
+          "PhraseGarden `0.1.0-preview.10` is memory-only",
+          "causal narrow, short-screen\nCSS wrap and spacing budget",
           "In Builder, see the language-support guidance",
           "`public-unreviewed-preview` locale",
           "Qualified-speaker review is not a\npublication prerequisite for that label",
@@ -242,20 +272,24 @@ describe("release filesystem audit", () => {
           "push, tag, release, Pages, and CI-write state must be established from version-bound public evidence",
           "PhraseGarden `0.1.0-preview.8` is the active release-source target",
           "## Exact Preview 7 predecessor",
-        ],
-        stable: [
           "PhraseGarden `0.1.0-preview.9` is the active recovery-source target",
           "This source record does not itself establish\n`S9` or `P9`",
+        ],
+        stable: [
+          "PhraseGarden `0.1.0-preview.10` is the active source target",
+          "No `S10`, Preview 10 build,\npackage, browser result, deployment",
           "## Immutable Preview 8 returned candidate",
-          "## Exact public Preview 7 predecessor",
-          "`FE11EEA9DC696BC04FA63E7D9E56D95077EAAFBFB3B881C83EAB8EC029DA241A`",
-          "`B16FEDD0476E3505E16CC156451EC23849CF0840792250402A6E1E9EE0EC663D`",
+          "## Immutable Preview 9 returned candidate",
+          "comparison recorded exact Preview 7 bytes at that time",
+          "`80ECF74FA5677087169D8C696D2C541386BD9FF9B3C8DE4ACCA59A7FAC6F43CC`",
+          "Actions run `32416506948` extracted and audited",
+          "same untouched-English Home primary-action bottom at `823.75` px",
+          "Japanese Linux state was\nnot reached",
           "complete English `source-interface` catalog",
           "complete Japanese `public-unreviewed-preview` page catalog",
-          "Japanese catalog has no qualified-human review",
-          "generated portable\nprompt remains English LTR",
-          "## Preview 9 bounded correction",
-          "closed 21-path delta",
+          "generated portable prompt remains\nEnglish LTR",
+          "## Preview 10 bounded correction",
+          "closed 20-path topology",
           "## Next eligible actions",
         ],
       },
@@ -275,6 +309,10 @@ describe("release filesystem audit", () => {
           "Future qualified `release/phrasegarden-0.1.0-preview.8-pages-manifest.json`",
           "Source: one exact source checkpoint `S8`",
           "Package: one exact seven-path child `P8`",
+          "- Preview 7 is the exact public predecessor",
+          "- Preview 9 is a source contract",
+          "`release/phrasegarden-0.1.0-preview.9-pages.zip`, if later qualified",
+          "`release/phrasegarden-0.1.0-preview.9-pages-manifest.json`, if later qualified",
         ],
         stable: [
           "Actual package, publication, and deployment status is established only by\nversion-bound release evidence",
@@ -282,20 +320,27 @@ describe("release filesystem audit", () => {
           "- Preview 3 public prerelease:",
           "- Preview 4 public prerelease:",
           "- Preview 5 has no tag or GitHub Release",
-          "- Preview 7 is the exact public predecessor",
+          "- Preview 7 was the exact public state recorded after the returned Preview 8",
           "- Preview 8 is an exact package commit whose Pages run returned before upload",
-          "- Preview 9 is a source contract",
+          "- Preview 9 is an exact package commit whose Pages run returned before upload",
+          "- Preview 10 is a source contract",
           "- Preview 1 historical release:",
           "- `release/phrasegarden-0.1.0-preview.7-pages.zip`",
           "- `release/phrasegarden-0.1.0-preview.7-pages-manifest.json`",
           "- `release/phrasegarden-0.1.0-preview.8-pages.zip`",
           "- `release/phrasegarden-0.1.0-preview.8-pages-manifest.json`",
-          "`release/phrasegarden-0.1.0-preview.9-pages.zip`, if later qualified",
-          "`release/phrasegarden-0.1.0-preview.9-pages-manifest.json`, if later qualified",
+          "- `release/phrasegarden-0.1.0-preview.9-pages.zip`",
+          "- `release/phrasegarden-0.1.0-preview.9-pages-manifest.json`",
+          "`release/phrasegarden-0.1.0-preview.10-pages.zip`, if later qualified",
+          "`release/phrasegarden-0.1.0-preview.10-pages-manifest.json`, if later qualified",
+          "## Preview 10 source and Pages boundary",
+          "one exact 20-path source delta",
+          "one later exact seven-path child `P10`",
+          "Preview 10 archive without rebuilding it",
           "## Preview 9 source and Pages boundary",
-          "one exact 21-path source delta",
-          "one later exact seven-path child `P9`",
-          "Preview 9 archive without rebuilding it",
+          "Actions run `32416506948` extracted and audited the archive",
+          "same untouched-English Home primary action at `823.75` px",
+          "Japanese Linux state was not reached",
           "## Preview 8 source and Pages boundary",
           "Preview 8 archive\n  without rebuilding it",
           "returned 13/15 Linux Chromium journeys",
@@ -321,13 +366,19 @@ describe("release filesystem audit", () => {
           "claims remain pending until",
           "captures a current 320 px",
           "Preview 3 remains the byte-qualified public prerelease",
+          "Status: source recovery target; exact source, package, deployment, public-byte",
+          "It establishes no `S9`, build, package, browser result",
         ],
         stable: [
-          "## 0.1.0-preview.9 — restore mobile Home headroom",
-          "Status: source recovery target; exact source, package, deployment, public-byte",
-          "targets an English and Japanese Home primary-action bottom of no more than",
-          "Preview 9 is a separately versioned recovery, not a retry or",
-          "It establishes no `S9`, build, package, browser result",
+          "## 0.1.0-preview.10 — make mobile Home headroom cross-platform",
+          "Status: source recovery contract; exact source, package, deployment, public-byte",
+          "same untouched-English Home primary-action bottom at\n`823.75` px",
+          "Japanese\nLinux state was not reached",
+          "It establishes no `S10`, build, package, browser result",
+          "## 0.1.0-preview.9 — returned mobile Home recovery",
+          "Status: immutable package candidate; Linux Chromium check failed and upload and",
+          "Local same-dist Chromium and Edge journeys passed, but exact Actions run",
+          "Japanese Linux\ngeometry is unknown",
           "## 0.1.0-preview.8 — start in English or Japanese",
           "Status: immutable package candidate; Linux Chromium check failed and upload and",
           "Japanese\n  catalog is Preview content without qualified-human review",
@@ -361,19 +412,26 @@ describe("release filesystem audit", () => {
           "binds `S`, its",
           "declared source `S`",
           "sole parent `S`",
-        ],
-        stable: [
           "python -B scripts/preview9-package.py freeze-source --source-commit <S9>",
           "python -B scripts/preview9-package.py verify-source --source-commit <S9>",
           "artifacts/release/preview9-source-manifest.json",
-          "binds `S9`, its",
-          "declared source `S9`",
-          "sole parent `S9`",
-          "Preview 3 through Preview 8 adapters remain\navailable",
+        ],
+        stable: [
+          "python -B scripts/preview10-package.py freeze-source --source-commit <S10>",
+          "python -B scripts/preview10-package.py verify-source --source-commit <S10>",
+          "artifacts/release/preview10-source-manifest.json",
+          "binds `S10`, its",
+          "declared source `S10`",
+          "sole parent `S10`",
+          "Preview 3 through Preview 9 adapters remain\navailable",
           "The source-manifest commands do not establish commit ancestry",
           "the Pages workflow repeats that\nfail-closed check",
           "explicitly unreviewed Preview content",
           "deploys the exact\nchecked-in archive; it must not silently rebuild",
+          "Preview 9 is also an immutable returned cycle",
+          "`32416506948`, which extracted and audited the archive before returning 13/15",
+          "Japanese Linux state was not reached",
+          "not a refreshed current-state claim",
         ],
       },
       {
@@ -411,6 +469,30 @@ describe("release filesystem audit", () => {
         ],
       },
       {
+        name: "docs/work-packages/PREVIEW-10-SOURCE-IDENTITY.md",
+        returned: [],
+        stable: [
+          "Status: source contract; no package or public authority",
+          "Version target: `0.1.0-preview.10`",
+          "changes exactly these 20 paths",
+          "Preview 9 ledger: 2,660 bytes",
+          "Preview 9 Actions run `32416506948`",
+          "same untouched-English Home primary-action bottom at `823.75` px",
+          "Japanese Linux state\n  was not reached",
+          "not a refreshed claim about current hosted bytes",
+          "existing browser\nregression remains unchanged",
+          "`P10-UX-01`",
+          "`P10-BOUNDARY-02`",
+          "`P10-RELEASE-01`",
+          "exact 20-path source delta → S10 with sole parent exact P9",
+          "exact seven-path P10 child",
+          "authorizes no push, Pages",
+          "source-manifest commands bind `S10` as exact `HEAD`",
+          "they do not establish parent lineage",
+          "fail-closed Pages gate must separately prove that `S10` has the sole parent",
+        ],
+      },
+      {
         name: "docs/work-packages/PREVIEW-4-PUBLICATION.md",
         returned: [
           "Preview 3 remains the byte-qualified public prerelease",
@@ -436,15 +518,16 @@ describe("release filesystem audit", () => {
       ...readExactClaimPair(preview7ClaimSources),
       ...readExactClaimPair(preview8ClaimSources),
       ...readExactClaimPair(preview9ClaimSources),
+      ...readExactClaimPair(preview10ClaimSources),
     ].join("\n");
     for (const prohibited of [
-      /Preview (?:5|6|7|8|9) (?:assigns|is) (?:Community|Reviewed|Flagship)\b/i,
+      /Preview (?:5|6|7|8|9|10) (?:assigns|is) (?:Community|Reviewed|Flagship)\b/i,
       /English↔Japanese (?:has completed|completed|passed) external linguistic review/i,
       /Japanese (?:interface|catalog) (?:has completed|completed|passed|received) (?:qualified[- ]human|qualified[- ]speaker|human) review/i,
-      /Preview (?:5|6|7|8|9) (?:is|has been) WCAG conformant/i,
-      /Preview (?:5|6|7|8|9) (?:passed|completed) an independent screen-reader matrix/i,
-      /Preview (?:8|9) (?:is|has been) (?:published|deployed)\b/i,
-      /Current Pages (?:serves|runs) Preview (?:8|9)/i,
+      /Preview (?:5|6|7|8|9|10) (?:is|has been) WCAG conformant/i,
+      /Preview (?:5|6|7|8|9|10) (?:passed|completed) an independent screen-reader matrix/i,
+      /Preview (?:8|9|10) (?:is|has been) (?:published|deployed)\b/i,
+      /Current Pages (?:serves|runs) Preview (?:8|9|10)/i,
     ]) expect(combinedClaims).not.toMatch(prohibited);
   });
 
@@ -569,14 +652,14 @@ describe("Pages workflow policy", () => {
   const workflow = readFileSync(workflowPath, "utf8").replaceAll("\r\n", "\n");
   const commands = [...workflow.matchAll(/^\s+(?:-\s+)?run:\s*(?:>-\n((?: {10}.+\n?)+)|([^\n]+))/gm)]
     .map((match) => (match[2] ?? match[1]?.trim() ?? "").replace(/\n\s+/g, " "));
-  const p8Manifest = "release/phrasegarden-0.1.0-preview.8-pages-manifest.json";
-  const p8Archive = "release/phrasegarden-0.1.0-preview.8-pages.zip";
   const p9Manifest = "release/phrasegarden-0.1.0-preview.9-pages-manifest.json";
   const p9Archive = "release/phrasegarden-0.1.0-preview.9-pages.zip";
-  const p8PackageCommit = "721c356ca4019ad232c90a5334a5de76d0feaf66";
-  const ancestryCommand = `test "$(git rev-list --parents -n 1 HEAD)" = "$(git rev-parse HEAD) $(git rev-parse HEAD^)" && test "$(git rev-list --parents -n 1 HEAD^)" = "$(git rev-parse HEAD^) ${p8PackageCommit}"`;
+  const p10Manifest = "release/phrasegarden-0.1.0-preview.10-pages-manifest.json";
+  const p10Archive = "release/phrasegarden-0.1.0-preview.10-pages.zip";
+  const p9PackageCommit = "8c0b90bba230e7b83b507b42a928c76e3f80a156";
+  const ancestryCommand = `test "$(git rev-list --parents -n 1 HEAD)" = "$(git rev-parse HEAD) $(git rev-parse HEAD^)" && test "$(git rev-list --parents -n 1 HEAD^)" = "$(git rev-parse HEAD^) ${p9PackageCommit}"`;
   const occurrences = (value: string): number => workflow.split(value).length - 1;
-  const workflowPolicyHash = "BA147E4EE949B6436CC0F160BED856A1C08DFA71064FB21C48B3B8A4D9E98904";
+  const workflowPolicyHash = "684F7B44A8A9D0D70C72FB216714514FA350F4783B38B4D1F9CE7BC5D60629F1";
   const packageDocument = JSON.parse(readFileSync(join(repository, "package.json"), "utf8")) as {
     version: string; scripts: Record<string, string>;
   };
@@ -613,15 +696,15 @@ describe("Pages workflow policy", () => {
     ["package merge ancestry bypass", (source) => source.replace(
       "          test \"$(git rev-list --parents -n 1 HEAD)\"\n          = \"$(git rev-parse HEAD) $(git rev-parse HEAD^)\"",
       "          test \"$(git rev-parse HEAD^)\"\n          = \"$(git rev-parse HEAD^)\"")],
-    ["wrong source parent", (source) => source.replace(p8PackageCommit, "0".repeat(40))],
+    ["wrong source parent", (source) => source.replace(p9PackageCommit, "0".repeat(40))],
     ["source rebuild", (source) => source.replace(
       "      - run: pnpm typecheck", "      - run: pnpm typecheck\n      - run: pnpm build")],
     ["packaging identity bypass", (source) => source.replace(
       "          --require-packaging-commit", "          ")],
     ["changed active archive", (source) => source.replace(
-      `          --archive ${p9Archive}`, `          --archive ${p8Archive}`)],
+      `          --archive ${p10Archive}`, `          --archive ${p9Archive}`)],
     ["changed active manifest", (source) => source.replace(
-      `          --manifest ${p9Manifest}`, `          --manifest ${p8Manifest}`)],
+      `          --manifest ${p10Manifest}`, `          --manifest ${p9Manifest}`)],
     ["elevated verify permission", (source) => source.replace(
       "    permissions:\n      contents: read", "    permissions:\n      contents: read\n      issues: write")],
     ["added schedule", (source) => source.replace(
@@ -647,9 +730,9 @@ describe("Pages workflow policy", () => {
     })).toThrow();
   });
 
-  it("pins authority and the complete Preview 9 command chain", () => {
+  it("pins authority and the complete Preview 10 command chain", () => {
     exactWorkflow(workflow);
-    expect(packageDocument.version).toBe("0.1.0-preview.9");
+    expect(packageDocument.version).toBe("0.1.0-preview.10");
     exactPackageScripts(packageScripts);
     const uses = [...workflow.matchAll(/^\s+(?:-\s+)?uses:\s+([^\s#]+)/gm)].map((match) => match[1]);
     expect(uses).toEqual([
@@ -675,21 +758,21 @@ describe("Pages workflow policy", () => {
       "pnpm install --frozen-lockfile",
       "python3 -m unittest discover -s tests/release -p 'test_*.py'",
       "pnpm test", "pnpm typecheck",
-      `python3 scripts/preview9-verify-release-archive.py --archive ${p9Archive} --manifest ${p9Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
-      `node scripts/release-audit.mjs ${p9Manifest}`,
+      `python3 scripts/preview10-verify-release-archive.py --archive ${p10Archive} --manifest ${p10Manifest} --checksums SHA256SUMS --output dist --require-packaging-commit`,
+      `node scripts/release-audit.mjs ${p10Manifest}`,
       "pnpm exec playwright install chromium", "pnpm test:e2e:dist",
-      `node scripts/release-audit.mjs ${p9Manifest}`,
+      `node scripts/release-audit.mjs ${p10Manifest}`,
     ]);
     const extractionStep = workflow.split(/\n(?=      - )/).find((step) => step.includes("Extract the exact qualified Pages archive"));
     expect(extractionStep).toBe([
       "      - name: Extract the exact qualified Pages archive", "        run: >-",
-      "          python3 scripts/preview9-verify-release-archive.py",
-      `          --archive ${p9Archive}`, `          --manifest ${p9Manifest}`,
+      "          python3 scripts/preview10-verify-release-archive.py",
+      `          --archive ${p10Archive}`, `          --manifest ${p10Manifest}`,
       "          --checksums SHA256SUMS", "          --output dist",
       "          --require-packaging-commit",
     ].join("\n"));
     const active = commands.join("\n");
-    expect(active).not.toMatch(/preview\.[3-8]|preview[3-8]-|scripts\/verify-release-archive\.py|scripts\/release_archive_verifier\.py|--(?:release|version|spec)\b/);
+    expect(active).not.toMatch(/preview\.(?:[3-9])|preview(?:[3-9])-|scripts\/verify-release-archive\.py|scripts\/release_archive_verifier\.py|--(?:release|version|spec)\b/);
     expect(active).not.toMatch(/pnpm (?:run )?build\b/);
     const extract = workflow.indexOf("--require-packaging-commit");
     const firstAudit = workflow.indexOf("node scripts/release-audit.mjs");
@@ -702,12 +785,12 @@ describe("Pages workflow policy", () => {
     expect(workflow).toContain("Install exact Playwright Chromium without OS package refresh\n        timeout-minutes: 10\n        run: pnpm exec playwright install chromium");
     expect(workflow).not.toContain("playwright install --with-deps");
     const checkout = workflow.indexOf("actions/checkout@");
-    const ancestry = workflow.indexOf("Bind exact Preview 9 source and package ancestry");
+    const ancestry = workflow.indexOf("Bind exact Preview 10 source and package ancestry");
     const dependencySetup = workflow.indexOf("pnpm/action-setup@");
     expect([checkout, ancestry, dependencySetup].every((index) => index >= 0)).toBe(true);
     expect(checkout).toBeLessThan(ancestry);
     expect(ancestry).toBeLessThan(dependencySetup);
-    expect(occurrences(p8PackageCommit)).toBe(1);
+    expect(occurrences(p9PackageCommit)).toBe(1);
     expect(workflow).toContain("needs: verify");
     expect(workflow.match(/\n\s+path: dist\n/g)).toHaveLength(1);
   });
@@ -717,11 +800,11 @@ describe("Pages workflow policy", () => {
     expect(paths).toEqual([
       ".github/workflows/pages.yml", "SHA256SUMS", "index.html",
       "package.json", "pnpm-lock.yaml", "playwright.config.ts",
-      p8Manifest, p8Archive, p9Manifest, p9Archive, "scripts/**",
+      p9Manifest, p9Archive, p10Manifest, p10Archive, "scripts/**",
       "src/**", "tests/**", "tsconfig.json", "tsconfig.domain.json",
       "vite.config.ts", "vitest.config.ts",
     ]);
-    expect([occurrences(p8Manifest), occurrences(p8Archive)]).toEqual([1, 1]);
-    expect([occurrences(p9Manifest), occurrences(p9Archive)]).toEqual([4, 2]);
+    expect([occurrences(p9Manifest), occurrences(p9Archive)]).toEqual([1, 1]);
+    expect([occurrences(p10Manifest), occurrences(p10Archive)]).toEqual([4, 2]);
   });
 });

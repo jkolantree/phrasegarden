@@ -84,19 +84,30 @@ skipped, and the post-run public-byte observation remained exact Preview 7.
 This negative result is immutable Preview 8 evidence; local Edge results and
 axe results do not override it.
 
-## Preview 9 narrow Home recovery target
+## Preview 9 returned Pages run
 
-Preview 9 changes only narrow, short-screen CSS density and strengthens the
-Home regression. At 320 × 900, the English and Japanese Home primary action
-must end no more than `800` px from the viewport top, leaving at least 100 px of
+Preview 9 changed only narrow, short-screen CSS density and kept the stronger
+Home regression. Its exact Actions run `32416506948` extracted and audited the
+checked-in archive, then returned 13/15 Linux Chromium journeys. Both failures
+measured the same untouched-English Home primary-action bottom at `823.75` px
+in a 320 × 900 viewport, beyond the required `800` px. Because that first state
+failed, the Japanese Linux state was not reached. Upload and deployment were
+skipped. Local same-dist Chromium and Edge passes are retained development
+evidence; they do not override this exact Linux result.
+
+## Preview 10 narrow Home recovery target
+
+Preview 10 changes only the causal narrow, short-screen CSS wrap and spacing
+budget. At 320 × 900, the English and Japanese Home primary action must each
+end no more than `800` px from the viewport top, leaving at least 100 px of
 headroom. All language-entry and primary actions remain at least 44 px high;
 all copy, the Japanese review disclosure, semantic and focus order, and normal
 vertical scrolling remain available. The same states must keep page-level
 horizontal overflow within the existing one-pixel tolerance and pass their
 named axe checks. The 320 px path also remains the 400%-equivalent reflow case.
 
-Those are acceptance targets, not results. Preview 9 accessibility evidence
-exists only after the exact `S9` source, build, checked-in archive, Linux
+Those are acceptance targets, not results. Preview 10 accessibility evidence
+exists only after the exact `S10` source, build, checked-in archive, Linux
 browser run, and any separately required manual inspections are identified.
 
 ## Known gaps

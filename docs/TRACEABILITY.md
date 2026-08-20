@@ -728,8 +728,10 @@ and post-P8 suite replace rather than continue the returned cycle.
 Source: exact `S9=464239831bb856dbe6d2b045dc5c59607d8b91aa`, tree
 `77053600abfd72796b83895a355554b0f2db5786`, sole parent returned
 `P8=721c356ca4019ad232c90a5334a5de76d0feaf66`, its 38,276-byte
-complete-tree manifest, and `PREVIEW-9-PUBLICATION.md`. Preview 9 is a new
-candidate cycle. It preserves the immutable Preview 8 failure and changes only
+complete-tree manifest, exact package commit
+`P9=8c0b90bba230e7b83b507b42a928c76e3f80a156`, and
+`PREVIEW-9-PUBLICATION.md`. Preview 9 preserved the immutable Preview 8 failure
+and changed only
 narrow, short-screen CSS density, the owning Home regression, truthful
 documents, and additive release identity/mechanics.
 
@@ -747,6 +749,25 @@ accessibility conformance, linguistic truth, or public identity.
 | `P9-BOUNDARY-01` | Interface copy, prompt bytes, configuration, compiler, recipes, profiles, pair packs, support tiers, persistence, privacy, runtime network behavior, dependencies, and Preview 1–8 artifacts remain unchanged. | exact 21-path review and protected-path/diff scans PASS |
 | `P9-PKG-01` | One build from S9 produces exactly three audited files; the canonical stage preserves the 2,424-byte P8 ledger and appends only P9 ZIP then manifest. | JS `2C44D107…B621C4`; CSS `7AEA2C5D…E86461`; HTML `98956C9C…78C2AF`; two stage PASSes |
 | `P9-PKG-02` | One same-byte promotion copies the reviewed stage to final ZIP, manifest, and ledger. | ZIP `EE0805A6…C9A850`; manifest `5B498173…8344FF`; ledger `80ECF74F…6F43CC`; direct equality |
-| `P9-PKG-03` | Exact seven-path content receives independent review before checkpoint. | established only by a later external exact-byte receipt |
-| `P9-PKG-04` | Containing `P9` has sole parent S9, exact seven paths, and passes the pinned verifier plus fresh extraction comparison. | established only by later Git and verifier evidence |
-| `P9-PUB-01` | A separately authorized Pages run extracts without rebuilding, passes Linux Chromium/axe, deploys, and is followed by public-byte comparison. | external authorization and public evidence required; this package authorizes no tag or GitHub Release |
+| `P9-PKG-03` | Exact seven-path content receives independent review before checkpoint. | completed before immutable P9; not re-proven by this status edit |
+| `P9-PKG-04` | Containing `P9` has sole parent S9, exact seven paths, and passes the pinned verifier plus fresh extraction comparison. | completed before the exact Pages run; P9 is immutable |
+| `P9-PUB-01` | A separately authorized Pages run extracts without rebuilding, passes Linux Chromium/axe, deploys, and is followed by public-byte comparison. | returned: run `32416506948` extracted/audited, then finished 13/15; both failures were the same untouched-English Home bottom `823.75 > 800`; Japanese Linux unknown; upload/deploy skipped; post-run public comparison recorded exact P7 at that time; no tag or GitHub Release |
+
+### Preview 10 cross-platform Home recovery source target
+
+Source authority: immutable returned
+`P9=8c0b90bba230e7b83b507b42a928c76e3f80a156` and
+`PREVIEW-10-SOURCE-IDENTITY.md`. No `S10`, build, package, browser result,
+deployment, or public-byte state follows from this source contract. Preview 10
+changes only the causal narrow, short-screen CSS wrap and spacing budget,
+truthful status documents, and additive release identity/mechanics. The exact
+source topology is 20 paths; the later package topology is seven paths.
+
+| ID | Deterministic or evidence owner | State / next boundary |
+|---|---|---|
+| `P10-SRC-01` | Exact 20-path S10 has sole parent P9 and a qualified complete-tree source manifest. | established only by exact S10 checkpoint, sole-parent proof, manifest, qualification, and independent review |
+| `P10-UX-01` | At 320 × 900, English and Japanese Home primary-action bottoms are each at most 800 px and affected actions remain at least 44 px high. | established separately by same-byte local and exact Linux evidence; no locale result may be claimed unless that state is reached and measured |
+| `P10-UX-02` | The CSS correction preserves all content, semantic/focus order, disclosure, scrolling, horizontal reflow, axe checks, and 400%-equivalent behavior. | established only by the named gates on exact S10 bytes |
+| `P10-BOUNDARY-01` | Application markup/copy, locale catalogs, prompt bytes, configuration, compiler, recipes, profiles, pair packs, tiers, persistence, privacy, runtime network behavior, dependencies, and historical artifacts remain unchanged. | enforced by the exact allowlist, protected-path scan, and independent review |
+| `P10-PKG-01` | One build, deterministic stage, independent review, same-byte promotion, and exact seven-path P10 child preserve the exact P9 ledger/archive/manifest prefix. | established only by one build, stage, review, promotion, and exact seven-path child; no source-stage package claim |
+| `P10-PUB-01` | A separately authorized Pages run extracts without rebuilding, passes all Linux journeys, deploys, and is followed by public-byte comparison. | external authorization and public evidence required; this source package authorizes no tag or GitHub Release |

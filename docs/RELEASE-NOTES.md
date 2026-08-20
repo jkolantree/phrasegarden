@@ -1,39 +1,65 @@
 # Release notes
 
-## 0.1.0-preview.9 — restore mobile Home headroom
+## 0.1.0-preview.10 — make mobile Home headroom cross-platform
 
-Status: source recovery target; exact source, package, deployment, public-byte,
+Status: source recovery contract; exact source, package, deployment, public-byte,
 tag, and GitHub Release states require separate version-bound evidence
 
 ### Product behavior
 
-- Preserves Preview 8's English and Japanese interfaces, start presets,
+- Preserves Preview 9's English and Japanese interfaces, start presets,
   English generated prompt, language identities, recipes, pair guidance,
   support tiers, privacy boundary, and local-only runtime behavior.
-- Changes only narrow, short-screen CSS density. It hides no content, preserves
-  semantic and focus order, keeps affected actions at least 44 px high, and
-  targets an English and Japanese Home primary-action bottom of no more than
-  `800` px in a 320 × 900 viewport.
-- Strengthens the same browser regression to require at least 100 px of
-  headroom rather than merely touching the viewport boundary.
+- Changes only the causal narrow, short-screen CSS wrap and spacing budget. It
+  hides no content, preserves semantic and focus order, and keeps affected
+  actions at least 44 px high.
+- Retains the strict English and Japanese Home primary-action ceiling of
+  `800` px in a 320 × 900 viewport. It changes layout, not the acceptance
+  threshold, and must reach both locale states in the exact Linux run.
 
 ### Failure boundary
 
-The exact Preview 8 package is immutable. Actions run `32405959146` extracted
-and audited its archive, then returned 13/15 Linux Chromium journeys. Two
-journeys measured the same English Home primary-action bottom at
-`1024.828125` px in a 320 × 900 viewport, beyond the required `900` px. Upload
-and deployment were skipped; the post-run public-byte observation remained
-exact Preview 7. Preview 9 is a separately versioned recovery, not a retry or
-rewrite of that result.
+The exact Preview 9 package is immutable. Actions run `32416506948` extracted
+and audited its archive, then returned 13/15 Linux Chromium journeys. Both
+failures measured the same untouched-English Home primary-action bottom at
+`823.75` px in a 320 × 900 viewport, beyond the required `800` px. The Japanese
+Linux state was not reached. Upload and deployment were skipped. The post-run
+comparison recorded exact Preview 7 public bytes at that time; it is not a
+refreshed current-state claim. Preview 10 is a separately versioned recovery,
+not a retry or rewrite of that result.
 
 ### Deterministic and authority boundary
 
-Preview 9 adds one closed release identity, version-specific adapters, exact
-Preview 8 predecessor bindings, and a no-build Pages selector. The target above
-is not a pass claim. It establishes no `S9`, build, package, browser result,
+Preview 10 adds one closed release identity, version-specific adapters, exact
+Preview 9 predecessor bindings, and a no-build Pages selector. The target above
+is not a pass claim. It establishes no `S10`, build, package, browser result,
 deployment, public bytes, linguistic review, accessibility conformance, tag,
 or GitHub Release. Any public action requires its own exact authorization.
+
+## 0.1.0-preview.9 — returned mobile Home recovery
+
+Status: immutable package candidate; Linux Chromium check failed and upload and
+Pages deployment were skipped
+
+### Product behavior
+
+- Preserved Preview 8's English and Japanese interfaces, start presets,
+  generated prompt, language identities, recipes, pair guidance, support tiers,
+  privacy boundary, and local-only runtime behavior.
+- Changed narrow, short-screen CSS density and strengthened the 320 × 900 Home
+  regression to require a primary-action bottom no greater than `800` px while
+  retaining 44 px action height and all content.
+
+### Evidence boundary
+
+Local same-dist Chromium and Edge journeys passed, but exact Actions run
+`32416506948` is the applicable Linux result: 13/15 passed and both failures
+measured the same untouched-English Home bottom at `823.75 > 800`. The first
+failure prevented the Japanese state from being reached, so Japanese Linux
+geometry is unknown. Upload and deployment were skipped. Its post-run exact
+Preview 7 public comparison is a dated observation, not an evergreen claim.
+The package, failure, and 13 passing journeys are immutable and cannot qualify
+Preview 10.
 
 ## 0.1.0-preview.8 — start in English or Japanese
 

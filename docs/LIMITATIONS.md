@@ -1,11 +1,11 @@
 # Product limitations
 
-The PhraseGarden `0.1.0-preview.9` source target carries forward Preview 8's
+The PhraseGarden `0.1.0-preview.10` source target carries forward Preview 9's
 exact prompt, compiler, language profiles, pair guidance, support labels,
 English and Japanese page interfaces, start-in-your-language behavior, and
-privacy boundary. It targets only a narrow, short-screen CSS-density correction
-and a stronger 320 × 900 Home regression. This document establishes no exact
-`S9`, package, deployment, tag, or GitHub Release; those states require
+privacy boundary. It targets only the causal narrow, short-screen CSS wrap and
+spacing budget while retaining the 320 × 900 Home regression. This document
+establishes no exact `S10`, package, deployment, tag, or GitHub Release; those states require
 version-bound evidence and the corresponding repository or public state.
 
 ## Language and support
@@ -18,7 +18,7 @@ version-bound evidence and the corresponding repository or public state.
 - French, German, Italian, Spanish, and region-unspecified Portuguese are
   bundled as identity-only Generic profiles. `pt` does not mean Brazilian,
   European, neutral, or dialect-reviewed Portuguese; `pt-BR` and `pt-PT` are
-  not supported by the `0.1.0-preview.9` source target.
+  not supported by the `0.1.0-preview.10` source target.
 - The bundled canonical registry is a small supported set, not a claim of
   universal language coverage. A valid BCP 47 tag that is not in the exact
   registry is unsupported.
@@ -80,9 +80,15 @@ version-bound evidence and the corresponding repository or public state.
   `32405959146` extracted and audited its archive, but two of 15 Linux Chromium
   journeys placed the English Home primary action at `1024.828125` px in a
   320 × 900 viewport. Upload and deployment were skipped; the post-run public
-  bytes remained exact Preview 7. Preview 9 must qualify its own built bytes
-  with the Home action bottom at no more than `800` px; neither local Preview 8
-  results nor source inheritance transfers that result.
+  bytes remained exact Preview 7 at that recorded checkpoint. Preview 9 then
+  qualified its own local built bytes, but exact Actions run `32416506948`
+  returned 13/15 Linux Chromium journeys. Both failures measured the same
+  untouched-English Home primary-action bottom at `823.75` px in a 320 × 900
+  viewport, beyond the required `800` px. The Japanese Linux state was not
+  reached; upload and deployment were skipped. The run's exact-Preview-7 public
+  comparison is a dated observation, not a refreshed claim about current hosted
+  bytes. Preview 10 qualification requires its own built bytes; neither local
+  Preview 9 results nor source inheritance transfers that result.
 - The in-app manual localhost inspection was blocked by that browser surface's
   local-URL policy. Sequential Edge journeys, explicit focus assertions, and
   captured screenshots passed; no stronger manual-browser claim is made.

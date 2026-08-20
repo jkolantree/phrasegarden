@@ -1,8 +1,8 @@
 # Publication manifest
 
 This manifest defines the authorized public repository contents and source
-contract for PhraseGarden `0.1.0-preview.9`. This source record does not
-establish an exact `S9`, package, deployment, tag, or GitHub Release. Earlier
+contract for PhraseGarden `0.1.0-preview.10`. This source record does not
+establish an exact `S10`, package, deployment, tag, or GitHub Release. Earlier
 repository, release, license, failure, and Pages evidence remains immutable.
 Actual package, publication, and deployment status is established only by
 version-bound release evidence and corresponding public state.
@@ -18,11 +18,15 @@ version-bound release evidence and corresponding public state.
 - Preview 4 public prerelease: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.4>
 - Preview 5 has no tag or GitHub Release
 - Preview 6 has no tag or GitHub Release
-- Preview 7 is the exact public predecessor and has no tag or GitHub Release
+- Preview 7 was the exact public state recorded after the returned Preview 8
+  and Preview 9 runs; no refreshed current-state claim is made here, and it has
+  no tag or GitHub Release
 - Preview 8 is an exact package commit whose Pages run returned before upload
   or deployment; it has no tag or GitHub Release
-- Preview 9 is a source contract. This document authorizes no push, deployment,
-  tag, or GitHub Release
+- Preview 9 is an exact package commit whose Pages run returned before upload
+  or deployment; it has no tag or GitHub Release
+- Preview 10 is a source contract. This document authorizes no push,
+  deployment, tag, or GitHub Release
 - Preview 1 historical release: <https://github.com/jkolantree/phrasegarden/releases/tag/v0.1.0-preview.1>
 - Pages: <https://jkolantree.github.io/phrasegarden/>
 - Initialization: the existing empty `.git` directory was initialized in place
@@ -52,8 +56,10 @@ version-bound release evidence and corresponding public state.
 - `release/phrasegarden-0.1.0-preview.7-pages-manifest.json`
 - `release/phrasegarden-0.1.0-preview.8-pages.zip`
 - `release/phrasegarden-0.1.0-preview.8-pages-manifest.json`
-- `release/phrasegarden-0.1.0-preview.9-pages.zip`, if later qualified
-- `release/phrasegarden-0.1.0-preview.9-pages-manifest.json`, if later qualified
+- `release/phrasegarden-0.1.0-preview.9-pages.zip`
+- `release/phrasegarden-0.1.0-preview.9-pages-manifest.json`
+- `release/phrasegarden-0.1.0-preview.10-pages.zip`, if later qualified
+- `release/phrasegarden-0.1.0-preview.10-pages-manifest.json`, if later qualified
 - `samples/0.1.0-preview.1/**`
 - `scripts/**`
 - `src/**`
@@ -86,38 +92,69 @@ samples. An archive is not by itself evidence of hosted release-download
 identity or UI-mediated download identity. Repository refs, release assets,
 and production responses require separate remote verification.
 
-## Preview 9 source and Pages boundary
+## Preview 10 source and Pages boundary
 
-- Version: `0.1.0-preview.9`
-- Sole source parent: exact returned Preview 8 package commit
-  `721c356ca4019ad232c90a5334a5de76d0feaf66`
-- Authority boundary: this source contract alone establishes no `S9`, `P9`,
-  Preview 9 archive, deployment, tag, GitHub Release, or public byte
-- Source: one exact 21-path source delta, then one `S9` checkpoint and its
+- Version: `0.1.0-preview.10`
+- Sole source parent: exact returned Preview 9 package commit
+  `8c0b90bba230e7b83b507b42a928c76e3f80a156`
+- Authority boundary: this source contract alone establishes no `S10`, `P10`,
+  Preview 10 archive, deployment, tag, GitHub Release, or public byte
+- Source: one exact 20-path source delta, then one `S10` checkpoint and its
   complete-tree source manifest, established only by Git and qualification
-- Package: one later exact seven-path child `P9` with sole parent `S9`,
+- Package: one later exact seven-path child `P10` with sole parent `S10`,
   established only by Git and committed-package verification
-- Immutable predecessor ledger: 2,424 bytes, SHA-256
-  `B16FEDD0476E3505E16CC156451EC23849CF0840792250402A6E1E9EE0EC663D`
-- Immutable predecessor Pages archive: 241,170 bytes, SHA-256
-  `BCE2BC2D45CD34BE22C1EB481B13456494D9E46E7815F630A23E07BAEAA6734F`
+- Immutable predecessor ledger: 2,660 bytes, SHA-256
+  `80ECF74FA5677087169D8C696D2C541386BD9FF9B3C8DE4ACCA59A7FAC6F43CC`
+- Immutable predecessor Pages archive: 241,760 bytes, SHA-256
+  `EE0805A69D80D81EA940755F19D2C54466F5EDB22F81A7C8BED4633581C9A850`
 - Immutable predecessor manifest: 976 bytes, SHA-256
-  `175C4E5B5885759A105FD1F1844EED6D626641B60C940A25FF021E17216F6B96`
+  `5B498173ACCDD8C4128B53462C2D59A2AAF47B8A9993A6B1188EFE7E338344FF`
 - Planned Pages behavior: extract, verify, test, and deploy the exact checked-in
-  Preview 9 archive without rebuilding it
+  Preview 10 archive without rebuilding it
 - Pages target: <https://jkolantree.github.io/phrasegarden/>
 - Git tag and GitHub Release: outside this plan and not authorized here
 
-Preview 9 is a narrow recovery from the immutable Preview 8 Linux result. It
-changes only narrow, short-screen CSS density, the corresponding Home
+Preview 10 is a new recovery from the immutable Preview 9 Linux result. It
+changes only the causal narrow, short-screen CSS wrap and spacing budget,
+truthful status documents, and additive release identity/mechanics. Application
+markup and copy, prompt bytes, language and support semantics, and privacy
+behavior do not change.
+
+The identity chain is exact 20-path source delta → `S10` → one build →
+deterministic stage → independent review → same-byte promotion → exact `P10`
+child → separately authorized Pages run → public-byte comparison. No earlier
+link proves a later one.
+
+## Preview 9 source and Pages boundary
+
+- Version: `0.1.0-preview.9`
+- Package commit: `P9=8c0b90bba230e7b83b507b42a928c76e3f80a156`
+- Source: `S9=464239831bb856dbe6d2b045dc5c59607d8b91aa`, with sole parent exact P8
+- Pages archive: 241,760 bytes, SHA-256
+  `EE0805A69D80D81EA940755F19D2C54466F5EDB22F81A7C8BED4633581C9A850`
+- Release manifest: 976 bytes, SHA-256
+  `5B498173ACCDD8C4128B53462C2D59A2AAF47B8A9993A6B1188EFE7E338344FF`
+- Checksum ledger: 2,660 bytes, SHA-256
+  `80ECF74FA5677087169D8C696D2C541386BD9FF9B3C8DE4ACCA59A7FAC6F43CC`
+- Result: Actions run `32416506948` extracted and audited the archive, then
+  returned 13/15 Linux Chromium journeys because both failing checks measured
+  the same untouched-English Home primary action at `823.75` px in a
+  320 × 900 viewport, beyond the required `800` px
+- Coverage boundary: the Japanese Linux state was not reached
+- Publication result: upload and deployment were skipped; the post-run public
+  comparison recorded exact Preview 7 bytes at that time, not a refreshed
+  claim about current public bytes
+- Pages target: <https://jkolantree.github.io/phrasegarden/>
+- Git tag and GitHub Release: neither exists or is authorized by this record
+
+Preview 9 was a narrow recovery from the immutable Preview 8 Linux result. It
+changed only narrow, short-screen CSS density, the corresponding Home
 regression, truthful status documents, and additive release identity/mechanics.
 Japanese remains `public-unreviewed-preview`, the generated portable prompt
 remains English, and support tiers and privacy behavior do not change.
 
-The identity chain is exact 21-path source delta → `S9` → one build →
-deterministic stage → independent review → same-byte promotion → exact `P9`
-child → separately authorized Pages run → public-byte comparison. No earlier
-link proves a later one.
+The exact Preview 9 package and returned workflow result are immutable negative
+evidence. Preview 10 must use a new source, build, package, and workflow run.
 
 ## Preview 8 source and Pages boundary
 

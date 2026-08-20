@@ -19,16 +19,20 @@ Open the public Prompt Studio at
 Earlier versioned releases and downloadable assets are available from the
 [PhraseGarden releases](https://github.com/jkolantree/phrasegarden/releases).
 Preview 8 added a prominent English/Japanese page-language choice and a
-complete Japanese Preview interface. Its exact Pages run extracted and audited
-the checked-in archive, but Linux Chromium returned the candidate before upload
-or deployment because two Home checks placed the primary-action bottom at
-`1024.828125` px in a 320 × 900 viewport. The post-run public observation
-remained exact Preview 7.
+complete Japanese Preview interface, but its exact Linux Pages run returned
+before upload or deployment on a 320 × 900 Home-layout failure. Preview 9 made
+a separately versioned density correction. Its exact Actions run
+`32416506948` also returned 13/15 Linux Chromium journeys: both failing checks
+measured the same untouched-English Home action at `823.75` px, beyond the
+required `800` px. The Japanese Linux state was not reached, and upload and
+deployment were skipped. The post-run comparison recorded exact Preview 7
+public bytes at that time; that is not a refreshed claim about the current
+hosted page.
 
-`0.1.0-preview.9` is the separately versioned recovery target. It preserves the
-Preview 8 product, prompt, language, tier, and privacy behavior while tightening
-only narrow, short-screen layout density and its regression. This source record
-alone establishes no `S9`, package, deployment, tag, or GitHub Release.
+`0.1.0-preview.10` is the new recovery target. It preserves the Preview 9
+product, prompt, language, tier, and privacy behavior while correcting only the
+causal narrow, short-screen CSS wrap and spacing budget. This source record
+alone establishes no `S10`, package, deployment, tag, or GitHub Release.
 
 ## Run locally
 
@@ -51,7 +55,7 @@ PhraseGarden never asks for the words you want to translate. Paste the
 generated instructions into a language tool of your choice, then provide source text
 there.
 
-## What Preview 9 preserves and corrects
+## What Preview 10 preserves and corrects
 
 - Complete English and Japanese page interfaces, with the Japanese catalog
   explicitly labeled as an unreviewed Preview
@@ -93,7 +97,7 @@ Read the [product limitations](docs/LIMITATIONS.md) before use.
 |---|---|
 | Preview | An exact built-in directed pair pack is versioned, but external linguistic review is incomplete. |
 | Generic | No exact pair pack is selected; only universal, conservative instructions are emitted. |
-| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 9 cannot assign them. |
+| Community, Reviewed, Flagship | Reserved for a later evidence-qualified resolver. Preview 10 cannot assign them. |
 
 A user or imported configuration cannot choose or upgrade its tier.
 

@@ -5,14 +5,15 @@ PhraseGarden application server.
 
 ## What the application does not collect
 
-The PhraseGarden `0.1.0-preview.9` source target has no backend,
+The PhraseGarden `0.1.0-preview.10` source target has no backend,
 database, authentication, advertising, behavioral analytics, telemetry,
 runtime AI provider, feedback form, or public free-text submission. It does not
 request microphone, camera, location, or notification permissions. Its source
-contract does not establish an exact `S9`, package, or deployment. Preview 9's
-narrow-screen recovery changes no privacy behavior from Preview 8; the failed
-Preview 8 Pages run uploaded and deployed nothing, and its post-run public-byte
-observation remained exact Preview 7.
+contract does not establish an exact `S10`, package, or deployment. Preview
+10's CSS-only narrow-screen recovery changes no privacy behavior from Preview
+9. The failed Preview 8 and Preview 9 Pages runs uploaded and deployed nothing.
+Preview 9's post-run comparison recorded exact Preview 7 public bytes at that
+time; it is not a refreshed claim about current hosted bytes.
 
 The builder does not contain a source-text field. Examples, relationship
 details, generated prompt contents, edits, audio, and learning history are not
@@ -42,9 +43,10 @@ Both English and Japanese interface catalogs ship inside the same application
 asset. Switching the page language performs no fetch and sends no recipe,
 language direction, prompt, or locale value to the host.
 
-The production page uses a restrictive content-security policy, self-hosted
-assets, `connect-src 'none'`, and no third-party fonts, images, scripts, CDNs, or
-analytics endpoints.
+The application source configures a restrictive content-security policy,
+self-hosted assets, `connect-src 'none'`, and no third-party fonts, images,
+scripts, CDNs, or analytics endpoints. Exact hosted response bytes require
+separate public verification.
 
 ## Destination tools
 
