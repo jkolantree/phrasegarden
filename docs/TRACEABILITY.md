@@ -1,7 +1,7 @@
 # PhraseGarden release traceability
 
 Status: active matrix
-Updated: 2026-08-19
+Updated: 2026-08-20
 
 No acceptance requirement may exist only in narrative prose. Each active
 package gives every observable requirement one stable ID and one responsible
@@ -697,3 +697,28 @@ accessibility conformance, linguistic truth, or public identity.
 | `P7-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by an external exact-byte receipt |
 | `P7-PKG-07` | Containing commit has sole parent `S7`, exact seven paths, and passes the pinned verifier. | established only by Git and verifier evidence |
 | `P7-PKG-08` | Main push, Linux browser/axe, Pages deployment, warning annotations, and public-byte comparison are separately observed. | authorized successor action; no tag or GitHub Release authorized |
+
+### Preview 8 bilingual interface preview and Pages package
+
+Source: corrected `S8=44df6aef96b0cbc87c9e116810c7b096a082cdb6`,
+its 36,862-byte complete-tree manifest, the reviewed three-file distributable,
+and `PREVIEW-8-PUBLICATION.md`. Japanese is a
+`public-unreviewed-preview`, not qualified linguistic-review evidence.
+Deterministic checks do not establish deployment, accessibility conformance,
+destination-model behavior, linguistic truth, or public identity.
+
+The first package cycle is retained as development/regression evidence after
+its post-promotion suite returned 57/58. The smallest lifecycle-fixture repair
+became corrected `S8`; its distinct source manifest, build, stage, promotion,
+and post-P8 suite replace rather than continue the returned cycle.
+
+| ID | Deterministic or evidence owner | State / next boundary |
+|---|---|---|
+| `P8-PKG-01` | Complete-tree source manifest binds 189 committed `100644` files and 2,655,279 raw payload bytes to corrected `S8`. | verified / `8050C15F…1814AB` |
+| `P8-PKG-02` | Page-language entry, persistent unreviewed-Japanese disclosure, English recovery, English-LTR prompt preservation, tier separation, and forced-colors focus remain deterministic. | 344/344 Vitest, dual typechecks, 15/15 Edge/axe, source review plus targeted rebinds |
+| `P8-PKG-03` | One Node 24.19.0 / pnpm 11.9.0 build from corrected `S8` produces exactly three audited files. | JS `2C44D107…B621C4`, CSS `2E8A838B…E4C4`, HTML `65DB7AE2…ABEB` |
+| `P8-PKG-04` | Canonical corrected stage preserves the 2,188-byte Preview 7 ledger and appends only P8 ZIP then corrected manifest. | two independent corrected-stage PASSes |
+| `P8-PKG-05` | One successful owner-context promotion copies reviewed corrected stage exactly. | local ZIP `BCE2BC2D…6734F`, manifest `175C4E5B…F6B96`, ledger `B16FEDD0…C663D` |
+| `P8-PKG-06` | Exact seven-path content receives final review before checkpoint. | established only by an external exact-byte receipt |
+| `P8-PKG-07` | Containing commit has sole parent corrected `S8`, exact seven paths, and passes the pinned verifier. | established only by Git and verifier evidence |
+| `P8-PKG-08` | Separately authorized main push, Linux browser/axe, Pages deployment, warning annotations, and public-byte comparison are observed. | external authorization and subsequent public evidence required; this package authorizes no tag or GitHub Release |
